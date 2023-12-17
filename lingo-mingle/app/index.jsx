@@ -1,13 +1,17 @@
-import "expo-dev-client";
-import { View, Text } from "react-native";
-import React from "react";
+import { View, Text } from 'react-native'
+import React from 'react'
 
-const Home = () => {
+import { useSegments } from 'expo-router'
+
+const MainPage = () => {
+    const seg = useSegments()
+
+    console.log("SONO QUI ", seg);
   return (
     <View>
-      <Text>Home</Text>
+      <Text>MainPage</Text>
     </View>
-  );
-};
+  )
+}
 
-export default Home;
+export default MainPage
