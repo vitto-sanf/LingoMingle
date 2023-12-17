@@ -1,17 +1,10 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+// Imports
+import "expo-dev-client";
+import React from "react";
+import { Redirect } from "expo-router";
 
-import { useSegments } from 'expo-router'
+const RootPage = () => {
+  return <Redirect href="/home" />;
+};
 
-const MainPage = () => {
-    const seg = useSegments()
-
-    console.log("SONO QUI ", seg);
-  return (
-    <View>
-      <Text>MainPage</Text>
-    </View>
-  )
-}
-
-export default MainPage
+export default RootPage;

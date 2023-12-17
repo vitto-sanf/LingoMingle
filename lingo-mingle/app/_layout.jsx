@@ -1,39 +1,37 @@
 // Imports
+import React from "react";
 import { useCallback } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Toast from "react-native-toast-message";
-import { Tabs, router } from "expo-router";
+import { Stack } from "expo-router";
 
 // Config
-import toastConfig from "../config/toastConfig"
+import toastConfig from "../config/toastConfig";
 
 SplashScreen.preventAutoHideAsync();
 
-const MainLayout = () => {
-  const [fontsLoaded] = useFonts({
+const RootLayout = () => {
+  const [fontsLoaded, fontError] = useFonts({
     DMBold: require("../assets/fonts/DMSans-Bold.ttf"),
     DMMedium: require("../assets/fonts/DMSans-Medium.ttf"),
     DMRegular: require("../assets/fonts/DMSans-Regular.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
+    if (fontsLoaded || fontError) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded) return null;
+  if (!fontsLoaded && !fontError) return null;
 
   return (
     <>
-      <Tabs initialRouteName="home">
-        <Tabs.Screen name="home" options={{ tabBarLabel: 'Home', title: 'Home'}}/>
-        <Tabs.Screen name="index" options={{href: null}} />
-        </Tabs>
+      <Stack screenOptions={{ headerShown: false }} />
       <Toast config={toastConfig} />
     </>
   );
 };
 
-export default MainLayout;
+export default RootLayout;
