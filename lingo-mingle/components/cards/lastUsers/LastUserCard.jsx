@@ -16,6 +16,7 @@ const LastUserCard = ({ item }) => {
   };
 
   // TODO: Evaluate whether to make the card clickable!
+  // TODO: Change icon color
   return (
     <View style={styles.container}>
       <Image source={item.image} style={styles.userImage} />

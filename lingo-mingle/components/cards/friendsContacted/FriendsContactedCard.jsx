@@ -3,7 +3,7 @@ import { View, Text, Image, Pressable } from "react-native";
 import React from "react";
 
 // Styles
-import styles from "./FriendsContacted.styles";
+import styles from "./FriendsContactedCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 
 const FriendCard = ({ item }) => {
@@ -16,6 +16,7 @@ const FriendCard = ({ item }) => {
   };
 
   // TODO: Evaluate whether to make the card clickable!
+  // TODO: Change icon color
   return (
     <View style={styles.container}>
       <Image source={item.image} style={styles.userImage} />
@@ -25,7 +26,7 @@ const FriendCard = ({ item }) => {
           onPress={() => handleSendFriendRequest()}
           style={styles.sendFriendRequestBtn}
         >
-          <FA5Icon name="check-circle"  solid size={22}/>  
+          <FA5Icon name="check-circle" solid size={22} />
         </Pressable>
         <Pressable onPress={() => handleStartVideoCall()}>
           <FA5Icon name="times-circle" solid size={22} />

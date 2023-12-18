@@ -16,6 +16,7 @@ const LastFriendCard = ({ item }) => {
   };
 
   // TODO: Evaluate whether to make the card clickable!
+  // TODO: Change icon color
   return (
     <View style={styles.container}>
       <Image source={item.image} style={styles.userImage} />
@@ -25,7 +26,7 @@ const LastFriendCard = ({ item }) => {
           onPress={() => handleSendFriendRequest()}
           style={styles.sendFriendRequestBtn}
         >
-          <FA5Icon name="comment"  solid size={22}/>  
+          <FA5Icon name="comment" solid size={22} />
         </Pressable>
         <Pressable onPress={() => handleStartVideoCall()}>
           <FA5Icon name="video" size={22} />

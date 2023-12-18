@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 
 // Styles
 import { FONT, COLOR } from "../constants";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const styles = StyleSheet.create({
   container: {
@@ -11,8 +10,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 8,
     paddingHorizontal: 10,
-    alignItems:"center",
-    justifyContent:"center"
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontFamily: FONT.bold,
@@ -25,10 +24,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontFamily: FONT.medium,
     fontSize: 18,
-    marginTop:6,
+    marginTop: 6,
     marginLeft: 10,
   },
-  button:{
+  button: {
     marginBottom: 0,
     alignItems: "center",
     justifyContent: "center",
@@ -37,15 +36,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 3,
     backgroundColor: COLOR.primary,
-    height:60,
-    width:280
+    height: 60,
+    width: 280,
   },
 
-  buttonTitle :{
+  buttonTitle: {
     fontFamily: FONT.bold,
-    fontSize: 20, 
-    color: COLOR.white
-  }
+    fontSize: 20,
+    color: COLOR.white,
+  },
 });
 
 export default styles;

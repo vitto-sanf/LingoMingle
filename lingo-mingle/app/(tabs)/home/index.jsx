@@ -1,17 +1,21 @@
 // Imports
-import { ScrollView, Text, FlatList , Pressable} from "react-native";
-import React from "react";
+import { ScrollView, Text, FlatList, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Styles
 import { HomePageStyle as styles } from "../../../styles";
 
-import { COLOR, FONT } from "../../../constants";
-
 // Components
-import LastUserCard from "../../../components/cards/lastUsers/LastUserCard";
-import LastFriendCard from "../../../components/cards/lastFriends/LastFriendCard";
-import FriendCard from "../../../components/cards/friendsContacted/FriendsContacted";
+import {
+  LastFriendCard,
+  LastUserCard,
+  FriendsContactedCard,
+} from "../../../components/cards";
+import { Loader } from "../../../components/common";
+
+// Services
+import api from "../../../services/api";
 
 import userImage from "../../../assets/profileAvatar.png";
 
@@ -70,11 +74,27 @@ const friendsRequests = [
 ];
 
 const HomePage = () => {
-  //TODO: rimuovere effetto bounce nello scorrimento verticale delle cards
+  const [userInfo, setUserInfo] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api
+      .getUserField("YVBwXkN7cIk7WmZ8oUXG")
+      .then((data) => setUserInfo(data))
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <Loader />;
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>LingoMingle</Text>
-      <ScrollView showsVerticalScrollIndicator= {false} style={styles.sectionContainer}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.sectionContainer}
+        bounces={false}
+      >
         <Text style={styles.sectionTitle}>Last Users Contacted</Text>
         <FlatList
           data={lastUsersContacted}
@@ -94,18 +114,15 @@ const HomePage = () => {
         <Text style={styles.sectionTitle}>Friends Request</Text>
         <FlatList
           data={friendsRequests}
-          renderItem={({ item }) => <FriendCard item={item} />}
+          renderItem={({ item }) => <FriendsContactedCard item={item} />}
           keyExtractor={(item) => item.id}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         />
       </ScrollView>
       <Pressable style={styles.button}>
-      
-      <Text style = {styles.buttonTitle}> Start Videocall</Text>
-      
-      </Pressable> 
-
+        <Text style={styles.buttonTitle}> Start Videocall</Text>
+      </Pressable>
     </SafeAreaView>
   );
 };
