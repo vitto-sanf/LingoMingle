@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     borderRadius: 10,
     marginBottom: 20
-    
   },
   userImage: {
     width: 100,

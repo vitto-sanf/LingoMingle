@@ -7,6 +7,7 @@ const COLOR = {
 
   lightWhite: "#FAFAFC",
 
+  white: "#FFFFFF",
   green: "#5CDB5C",
   red: "#FF0021",
   orange: "#FFA500",
