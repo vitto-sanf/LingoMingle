@@ -3,7 +3,7 @@ import { View, Text, Image, Pressable } from "react-native";
 import React from "react";
 
 // Styles
-import styles from "./FrinedsContacted.styles";
+import styles from "./FriendsContacted.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 
 const FriendCard = ({ item }) => {

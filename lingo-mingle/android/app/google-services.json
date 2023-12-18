@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "974582849684",
+    "project_id": "lingomingle-a48b9",
+    "storage_bucket": "lingomingle-a48b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974582849684:android:cd2fc47fb5b090d8855481",
+        "android_client_info": {
+          "package_name": "com.luca_tamburo.lingomingle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpd-O3nz5wqy_jWp9Wk0xVIXfTsdTagU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
