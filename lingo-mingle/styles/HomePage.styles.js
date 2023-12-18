@@ -2,19 +2,28 @@
 import { StyleSheet } from "react-native";
 
 // Styles
-import { FONT } from "../constants";
+import { FONT, COLOR } from "../constants";
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: COLOR.lightWhite,
     flex: 1,
-    paddingHorizontal: 15,
     paddingVertical: 20,
-    alignItems: "center",
+    paddingHorizontal: 10,
   },
   title: {
     fontFamily: FONT.bold,
     fontSize: 32,
+    textAlign: "center",
+  },
+  sectionContainer: {
+    marginTop: 10,
+  },
+  sectionTitle: {
+    fontFamily: FONT.medium,
+    fontSize: 18,
+    marginBottom: 6,
+    marginLeft: 10,
   },
 });
 
