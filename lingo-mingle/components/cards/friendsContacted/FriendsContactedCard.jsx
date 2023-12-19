@@ -7,9 +7,22 @@ import styles from "./FriendsContactedCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import userImage from "../../../assets/profileAvatar.png";
 import { COLOR } from "../../../constants";
-const FriendCard = ({ item }) => {
-  const handleSendFriendRequest = () => {
-    // TODO: Implement interaction with db
+
+// Services
+import api from "../../../services/api";
+
+// Hooks
+import useNotification from "../../../hooks/useNotification";
+
+const FriendCard = ({ item, myUUID }) => {
+  const notify = useNotification();
+
+  const newFriendUUID = item.uuid;
+  const handleAcceptFriendRequest = (myUUID, newFriendUUID) => {
+    api
+      .addFriend(myUUID, newFriendUUID)
+      .then((res) => notify.success(res.message))
+      .catch((err) => notify.error(err.message));
   };
 
   const handleStartVideoCall = () => {
@@ -17,14 +30,13 @@ const FriendCard = ({ item }) => {
   };
 
   // TODO: Evaluate whether to make the card clickable!
-  // TODO: Change icon color
   return (
     <View style={styles.container}>
       <Image source={userImage} style={styles.userImage} />
       <Text style={styles.userName}>{item.username}</Text>
       <View style={styles.actions}>
         <Pressable
-          onPress={() => handleSendFriendRequest()}
+          onPress={() => handleAcceptFriendRequest(myUUID, newFriendUUID)}
           style={styles.sendFriendRequestBtn}
         >
           <FA5Icon name="check-circle" color={COLOR.green} solid size={22} />

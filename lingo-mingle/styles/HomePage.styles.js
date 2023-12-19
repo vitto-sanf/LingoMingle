@@ -18,6 +18,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign: "center",
   },
+  noInfoText: {
+    flex: 1,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    fontFamily: FONT.medium,
+    fontSize: 40
+  },
   sectionContainer: {
     marginTop: 10,
   },
