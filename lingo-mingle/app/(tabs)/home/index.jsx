@@ -76,15 +76,30 @@ const friendsRequests = [
 const HomePage = () => {
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
-
+  const [dirty,setDirty]=useState(true);
   useEffect(() => {
-    api
-      .getUserField("YVBwXkN7cIk7WmZ8oUXG")
-      .then((data) => setUserInfo(data))
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, []);
+    if (dirty) {
+      api
+        .getUser("YVBwXkN7cIk7WmZ8oUXG")
+        .then((data) => setUserInfo(data))
+        .catch((err) => console.log(err))
+        .finally(() => {
+          if (userInfo?.last_user_contacted) {
+            api
+              .getLastUserContacted(userInfo.last_user_contacted)
+              .then((data) => {
+                console.log(data);
+                setDirty(false);
+                setLoading(false);
+              });
+          } else {
+            setDirty(true);
+          }
+        });
+    }
+  }, [userInfo]);
 
+  
   if (loading) return <Loader />;
 
   return (

@@ -1,7 +1,45 @@
 // Imports
 import axios from "axios";
 import Constants from "expo-constants";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+} from "firebase/firestore";
+import { database } from "../config/firebase";
+let newusers= [];
+const api = {
+  getUser: async (userId) => {
+    const docRef = doc(database, "user", userId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      console.log("No such document!");
+    }
+  },
+  getLastUserContacted: async (lastUserContacted) => {
+    lastUserContacted.forEach((doc) => {
+      api.getUser(doc._key.path.segments[6])
+      .then(
+        (data)=>{
+          data.uuid=doc._key.path.segments[6];
+          newusers=[...newusers,data];
+        }) 
+    });
+    if (newusers.length>0)
+    {
+      //console.log(newusers);
+      return newusers;  
+    }
+  },
+};
 
+
+/*
 const BASE_URL = "https://firestore.googleapis.com/v1/";
 const PROJECT_ID = Constants.expoConfig.extra.projectId;
 
@@ -106,6 +144,6 @@ const api = {
         });
     });
   },
-};
+};*/
 
 export default api;
