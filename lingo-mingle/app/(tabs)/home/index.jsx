@@ -24,9 +24,17 @@ const HomePage = () => {
   const [lastUsersContacted, setLasUserContacted] = useState([]);
   const [lastFriendsContacted, setLastFriendsContacted] = useState([]);
   const [friendsRequests, setFriendsRequest] = useState([]);
+  const [isMounted, setIsMounted] = useState(true);
 
   useEffect(() => {
-    if (dirty) {
+    return () => {
+      // Cleanup function to set isMounted to false when component unmounts
+      setIsMounted(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (dirty && isMounted) {
       api
         .getUser("YVBwXkN7cIk7WmZ8oUXG")
         .then((data) => {
