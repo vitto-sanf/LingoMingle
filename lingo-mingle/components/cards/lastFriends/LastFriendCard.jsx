@@ -6,7 +6,7 @@ import React from "react";
 import styles from "./LastFriendCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import userImage from "../../../assets/profileAvatar.png";
-
+import { COLOR } from "../../../constants";
 const LastFriendCard = ({ item }) => {
   const handleSendFriendRequest = () => {
     // TODO: Implement interaction with db
@@ -27,7 +27,7 @@ const LastFriendCard = ({ item }) => {
           onPress={() => handleSendFriendRequest()}
           style={styles.sendFriendRequestBtn}
         >
-          <FA5Icon name="comment" solid size={22} />
+          <FA5Icon name="comment" color={COLOR.lightBlue} solid size={22} />
         </Pressable>
         <Pressable onPress={() => handleStartVideoCall()}>
           <FA5Icon name="video" size={22} />

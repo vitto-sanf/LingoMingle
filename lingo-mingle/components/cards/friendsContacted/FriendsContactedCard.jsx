@@ -6,7 +6,7 @@ import React from "react";
 import styles from "./FriendsContactedCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import userImage from "../../../assets/profileAvatar.png";
-
+import { COLOR } from "../../../constants";
 const FriendCard = ({ item }) => {
   const handleSendFriendRequest = () => {
     // TODO: Implement interaction with db
@@ -27,10 +27,10 @@ const FriendCard = ({ item }) => {
           onPress={() => handleSendFriendRequest()}
           style={styles.sendFriendRequestBtn}
         >
-          <FA5Icon name="check-circle" solid size={22} />
+          <FA5Icon name="check-circle" color={COLOR.green} solid size={22} />
         </Pressable>
         <Pressable onPress={() => handleStartVideoCall()}>
-          <FA5Icon name="times-circle" solid size={22} />
+          <FA5Icon name="times-circle" color={COLOR.red} solid size={22} />
         </Pressable>
       </View>
     </View>

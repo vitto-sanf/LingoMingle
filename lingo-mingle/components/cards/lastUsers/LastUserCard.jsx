@@ -1,7 +1,7 @@
 // Imports
 import { View, Text, Image, Pressable } from "react-native";
 import React from "react";
-
+import { COLOR } from "../../../constants";
 // Styles
 import styles from "./LastUserCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
@@ -27,7 +27,7 @@ const LastUserCard = ({ item }) => {
           onPress={() => handleSendFriendRequest()}
           style={styles.sendFriendRequestBtn}
         >
-          <FA5Icon name="user-plus" size={22} />
+          <FA5Icon name="user-plus" color={COLOR.green} size={22} />
         </Pressable>
         <Pressable onPress={() => handleStartVideoCall()}>
           <FA5Icon name="video" size={22} />
