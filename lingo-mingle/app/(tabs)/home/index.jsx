@@ -17,89 +17,71 @@ import { Loader } from "../../../components/common";
 // Services
 import api from "../../../services/api";
 
-import userImage from "../../../assets/profileAvatar.png";
-
-const lastUsersContacted = [
-  {
-    id: 1,
-    username: "User 1",
-    image: userImage,
-  },
-  {
-    id: 2,
-    username: "User 2",
-    image: userImage,
-  },
-  {
-    id: 3,
-    username: "User 3",
-    image: userImage,
-  },
-];
-
-const lastFriendsContacted = [
-  {
-    id: 1,
-    username: "User 1",
-    image: userImage,
-  },
-  {
-    id: 2,
-    username: "User 2",
-    image: userImage,
-  },
-  {
-    id: 3,
-    username: "User 3",
-    image: userImage,
-  },
-];
-
-const friendsRequests = [
-  {
-    id: 1,
-    username: "User 1",
-    image: userImage,
-  },
-  {
-    id: 2,
-    username: "User 2",
-    image: userImage,
-  },
-  {
-    id: 3,
-    username: "User 3",
-    image: userImage,
-  },
-];
-
 const HomePage = () => {
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
-  const [dirty,setDirty]=useState(true);
+  const [dirty, setDirty] = useState(true);
+  const [lastUsersContacted, setLasUserContacted] = useState([]);
+  const [lastFriendsContacted, setLastFriendsContacted] = useState([]);
+  const [friendsRequests, setFriendsRequest] = useState([]);
+
   useEffect(() => {
     if (dirty) {
       api
         .getUser("YVBwXkN7cIk7WmZ8oUXG")
-        .then((data) => setUserInfo(data))
+        .then((data) => {
+          setUserInfo(data);
+        })
         .catch((err) => console.log(err))
         .finally(() => {
-          if (userInfo?.last_user_contacted) {
-            api
-              .getLastUserContacted(userInfo.last_user_contacted)
-              .then((data) => {
-                console.log(data);
-                setDirty(false);
-                setLoading(false);
+          if (
+            dirty &&
+            userInfo.last_user_contacted &&
+            userInfo.last_friends_contacted &&
+            userInfo.friends_request
+          ) {
+            const lastUserContacted = api.getLastUserContacted(
+              userInfo?.last_user_contacted
+            );
+
+            const lastFriendsContacted = api.getLastFriendsContacted(
+              userInfo?.last_friends_contacted
+            );
+
+            const friendsRequest = api.getFriendsRequest(
+              userInfo?.friends_request
+            );
+
+            Promise.all([
+              lastUserContacted,
+              lastFriendsContacted,
+              friendsRequest,
+            ])
+
+              .then(
+                ([
+                  UserContactedList,
+                  FriendsContactedList,
+                  FriendsRequestList,
+                ]) => {
+                  setLasUserContacted(UserContactedList);
+                  setLastFriendsContacted(FriendsContactedList);
+                  setFriendsRequest(FriendsRequestList);
+                  setDirty(false);
+                  setLoading(false);
+                }
+              )
+              .catch((error) => {
+                console.error(
+                  "Errore durante le chiamate API parallele:",
+                  error
+                );
               });
-          } else {
-            setDirty(true);
           }
         });
     }
-  }, [userInfo]);
+  }, [dirty, userInfo]);
 
-  
   if (loading) return <Loader />;
 
   return (
@@ -114,7 +96,7 @@ const HomePage = () => {
         <FlatList
           data={lastUsersContacted}
           renderItem={({ item }) => <LastUserCard item={item} />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.uuid}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         />
@@ -122,7 +104,7 @@ const HomePage = () => {
         <FlatList
           data={lastFriendsContacted}
           renderItem={({ item }) => <LastFriendCard item={item} />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.uuid}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         />
@@ -130,7 +112,7 @@ const HomePage = () => {
         <FlatList
           data={friendsRequests}
           renderItem={({ item }) => <FriendsContactedCard item={item} />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.uuid}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         />

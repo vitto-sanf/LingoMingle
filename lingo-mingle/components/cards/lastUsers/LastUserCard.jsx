@@ -5,6 +5,7 @@ import React from "react";
 // Styles
 import styles from "./LastUserCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
+import userImage from "../../../assets/profileAvatar.png";
 
 const LastUserCard = ({ item }) => {
   const handleSendFriendRequest = () => {
@@ -19,7 +20,7 @@ const LastUserCard = ({ item }) => {
   // TODO: Change icon color
   return (
     <View style={styles.container}>
-      <Image source={item.image} style={styles.userImage} />
+      <Image source={userImage} style={styles.userImage} />
       <Text style={styles.userName}>{item.username}</Text>
       <View style={styles.actions}>
         <Pressable

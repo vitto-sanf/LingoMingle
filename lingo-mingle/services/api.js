@@ -10,7 +10,9 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
-let newusers= [];
+let lastUserContactedArray= [];
+let lastFriendsContactedArray=[];
+let friendsRequestArray=[]
 const api = {
   getUser: async (userId) => {
     const docRef = doc(database, "user", userId);
@@ -21,22 +23,74 @@ const api = {
       console.log("No such document!");
     }
   },
+
   getLastUserContacted: async (lastUserContacted) => {
     lastUserContacted.forEach((doc) => {
       api.getUser(doc._key.path.segments[6])
       .then(
         (data)=>{
           data.uuid=doc._key.path.segments[6];
-          newusers=[...newusers,data];
+          lastUserContactedArray=[...lastUserContactedArray,data];
         }) 
     });
-    if (newusers.length>0)
+    if (lastUserContactedArray.length>0)
     {
-      //console.log(newusers);
-      return newusers;  
+      return lastUserContactedArray;  
     }
   },
+
+  getLastFriendsContacted: async (lastFriendsContacted) => {
+   
+    lastFriendsContacted.forEach((doc) => {
+      
+      api.getUser(doc._key.path.segments[6])
+      .then(
+        (data)=>{
+          data.uuid=doc._key.path.segments[6];
+          lastFriendsContactedArray=[...lastFriendsContactedArray,data];
+          
+        }) 
+    });
+    if (lastFriendsContactedArray.length>0)
+    {
+      
+      return lastFriendsContactedArray;  
+    }
+  },
+  getFriendsRequest: async (friendsRequest) => {
+    friendsRequest.forEach((doc) => {
+      api.getUser(doc._key.path.segments[6])
+      .then(
+        (data)=>{
+          data.uuid=doc._key.path.segments[6];
+          friendsRequestArray=[...friendsRequestArray,data];
+        }) 
+    });
+    if (friendsRequestArray.length>0)
+    {
+      
+      return friendsRequestArray;  
+    }
+  },
+  
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
