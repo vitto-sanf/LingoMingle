@@ -57,23 +57,72 @@ const api = {
       })
     );
 
-    const lastFriendsRequestdArray = await Promise.all(promises);
+    const lastFriendsRequestedArray = await Promise.all(promises);
 
     const res =
-      lastFriendsRequestdArray.length > 0 ? lastFriendsRequestdArray : [];
+      lastFriendsRequestedArray.length > 0 ? lastFriendsRequestedArray : [];
     return res;
   },
 
-  addFriend: async (myUUID, newFriendUUID) => {
+  // TODO: Fix
+  sendFriendRequest: async (myUUID, friendRequestUUID) => {
     try {
       const userRef = doc(database, "user", myUUID);
-      const newFriendUUIDReferences = doc(database, `/user/` + newFriendUUID);
+      const friendRequestUUIDReferences = doc(
+        database,
+        `/user/` + friendRequestUUID
+      );
 
       await updateDoc(userRef, {
-        friends: arrayUnion(newFriendUUIDReferences),
+        friends_request: arrayUnion(friendRequestUUIDReferences),
+      });
+
+      return {
+        message: "Successfully submitted friend request",
+      };
+    } catch (error) {
+      return {
+        message: "Error while sending friend request",
+      };
+    }
+  },
+
+  // TODO: Fix
+  cancelFriendRequest: async (myUUID, friendRequestUUID) => {
+    try {
+      const userRef = doc(database, "user", myUUID);
+      const friendRequestUUIDReferences = doc(
+        database,
+        `/user/` + friendRequestUUID
+      );
+
+      await updateDoc(userRef, {
+        friends_request: arrayRemove(friendRequestUUIDReferences),
+      });
+
+      return {
+        message: "Friend request successfully cancelled",
+      };
+    } catch (error) {
+      return {
+        message: "Error while deletion friend request",
+      };
+    }
+  },
+
+  acceptFriendRequest: async (myUUID, friendRequestUUID) => {
+    try {
+      const userRef = doc(database, "user", myUUID);
+      const friendRequestUUIDReferences = doc(
+        database,
+        `/user/` + friendRequestUUID
+      );
+
+      await updateDoc(userRef, {
+        friends: arrayUnion(friendRequestUUIDReferences),
       });
       await updateDoc(userRef, {
-        friends_request: arrayRemove(newFriendUUIDReferences),
+        friends_request: arrayRemove(friendRequestUUIDReferences),
       });
 
       return {
@@ -81,7 +130,29 @@ const api = {
       };
     } catch (error) {
       return {
-        message: "Error while adding friend",
+        message: "Error while adding friend request",
+      };
+    }
+  },
+
+  rejectFriendRequest: async (myUUID, friendRequestUUID) => {
+    try {
+      const userRef = doc(database, "user", myUUID);
+      const friendRequestUUIDReferences = doc(
+        database,
+        `/user/` + friendRequestUUID
+      );
+
+      await updateDoc(userRef, {
+        friends_request: arrayRemove(friendRequestUUIDReferences),
+      });
+
+      return {
+        message: "Friend request rejected correctly",
+      };
+    } catch (error) {
+      return {
+        message: "Error while rejecting friend request",
       };
     }
   },

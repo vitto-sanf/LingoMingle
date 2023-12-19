@@ -23,7 +23,7 @@ const HomePage = () => {
   const [lastFriendsContacted, setLastFriendsContacted] = useState([]);
   const [friendsRequests, setFriendsRequest] = useState([]);
 
-  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG"
+  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
 
   useEffect(() => {
     api
@@ -79,7 +79,9 @@ const HomePage = () => {
               <Text style={styles.sectionTitle}>Last Users Contacted</Text>
               <FlatList
                 data={lastUsersContacted}
-                renderItem={({ item }) => <LastUserCard item={item} />}
+                renderItem={({ item }) => (
+                  <LastUserCard item={item} myUUID={MY_UUID} />
+                )}
                 keyExtractor={(item) => item.uuid}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
@@ -105,7 +107,9 @@ const HomePage = () => {
               <Text style={styles.sectionTitle}>Friends Request</Text>
               <FlatList
                 data={friendsRequests}
-                renderItem={({ item }) => <FriendsContactedCard item={item} myUUID={MY_UUID} />}
+                renderItem={({ item }) => (
+                  <FriendsContactedCard item={item} myUUID={MY_UUID} />
+                )}
                 keyExtractor={(item) => item.uuid}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}

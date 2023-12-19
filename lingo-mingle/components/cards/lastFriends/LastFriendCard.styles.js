@@ -25,10 +25,9 @@ const styles = StyleSheet.create({
     borderRadius: 40,
   },
   userName: {
-    marginTop: 5,
-    marginBottom: 15,
+    marginBottom: 10,
     fontFamily: FONT.medium,
-    fontSize: 22,
+    fontSize: 20,
   },
   actions: {
     flexDirection: "row",
