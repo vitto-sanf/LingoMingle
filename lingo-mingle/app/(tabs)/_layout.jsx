@@ -25,6 +25,17 @@ const MainLayout = () => {
           ),
         }}
       />
+      <Tabs.Screen
+        name="invitations"
+        options={{
+          tabBarLabel: "Invitations",
+          title: "Invitations",
+          headerShown: false,
+          tabBarIcon: ({ size, color }) => (
+            <FAIcons name="calendar" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 };
