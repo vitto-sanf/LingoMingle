@@ -36,7 +36,9 @@ const FriendCard = ({ item, myUUID }) => {
 
   // TODO: Evaluate whether to make the card clickable!
   return (
+  
     <View style={styles.container}>
+      
       <Image
         source={item.gender === "M" ? maleAvatar : femaleAvatar}
         style={styles.userImage}

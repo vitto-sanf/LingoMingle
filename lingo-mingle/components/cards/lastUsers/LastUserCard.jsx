@@ -16,31 +16,33 @@ import api from "../../../services/api";
 import useNotification from "../../../hooks/useNotification";
 
 const LastUserCard = ({ item, myUUID }) => {
+ 
+
   const notify = useNotification();
   const friendRequestUUID = item.uuid;
 
   const [friendRequestSent, setFriendRequestSent] = useState(false);
 
-  // TODO: Fix
+  
   const handleSendFriendRequest = () => {
-    // api
-    //   .sendFriendRequest(myUUID, friendRequestUUID)
-    //   .then((res) => {
-    //     setFriendRequestSent(true);
-    //     notify.success(res.message);
-    //   })
-    //   .catch((err) => notify.error(err.message));
+     api
+       .sendFriendRequest(myUUID, friendRequestUUID)
+      .then((res) => {
+         setFriendRequestSent(true);
+        notify.success(res.message);
+      })
+       .catch((err) => notify.error(err.message));
   };
 
-  // TODO: Fix
+  
   const handleCancelFriendRequest = () => {
-    // api
-    //   .cancelFriendRequest(myUUID, friendRequestUUID)
-    //   .then((res) => {
-    //     setFriendRequestSent(false);
-    //     notify.success(res.message);
-    //   })
-    //   .catch((err) => notify.error(err.message));
+     api
+      .cancelFriendRequest(myUUID, friendRequestUUID)
+       .then((res) => {
+          setFriendRequestSent(false);
+          notify.success(res.message);
+      })
+       .catch((err) => notify.error(err.message));
   };
 
   const handleStartVideoCall = () => {
@@ -49,6 +51,7 @@ const LastUserCard = ({ item, myUUID }) => {
 
   // TODO: Evaluate whether to make the card clickable!
   return (
+    
     <View style={styles.container}>
       <Image
         source={item.gender === "M" ? maleAvatar : femaleAvatar}
@@ -58,16 +61,17 @@ const LastUserCard = ({ item, myUUID }) => {
       <View style={styles.actions}>
         <Pressable
           onPress={
-            !friendRequestSent
+            !friendRequestSent && !item.friends_request.some((request)=>{ return request.sender === myUUID})
               ? handleSendFriendRequest
               : handleCancelFriendRequest
           }
           style={styles.sendFriendRequestBtn}
         >
-          {!friendRequestSent ? (
+          
+          {!friendRequestSent && !item.friends_request.some((request)=>{ return request.sender === myUUID}) ? (
             <FA5Icon name="user-plus" size={20} />
           ) : (
-            <FA5Icon name="user-check" size={20} color={COLOR.green} />
+            <FA5Icon name="user-times" size={20} color={COLOR.red} />
           )}
         </Pressable>
         <Pressable onPress={() => handleStartVideoCall()}>

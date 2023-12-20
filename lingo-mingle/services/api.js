@@ -6,6 +6,8 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  where,
+  query,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 
@@ -22,37 +24,41 @@ const api = {
 
   getLastUserContacted: async (lastUserContacted) => {
     const promises = lastUserContacted.map((doc) =>
-      api.getUser(doc._key.path.segments[6]).then((data) => {
-        data.uuid = doc._key.path.segments[6];
+      api.getUser(doc).then((data) => {
+        data.uuid = doc;
         return data;
       })
     );
 
     const lastUserContactedArray = await Promise.all(promises);
 
+   
     const res = lastUserContactedArray.length > 0 ? lastUserContactedArray : [];
     return res;
   },
 
   getLastFriendsContacted: async (lastFriendsContacted) => {
     const promises = lastFriendsContacted.map((doc) =>
-      api.getUser(doc._key.path.segments[6]).then((data) => {
-        data.uuid = doc._key.path.segments[6];
+      api.getUser(doc).then((data) => {
+        data.uuid = doc;
         return data;
       })
     );
 
     const lastFriendsContactedArray = await Promise.all(promises);
-
-    const res =
-      lastFriendsContactedArray.length > 0 ? lastFriendsContactedArray : [];
+    const res = lastFriendsContactedArray.length > 0 ? lastFriendsContactedArray : [];
     return res;
   },
 
-  getFriendsRequest: async (friendsRequest) => {
-    const promises = friendsRequest.map((doc) =>
-      api.getUser(doc._key.path.segments[6]).then((data) => {
-        data.uuid = doc._key.path.segments[6];
+  getFriendsRequest: async (friendsRequest, myUUID) => {
+    const filteredFriendRequests = friendsRequest.filter(
+      (request) => request.receiver === myUUID
+    );
+
+    const promises = filteredFriendRequests.map((doc) =>
+      api.getUser(doc.sender).then((data) => {
+        data.uuid = doc.sender;
+        data.status = doc.status;
         return data;
       })
     );
@@ -64,17 +70,26 @@ const api = {
     return res;
   },
 
-  // TODO: Fix
+
   sendFriendRequest: async (myUUID, friendRequestUUID) => {
     try {
-      const userRef = doc(database, "user", myUUID);
-      const friendRequestUUIDReferences = doc(
-        database,
-        `/user/` + friendRequestUUID
-      );
 
-      await updateDoc(userRef, {
-        friends_request: arrayUnion(friendRequestUUIDReferences),
+      const data ={
+        sender: myUUID,
+        receiver: friendRequestUUID,
+        status: "pending"
+      }
+
+      
+      const senderRef = doc(database, "user", myUUID);
+      const receiverRef = doc(database, "user", friendRequestUUID);
+
+      await updateDoc(senderRef, {
+        friends_request: arrayUnion(data),
+      });
+
+      await updateDoc(receiverRef, {
+        friends_request: arrayUnion(data),
       });
 
       return {
@@ -87,47 +102,66 @@ const api = {
     }
   },
 
-  // TODO: Fix
+  
+
   cancelFriendRequest: async (myUUID, friendRequestUUID) => {
     try {
-      const userRef = doc(database, "user", myUUID);
-      const friendRequestUUIDReferences = doc(
-        database,
-        `/user/` + friendRequestUUID
-      );
 
-      await updateDoc(userRef, {
-        friends_request: arrayRemove(friendRequestUUIDReferences),
+      const data ={
+        sender: myUUID,
+        receiver: friendRequestUUID,
+        status: "pending"
+      }
+
+      const senderRef = doc(database, "user", myUUID);
+      const receiverRef = doc(database, "user", friendRequestUUID);
+
+      await updateDoc(senderRef, {
+        friends_request: arrayRemove(data),
+      });
+
+      await updateDoc(receiverRef, {
+        friends_request: arrayRemove(data),
       });
 
       return {
-        message: "Friend request successfully cancelled",
+        message: "Successfully removed friend request",
       };
     } catch (error) {
       return {
-        message: "Error while deletion friend request",
+        message: "Error while sending friend request",
       };
-    }
+
+      }
   },
 
   acceptFriendRequest: async (myUUID, friendRequestUUID) => {
     try {
-      const userRef = doc(database, "user", myUUID);
-      const friendRequestUUIDReferences = doc(
-        database,
-        `/user/` + friendRequestUUID
-      );
 
-      await updateDoc(userRef, {
-        friends: arrayUnion(friendRequestUUIDReferences),
+      const data ={
+        sender: friendRequestUUID,
+        receiver: myUUID,
+        status: "pending"
+      }
+
+      const senderRef = doc(database, "user", friendRequestUUID);
+      const receiverRef = doc(database, "user", myUUID);
+
+      await updateDoc(senderRef, {
+        friends_request: arrayRemove(data),
+        friends : arrayUnion(myUUID),
       });
-      await updateDoc(userRef, {
-        friends_request: arrayRemove(friendRequestUUIDReferences),
+
+      await updateDoc(receiverRef, {
+        friends_request: arrayRemove(data),
+        friends: arrayUnion(friendRequestUUID),
       });
 
       return {
         message: "User added to your friend list",
       };
+
+    
     } catch (error) {
       return {
         message: "Error while adding friend request",
@@ -137,15 +171,23 @@ const api = {
 
   rejectFriendRequest: async (myUUID, friendRequestUUID) => {
     try {
-      const userRef = doc(database, "user", myUUID);
-      const friendRequestUUIDReferences = doc(
-        database,
-        `/user/` + friendRequestUUID
-      );
+      const data ={
+        sender: friendRequestUUID,
+        receiver: myUUID,
+        status: "pending"
+      }
 
-      await updateDoc(userRef, {
-        friends_request: arrayRemove(friendRequestUUIDReferences),
+      const senderRef = doc(database, "user", friendRequestUUID);
+      const receiverRef = doc(database, "user", myUUID);
+
+      await updateDoc(senderRef, {
+        friends_request: arrayRemove(data),
       });
+
+      await updateDoc(receiverRef, {
+        friends_request: arrayRemove(data),
+      });
+
 
       return {
         message: "Friend request rejected correctly",
