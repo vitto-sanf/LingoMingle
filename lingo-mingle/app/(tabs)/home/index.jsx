@@ -38,13 +38,13 @@ const HomePage = () => {
         );
 
         const friendsRequest = await api.getFriendsRequest(
-          userInfo?.friends_request,MY_UUID
+          userInfo?.friends_request,
+          MY_UUID
         );
-          
+
         Promise.all([lastUserContacted, lastFriendsContacted, friendsRequest])
           .then(
             ([UserContactedList, FriendsContactedList, FriendsRequestList]) => {
-              
               setLastUserContacted(UserContactedList);
               setLastFriendsContacted(FriendsContactedList);
               setFriendsRequest(FriendsRequestList);
