@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   buttonView:{
     flexDirection: "column",
     flex: 1,
-    width:400,
+    width:360,
     paddingVertical: 2,
     paddingHorizontal: 2,
     alignItems: "flex-end",
