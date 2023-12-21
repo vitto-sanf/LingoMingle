@@ -2,12 +2,9 @@
 import {
   doc,
   getDoc,
-  setDoc,
   updateDoc,
   arrayUnion,
   arrayRemove,
-  where,
-  query,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 
@@ -32,7 +29,6 @@ const api = {
 
     const lastUserContactedArray = await Promise.all(promises);
 
-   
     const res = lastUserContactedArray.length > 0 ? lastUserContactedArray : [];
     return res;
   },
@@ -46,7 +42,8 @@ const api = {
     );
 
     const lastFriendsContactedArray = await Promise.all(promises);
-    const res = lastFriendsContactedArray.length > 0 ? lastFriendsContactedArray : [];
+    const res =
+      lastFriendsContactedArray.length > 0 ? lastFriendsContactedArray : [];
     return res;
   },
 
@@ -70,17 +67,14 @@ const api = {
     return res;
   },
 
-
   sendFriendRequest: async (myUUID, friendRequestUUID) => {
     try {
-
-      const data ={
+      const data = {
         sender: myUUID,
         receiver: friendRequestUUID,
-        status: "pending"
-      }
+        status: "pending",
+      };
 
-      
       const senderRef = doc(database, "user", myUUID);
       const receiverRef = doc(database, "user", friendRequestUUID);
 
@@ -102,16 +96,13 @@ const api = {
     }
   },
 
-  
-
   cancelFriendRequest: async (myUUID, friendRequestUUID) => {
     try {
-
-      const data ={
+      const data = {
         sender: myUUID,
         receiver: friendRequestUUID,
-        status: "pending"
-      }
+        status: "pending",
+      };
 
       const senderRef = doc(database, "user", myUUID);
       const receiverRef = doc(database, "user", friendRequestUUID);
@@ -131,25 +122,23 @@ const api = {
       return {
         message: "Error while sending friend request",
       };
-
-      }
+    }
   },
 
   acceptFriendRequest: async (myUUID, friendRequestUUID) => {
     try {
-
-      const data ={
+      const data = {
         sender: friendRequestUUID,
         receiver: myUUID,
-        status: "pending"
-      }
+        status: "pending",
+      };
 
       const senderRef = doc(database, "user", friendRequestUUID);
       const receiverRef = doc(database, "user", myUUID);
 
       await updateDoc(senderRef, {
         friends_request: arrayRemove(data),
-        friends : arrayUnion(myUUID),
+        friends: arrayUnion(myUUID),
       });
 
       await updateDoc(receiverRef, {
@@ -160,8 +149,6 @@ const api = {
       return {
         message: "User added to your friend list",
       };
-
-    
     } catch (error) {
       return {
         message: "Error while adding friend request",
@@ -171,11 +158,11 @@ const api = {
 
   rejectFriendRequest: async (myUUID, friendRequestUUID) => {
     try {
-      const data ={
+      const data = {
         sender: friendRequestUUID,
         receiver: myUUID,
-        status: "pending"
-      }
+        status: "pending",
+      };
 
       const senderRef = doc(database, "user", friendRequestUUID);
       const receiverRef = doc(database, "user", myUUID);
@@ -187,7 +174,6 @@ const api = {
       await updateDoc(receiverRef, {
         friends_request: arrayRemove(data),
       });
-
 
       return {
         message: "Friend request rejected correctly",

@@ -11,7 +11,6 @@ const MainLayout = () => {
       initialRouteName="home"
       screenOptions={{
         tabBarActiveTintColor: COLOR.black,
-        tabBarInactiveBackgroundColor: COLOR.secondary,
       }}
     >
       <Tabs.Screen
@@ -33,6 +32,13 @@ const MainLayout = () => {
           headerShown: false,
           tabBarIcon: ({ size, color }) => (
             <FAIcons name="calendar" size={size} color={color} />
+        name="profile"
+        options={{
+          tabBarLabel: "Profile",
+          title: "Profile",
+          headerShown: false,
+          tabBarIcon: ({ size, color }) => (
+            <FAIcons name="user" size={size} color={color} />
           ),
         }}
       />
