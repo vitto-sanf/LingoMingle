@@ -47,8 +47,7 @@ const api = {
     return res;
   },
 
-  getFriends: async (friends, ) => {
-   
+  getFriends: async (friends) => {
     const promises = friends.map((doc) =>
       api.getUser(doc).then((data) => {
         data.uuid = doc;
@@ -58,8 +57,7 @@ const api = {
 
     const friendsArray = await Promise.all(promises);
 
-    const res =
-    friendsArray.length > 0 ? friendsArray : [];
+    const res = friendsArray.length > 0 ? friendsArray : [];
     return res;
   },
 
@@ -201,33 +199,28 @@ const api = {
     }
   },
 
-  cancellFriend : async(myUUID,friendUUID) =>{
+  cancelFriend: async (myUUID, friendUUID) => {
+    try {
+      const firstUserRef = doc(database, "user", myUUID);
+      const secondUserRef = doc(database, "user", friendUUID);
 
-      try {
-        const firstUserRef = doc(database, "user", myUUID);
-        const secondUserRef = doc(database, "user", friendUUID);
+      await updateDoc(firstUserRef, {
+        friends: arrayRemove(friendUUID),
+      });
 
-        await updateDoc(firstUserRef, {
-          friends: arrayRemove(friendUUID),
-        });
+      await updateDoc(secondUserRef, {
+        friends: arrayRemove(myUUID),
+      });
 
-        await updateDoc(secondUserRef, {
-          friends: arrayRemove(myUUID),
-        });
-
-        return {
-          message: "Friend cancelled from the list correctly",
-        };
-        
-      } catch (error) {
-
-        return {
-          message: "Error while Cancelling friend frome the list",
-        };
-        
-      }
-      
-  }
+      return {
+        message: "Friend cancelled from the list correctly",
+      };
+    } catch (error) {
+      return {
+        message: "Error while Cancelling friend from the list",
+      };
+    }
+  },
 };
 
 export default api;
