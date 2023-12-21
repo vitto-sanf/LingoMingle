@@ -32,6 +32,10 @@ const MainLayout = () => {
           headerShown: false,
           tabBarIcon: ({ size, color }) => (
             <FAIcons name="calendar" size={size} color={color} />
+            ),
+        }}
+        />
+        <Tabs.Screen
         name="profile"
         options={{
           tabBarLabel: "Profile",
