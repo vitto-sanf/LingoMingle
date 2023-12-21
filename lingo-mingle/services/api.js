@@ -200,6 +200,34 @@ const api = {
       };
     }
   },
+
+  cancellFriend : async(myUUID,friendUUID) =>{
+
+      try {
+        const firstUserRef = doc(database, "user", myUUID);
+        const secondUserRef = doc(database, "user", friendUUID);
+
+        await updateDoc(firstUserRef, {
+          friends: arrayRemove(friendUUID),
+        });
+
+        await updateDoc(secondUserRef, {
+          friends: arrayRemove(myUUID),
+        });
+
+        return {
+          message: "Friend cancelled from the list correctly",
+        };
+        
+      } catch (error) {
+
+        return {
+          message: "Error while Cancelling friend frome the list",
+        };
+        
+      }
+      
+  }
 };
 
 export default api;
