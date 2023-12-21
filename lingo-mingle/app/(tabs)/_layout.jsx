@@ -24,6 +24,17 @@ const MainLayout = () => {
           ),
         }}
       />
+       <Tabs.Screen
+        name="friends"
+        options={{
+          tabBarLabel: "Friends",
+          title: "Friends",
+          headerShown: false,
+          tabBarIcon: ({ size, color }) => (
+            <FAIcons name="users" size={size} color={color} />
+          ),
+        }}
+      />
       <Tabs.Screen
         name="profile"
         options={{
