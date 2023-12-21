@@ -40,11 +40,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 12,
     paddingHorizontal: 32,
-    borderRadius:100,
+    borderRadius:200,
     elevation: 3,
     backgroundColor: COLOR.primary,
-    height: 80,
-    width: 80,
+    height: 60,
+    width: 60,
   },
 
   buttonTitle: {
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
   buttonView:{
     flexDirection: "column",
     flex: 1,
+    width:400,
     paddingVertical: 2,
     paddingHorizontal: 2,
     alignItems: "flex-end",
