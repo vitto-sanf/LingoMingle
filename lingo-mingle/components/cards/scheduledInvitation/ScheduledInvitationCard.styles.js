@@ -6,7 +6,7 @@ import { FONT,COLOR } from "../../../constants";
 
 const styles = StyleSheet.create({
   container: {
-    width: 500,
+    width: 330,
     alignItems: "left",
     justifyContent:"center",
     padding: 15,
@@ -29,16 +29,33 @@ const styles = StyleSheet.create({
   },
   infos: {
     flexDirection: "column",
-    paddingRight:90
+    paddingRight:30
   },
   buttons:{
-    flexDirection:"row"
+    flexDirection:"column"
   },
   container2:{
     flexDirection:"row",
   },
-  pressable:{
-    paddingRight:10
+  pressableEdit:{
+    alignItems:"center",
+    justifyContent:"center",
+    paddingRight:10,
+    backgroundColor:COLOR.orange,
+    margin:5,
+    width:60,
+    height:20,
+    borderRadius:20
+  },
+  pressableCancel:{
+    alignItems:"center",
+    justifyContent:"center",
+    paddingRight:10,
+    backgroundColor:COLOR.red,
+    margin:5,
+    width:60,
+    height:20,
+    borderRadius:20
   },
   textInfo:{
     

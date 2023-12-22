@@ -14,16 +14,27 @@ import { InvitationsPageStyle as styles } from "../../../styles";
 // Components
 
 import { Loader } from "../../../components/common";
-import { InvitationCard } from "../../../components/cards";
+import {NewInvitationCard, ScheduledInvitationCard } from "../../../components/cards";
 import { COLOR } from "../../../constants";
+import  {Link} from 'expo-router';
 // Services
 //import api from "../../../services/api";
 
 const InvitationsPage = () => {
   //const [loading, setLoading] = useState(true);
-
+  const[pageStatus,setPageStatus]=useState("new");
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
 
+  const handleSetNew = () => {
+    setPageStatus("new");
+    
+  };
+  const handleSetScheduled = () => {
+    setPageStatus("scheduled");
+    
+  };
+
+  
   const invitations = [
     {
       uuid: "1",
@@ -50,34 +61,63 @@ const InvitationsPage = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Invitations</Text>
-
-      {invitations.length === 0 ? (
-        <Text style={styles.noInfoText}>There are no invitations</Text>
-      ) : (
-        <ScrollView
-          horizontal={true}
-          showsVerSectionListticalScrollIndicator={false}
-          style={styles.sectionContainer}
-          bounces={false}
-        >
-          <>
-            <FlatList
-              data={invitations}
-              renderItem={({ item }) => (
-                <InvitationCard item={item} myUUID={MY_UUID} />
-              )}
-              keyExtractor={(item) => item.uuid}
-              showsHorizontalScrollIndicator={false}
-            />
-          </>
-        </ScrollView>
-      )}
+      <View style={styles.topNav}>
+      <Pressable style={ pageStatus==="scheduled"? styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetScheduled} ><Text > Scheduled </Text></Pressable>
+      <Pressable style={ pageStatus==="new"?  styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetNew}><Text>New Invitations</Text></Pressable>
+      
+      </View>
+      
+        {invitations.length === 0 && pageStatus==="new"? (
+          <Text style={styles.noInfoText}>There are no new invitations</Text>
+        ) :invitations.length !== 0 && pageStatus==="new"? (
+          <ScrollView
+            horizontal={true}
+            showsVerSectionListticalScrollIndicator={false}
+            style={styles.sectionContainer}
+            bounces={false}
+          >
+            <>
+              <FlatList
+                data={invitations}
+                renderItem={({ item }) => (
+                  <NewInvitationCard item={item} myUUID={MY_UUID} />
+                )}
+                keyExtractor={(item) => item.uuid}
+                showsHorizontalScrollIndicator={false}
+              />
+            </>
+          </ScrollView>
+        ) : pageStatus==="scheduled"?(
+          <ScrollView
+            horizontal={true}
+            showsVerSectionListticalScrollIndicator={false}
+            style={styles.sectionContainer}
+            bounces={false}
+          >
+            <>
+              <FlatList
+                data={invitations}
+                renderItem={({ item }) => (
+                  <ScheduledInvitationCard item={item} myUUID={MY_UUID} />
+                )}
+                keyExtractor={(item) => item.uuid}
+                showsHorizontalScrollIndicator={false}
+              />
+            </>
+          </ScrollView>
+        ):(
+          <View><Text style={styles.noInfoText}>There are no new Scheduled</Text></View>
+        )
+        
+        
+    }
 
       <View style={styles.buttonView}>
         
         <FA5Icon name="plus-circle"  color={COLOR.primary} regular size={56} />
         
       </View>
+      
     </SafeAreaView>
   );
 };

@@ -60,6 +60,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
     alignItems: "flex-end",
     justifyContent: "flex-end",
+  },
+  topNav:{
+    paddingTop:10,
+    alignItems:"center",
+    justifyContent:"center",
+    flexDirection:"row"
+  },
+  topNavLinks:{
+    width:190,
+    textAlign:"center",
+    padding:10,
+    borderColor:'#D9D9D9',
+    borderWidth:1
+  },
+  topNavLinksSelected:{
+    width:190,
+    textAlign:"center",
+    padding:10,
+    borderColor:'#D9D9D9',
+    backgroundColor:'#D9D9D9'
   }
 });
 

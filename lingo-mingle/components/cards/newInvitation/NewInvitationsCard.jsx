@@ -3,7 +3,7 @@ import { View, Text, Image, Pressable } from "react-native";
 import React from "react";
 
 // Styles
-import styles from "./InvitationCard.styles";
+import styles from "./NewInvitationCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 
 import { COLOR } from "../../../constants";
@@ -14,7 +14,7 @@ import { COLOR } from "../../../constants";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const InvitationCard = ({ item, myUUID }) => {
+const NewInvitationCard = ({ item, myUUID }) => {
   const notify = useNotification();
 
   //const friendRequestUUID = item.uuid;
@@ -55,4 +55,4 @@ const InvitationCard = ({ item, myUUID }) => {
   );
 };
 
-export default InvitationCard;
+export default NewInvitationCard;
