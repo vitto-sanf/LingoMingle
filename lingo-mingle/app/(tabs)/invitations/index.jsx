@@ -62,9 +62,9 @@ const InvitationsPage = () => {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Invitations</Text>
       <View style={styles.topNav}>
-      <Pressable style={ pageStatus==="scheduled"? styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetScheduled} ><Text > Scheduled </Text></Pressable>
-      <Pressable style={ pageStatus==="new"?  styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetNew}><Text>New Invitations</Text></Pressable>
       
+      <Pressable style={ pageStatus==="new"?  styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetNew}><Text>New Invitations</Text></Pressable>
+      <Pressable style={ pageStatus==="scheduled"? styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetScheduled} ><Text > Scheduled </Text></Pressable>
       </View>
       
         {invitations.length === 0 && pageStatus==="new"? (
