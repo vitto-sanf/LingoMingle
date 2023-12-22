@@ -18,12 +18,22 @@ import {NewInvitationCard, ScheduledInvitationCard } from "../../../components/c
 import { COLOR } from "../../../constants";
 import  {Link} from 'expo-router';
 // Services
-//import api from "../../../services/api";
+import api from "../../../services/api";
 
 const InvitationsPage = () => {
   //const [loading, setLoading] = useState(true);
   const[pageStatus,setPageStatus]=useState("new");
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
+  const [invitations,setInvitations]=useState([]);
+
+  useEffect(()=>{
+    api
+    .getInvitation(MY_UUID)
+    .then((data)=>{console.log("okay")
+     setInvitations(data)})
+    .catch((err)=>console.log(err))
+    .finally(()=>console.log("Client: ",invitations));
+  },[]);
 
   const handleSetNew = () => {
     setPageStatus("new");
@@ -34,28 +44,28 @@ const InvitationsPage = () => {
     
   };
 
-  
+  /*
   const invitations = [
     {
       uuid: "1",
-      sender: "User P",
+      username: "User P",
       timestamp: "20/12/2023  15:00",
       place: "MixTo",
     },
     {
       uuid: "2",
-      sender: "User J",
+      username: "User J",
       timestamp: "20/12/2023  15:00",
       place: "MixTo",
     },
     {
       uuid: "3",
-      sender: "User P",
+      username: "User P",
       timestamp: "20/12/2023  15:00",
       place: "MixTo",
     },
   ];
-
+*/
   // if (loading) return <Loader />;
 
   return (

@@ -5,6 +5,10 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  collection,
+  query,
+  where,
+  getDocs 
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 
@@ -184,6 +188,38 @@ const api = {
       };
     }
   },
+ 
+
+  //TODO: fix username inside inv
+  getInvitation: async (myUUID) => {
+    const q = query(collection(database, "invitation"), where("receiver", "==", myUUID));
+    let currentUser={};
+    let Invitations=[];
+    const querySnapshot = await getDocs(q);
+    console.log(querySnapshot);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      
+      api.getUser(doc.data().sender)
+      .then((data)=>{currentUser=data
+      console.log("user: ",currentUser.username)
+      })
+      .catch((err)=>console.log(err))
+      let inv={
+        uiid:doc.id,
+        //...doc.data(),
+        //timestamp: moment(doc.data().timestamp).format('MMM DD YYYY'),
+        place: doc.data().place,
+        username:currentUser.username
+      }
+      Invitations.push(inv);
+      console.log(doc.id, " => ", doc.data());
+    });
+    console.log(Invitations);
+    return Invitations;
+    
+  },
+
 };
 
 export default api;
