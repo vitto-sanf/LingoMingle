@@ -45,7 +45,7 @@ const MainLayout = () => {
             <FAIcons name="user" size={size} color={color} />
           ),
         }}
-      />
+      />  
     </Tabs>
   );
 };

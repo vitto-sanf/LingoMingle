@@ -95,7 +95,7 @@ const HomePage = () => {
               <Text style={styles.sectionTitle}>Last Friends Contacted</Text>
               <FlatList
                 data={lastFriendsContacted}
-                renderItem={({ item }) => <LastFriendCard item={item} />}
+                renderItem={({ item }) => <LastFriendCard item={item} my_uuid = {MY_UUID} />}
                 keyExtractor={(item) => item.uuid}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}

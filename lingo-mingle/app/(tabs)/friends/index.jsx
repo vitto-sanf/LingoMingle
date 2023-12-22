@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Link } from "expo-router";
 
 // Components
 import { Loader } from "../../../components/common";
@@ -28,11 +29,18 @@ import api from "../../../services/api";
 import useNotification from "../../../hooks/useNotification";
 
 //TODO change home icons: from user-times to user-minus and from user-check to user-plus
-const FriendsListItem = ({ item, openModal, setUsername, setId }) => {
+const FriendsListItem = ({ item, openModal, setUsername, setTargetId }) => {
+  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
+  const chatId =
+    item.friends.map((e) => {
+      if (e.id === MY_UUID) return e.chatId;
+    })
+  
+
   const handleModal = () => {
     openModal();
     setUsername(item.username);
-    setId(item.uuid);
+    setTargetId(item.uuid);
   };
 
   return (
@@ -42,14 +50,20 @@ const FriendsListItem = ({ item, openModal, setUsername, setId }) => {
         style={[styles.image, { width: 80, height: 80 }]}
       />
       <Text style={styles.textItem}>{item.username}</Text>
+
       <View style={styles.iconsContainer}>
-        <FA5Icon
-          name="comment"
-          style={{ marginRight: 20 }}
-          color={COLOR.lightBlue}
-          solid
-          size={20}
-        />
+        <Link href={`/chats/${chatId}`} asChild>
+          <Pressable>
+            <FA5Icon
+              name="comment"
+              style={{ marginRight: 20 }}
+              color={COLOR.lightBlue}
+              solid
+              size={20}
+            />
+          </Pressable>
+        </Link>
+
         <Pressable onPress={handleModal}>
           <FA5Icon name="user-times" size={20} color={COLOR.red} />
         </Pressable>
@@ -66,6 +80,7 @@ const Friends = () => {
   const [targetUsername, setTargetUsername] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [targetID, setTargetId] = useState("");
+  const [targetChat, setTargetChat] = useState("");
   const notify = useNotification();
 
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
@@ -103,7 +118,7 @@ const Friends = () => {
   const handleCancelFriend = () => {
     if (targetID) {
       api
-        .cancelFriend(MY_UUID, targetID)
+        .cancelFriend(MY_UUID, targetID, targetChat)
         .then((res) => {
           notify.success(res.message);
           const newFriendList = filteredFriends.filter(
@@ -176,7 +191,7 @@ const Friends = () => {
             item={item}
             openModal={() => setModalVisible(true)}
             setUsername={(e) => setTargetUsername(e)}
-            setId={(id) => setTargetId(id)}
+            setTargetId={(id) => setTargetId(id)}
           />
         )}
         keyExtractor={(item) => item.uuid}

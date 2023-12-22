@@ -1,6 +1,7 @@
 // Imports
 import { View, Text, Image, Pressable } from "react-native";
 import React from "react";
+import { Link } from "expo-router";
 
 // Styles
 import styles from "./LastFriendCard.styles";
@@ -9,7 +10,10 @@ import maleAvatar from "../../../assets/images/maleAvatar.png";
 import femaleAvatar from "../../../assets/images/femaleAvatar.png";
 import { COLOR } from "../../../constants";
 
-const LastFriendCard = ({ item }) => {
+const LastFriendCard = ({ item, my_uuid }) => {
+  const chatId = item.friends.map((e) => {
+    if (e.id === my_uuid) return e.chatId;
+  });
   const handleSendFriendRequest = () => {
     // TODO: Implement interaction with db
   };
@@ -27,12 +31,12 @@ const LastFriendCard = ({ item }) => {
       />
       <Text style={styles.userName}>{item.username}</Text>
       <View style={styles.actions}>
-        <Pressable
-          onPress={() => handleSendFriendRequest()}
-          style={styles.sendFriendRequestBtn}
-        >
-          <FA5Icon name="comment" color={COLOR.lightBlue} solid size={20} />
-        </Pressable>
+        <Link href={`/chats/${chatId}`} asChild>
+          <Pressable style={styles.sendFriendRequestBtn}>
+            <FA5Icon name="comment" color={COLOR.lightBlue} solid size={20} />
+          </Pressable>
+        </Link>
+
         <Pressable onPress={() => handleStartVideoCall()}>
           <FA5Icon name="video" size={20} />
         </Pressable>

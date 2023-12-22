@@ -5,6 +5,10 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  collection,
+  addDoc,
+  deleteDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 
@@ -48,7 +52,8 @@ const api = {
   },
 
   getFriends: async (friends) => {
-    const promises = friends.map((doc) =>
+    friendsId = friends.map((e) => e.id);
+    const promises = friendsId.map((doc) =>
       api.getUser(doc).then((data) => {
         data.uuid = doc;
         return data;
@@ -150,20 +155,38 @@ const api = {
       const senderRef = doc(database, "user", friendRequestUUID);
       const receiverRef = doc(database, "user", myUUID);
 
+      const chatRef = await addDoc(collection(database, "chats"), {
+        participant1: myUUID,
+        participant2: friendRequestUUID,
+      });
+
+      const chatId = chatRef.id;
+
+      const SenderData = {
+        id: myUUID,
+        chatId: chatId,
+      };
+
+      const ReceiverData = {
+        id: friendRequestUUID,
+        chatId: chatId,
+      };
+
       await updateDoc(senderRef, {
         friends_request: arrayRemove(data),
-        friends: arrayUnion(myUUID),
+        friends: arrayUnion(SenderData),
       });
 
       await updateDoc(receiverRef, {
         friends_request: arrayRemove(data),
-        friends: arrayUnion(friendRequestUUID),
+        friends: arrayUnion(ReceiverData),
       });
 
       return {
         message: "User added to your friend list",
       };
     } catch (error) {
+      console.log(error);
       return {
         message: "Error while adding friend request",
       };
@@ -199,17 +222,28 @@ const api = {
     }
   },
 
-  cancelFriend: async (myUUID, friendUUID) => {
+  cancelFriend: async (myUUID, friendUUID, chatId) => {
     try {
+      const firstData = {
+        chatId: chatId,
+        id: friendUUID,
+      };
+
+      const secondData = {
+        chatId: chatId,
+        id: myUUID,
+      };
       const firstUserRef = doc(database, "user", myUUID);
       const secondUserRef = doc(database, "user", friendUUID);
 
+      await deleteDoc(doc(database, "chats", chatId));
+
       await updateDoc(firstUserRef, {
-        friends: arrayRemove(friendUUID),
+        friends: arrayRemove(firstData),
       });
 
       await updateDoc(secondUserRef, {
-        friends: arrayRemove(myUUID),
+        friends: arrayRemove(secondData),
       });
 
       return {
@@ -218,6 +252,25 @@ const api = {
     } catch (error) {
       return {
         message: "Error while Cancelling friend from the list",
+      };
+    }
+  },
+
+  sendMessage: async (chatId, msg, senderId) => {
+    try {
+      const messageRef = collection(database, `/chats/${chatId}/messages`);
+
+      data = {
+        sender: senderId,
+        message: msg,
+        createdAt: serverTimestamp(),
+      };
+
+      await addDoc(messageRef, data);
+
+    } catch (error) {
+      return {
+        message: "Error sending the message",
       };
     }
   },
