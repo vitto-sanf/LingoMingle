@@ -234,25 +234,6 @@ const api = {
     console.log(Invitations);
     return Invitations;
   },
-
-  
-  addUserToInvitation: async (invitations) => {
-    let InvitationWithUser = [];
-    invitations.forEach((inv) => {
-      api
-        .getUser(inv.sender)
-        .then((data) => {
-          InvitationWithUser.push(data.username);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          console.log("arr: ", InvitationWithUser);
-        });
-    });
-  console.log(InvitationWithUser);
-  },
 };
 
 export default api;

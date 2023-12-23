@@ -21,20 +21,32 @@ import  {Link} from 'expo-router';
 import api from "../../../services/api";
 
 const InvitationsPage = () => {
-  //const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const[pageStatus,setPageStatus]=useState("new");
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const [invitations,setInvitations]=useState([]);
+  const [dirty,setDirty]=useState(true);
 
+  //TODO: Fix warning on first call
   useEffect(()=>{
+    if(dirty)
+    {
     api
     .getInvitation(MY_UUID)
     .then((data)=>{
-      setInvitations(data)
-      console.log("okay")
+      console.log("data: ", data);
+      if(data)
+      {
+        
+      setInvitations(data);
+      setDirty(false);
+      setLoading(false);
+      }
+      //console.log("okay")
      })
     .catch((err)=>console.log(err));
-  },[]);
+    }
+  },[invitations]);
 
   const handleSetNew = () => {
     setPageStatus("new");
@@ -67,7 +79,7 @@ const InvitationsPage = () => {
     },
   ];
 */
-  // if (loading) return <Loader />;
+   if (loading) return <Loader />;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -78,9 +90,9 @@ const InvitationsPage = () => {
       <Pressable style={ pageStatus==="scheduled"? styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetScheduled} ><Text > Scheduled </Text></Pressable>
       </View>
       
-        {invitations.length === 0 && pageStatus==="new"? (
+        {invitations?.length === 0 && pageStatus==="new"? (
           <Text style={styles.noInfoText}>There are no new invitations</Text>
-        ) :invitations.length !== 0 && pageStatus==="new"? (
+        ) :invitations?.length !== 0 && pageStatus==="new"? (
           <ScrollView
             horizontal={true}
             showsVerSectionListticalScrollIndicator={false}
