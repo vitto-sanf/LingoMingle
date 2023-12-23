@@ -7,15 +7,20 @@ import { FONT, COLOR } from "../constants";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLOR.lightWhite,
+    backgroundColor: COLOR.white,
     padding: 8,
   },
   inputContainer: {
     flexDirection: "row",
     padding: 10,
-    gap:10,
-    backgroundColor:COLOR.white,
-    alignItems: "center"
+    gap: 10,
+    backgroundColor: COLOR.white,
+    alignItems: "center",
+  },
+  messageRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   messageInput: {
     flex: 1,
@@ -26,48 +31,40 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     padding: 10,
-    marginTop:10,
-    marginHorizontal:10,
+    marginTop: 10,
+    marginHorizontal: 10,
     borderRadius: 10,
-    maxWidth: '80%'
-    
+    maxWidth: "80%",
   },
   userMessageContainer: {
-    backgroundColor: COLOR.green,
-    alignSelf: 'flex-end'
-    
+    backgroundColor: "#3498DB",
+    alignSelf: "flex-end",
   },
   otherMessageContainer: {
-    backgroundColor: COLOR.lightBlue,
-    alignSelf: 'flex-start'
+    backgroundColor: "#F1EFEF",
+    alignSelf: "flex-start",
   },
   messageText: {
     fontFamily: FONT.regular,
-    fontSize:16
+    fontSize: 16,
   },
-  time :{
+  time: {
     fontFamily: FONT.regular,
-    fontSize:12,
-    color: '#777',
-    alignSelf: 'flex-end'
+    fontSize: 12,
+    alignSelf: "flex-end",
   },
-  imageUser:{
-    width: 53, 
-    height: 53 ,
-    
+  imageUser: {
+    width: 53,
+    height: 53,
   },
-  imageOther:{
-    width: 53, 
-    height: 53 ,
-    
+  imageOther: {
+    width: 53,
+    height: 53,
   },
-  sendButton:{
-    width:40,
-    height:40,
+  sendButton: {
     borderRadius: 100,
-    backgroundColor:COLOR.primary,
-    padding:7,
-    alignItems:'center'
-  }
+    padding: 10,
+    backgroundColor: COLOR.primary,
+  },
 });
 export default styles;

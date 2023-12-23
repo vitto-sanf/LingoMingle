@@ -38,15 +38,16 @@ import api from "../../services/api";
 // Components
 import { Loader } from "../../components/common";
 
-const RenderMessage = ({ item, myId ,setTargetMessage}) => {
+const RenderMessage = ({ item, myId, setTargetMessage }) => {
   const myMessage = item.sender === myId;
   const [editVisible, setEditVisible] = useState(false);
   //TODO avvicinare messaggi a icone
   //TODO change date with hours ?
 
-  const editMessage = ()=>{
-    setTargetMessage(item)
-  }
+  const editMessage = () => {
+    setTargetMessage(item);
+  };
+
   return (
     <View
       style={[
@@ -55,7 +56,7 @@ const RenderMessage = ({ item, myId ,setTargetMessage}) => {
       ]}
     >
       {!myMessage ? (
-        <>
+        <View style={styles.messageRow}>
           <Image
             source={item.gender === "M" ? maleAvatar : femaleAvatar}
             style={myMessage ? styles.imageUser : styles.imageOther}
@@ -74,7 +75,7 @@ const RenderMessage = ({ item, myId ,setTargetMessage}) => {
               {item.createdAt?.toDate().toLocaleDateString()}
             </Text>
           </View>
-        </>
+        </View>
       ) : (
         <>
           {editVisible ? (
@@ -93,8 +94,12 @@ const RenderMessage = ({ item, myId ,setTargetMessage}) => {
             ]}
           >
             <Pressable onLongPress={() => setEditVisible(!editVisible)}>
-              <Text style={styles.messageText}>{item.message}</Text>
-              <Text style={styles.time}>
+              <Text
+                style={[styles.messageText, myMessage && { color: "white" }]}
+              >
+                {item.message}
+              </Text>
+              <Text style={[styles.time, myMessage && { color: "white" }]}>
                 {item.createdAt?.toDate().toLocaleDateString()}
               </Text>
             </Pressable>
@@ -116,7 +121,7 @@ const Chat = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [headerTitle, setHeaderTitle] = useState("");
-  const [targetMessage, setTargetMessage]= useState("")
+  const [targetMessage, setTargetMessage] = useState("");
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
 
@@ -161,11 +166,23 @@ const Chat = () => {
   //TODO add videocall button and send invitation button
   return (
     <KeyboardAvoidingView style={styles.container}>
-      <Stack.Screen options={{ headerTitle: loading ? "" : headerTitle }} />
+      <Stack.Screen
+        options={{
+          headerTitle: loading ? "" : headerTitle,
+          headerShadowVisible: false,
+          headerTitleAlign: "center",
+        }}
+      />
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <RenderMessage item={item} myId={MY_UUID} setTargetMessage = {(message)=>setTargetMessage(message)} />}
+        renderItem={({ item }) => (
+          <RenderMessage
+            item={item}
+            myId={MY_UUID}
+            setTargetMessage={(message) => setTargetMessage(message)}
+          />
+        )}
       />
       <View style={styles.inputContainer}>
         <TextInput
