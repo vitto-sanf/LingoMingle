@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 10,
     gap:10,
-    backgroundColor:COLOR.white
+    backgroundColor:COLOR.white,
+    alignItems: "center"
   },
   messageInput: {
     flex: 1,
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
     marginHorizontal:10,
     borderRadius: 10,
     maxWidth: '80%'
+    
   },
   userMessageContainer: {
     backgroundColor: COLOR.green,
@@ -48,6 +50,24 @@ const styles = StyleSheet.create({
     fontSize:12,
     color: '#777',
     alignSelf: 'flex-end'
+  },
+  imageUser:{
+    width: 53, 
+    height: 53 ,
+    
+  },
+  imageOther:{
+    width: 53, 
+    height: 53 ,
+    
+  },
+  sendButton:{
+    width:40,
+    height:40,
+    borderRadius: 100,
+    backgroundColor:COLOR.primary,
+    padding:7,
+    alignItems:'center'
   }
 });
 export default styles;

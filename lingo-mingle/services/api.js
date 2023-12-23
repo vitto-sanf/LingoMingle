@@ -267,13 +267,37 @@ const api = {
       };
 
       await addDoc(messageRef, data);
-
     } catch (error) {
       return {
         message: "Error sending the message",
       };
     }
   },
+
+
+
+getChatParticipant : async (chatId, userId) => {
+    const chatRef = doc(database, "chats", chatId);
+    const chatSnap = await getDoc(chatRef);
+  
+    if (chatSnap.exists()) {
+      for (const key in chatSnap.data()) {
+        if (chatSnap.data()[key] !== userId) {
+          try {
+            const data = await api.getUser(chatSnap.data()[key]);
+            return data;  // Restituisce direttamente l'oggetto ottenuto dall'API
+          } catch (error) {
+            return { message: "Participant Information not Found " };
+          }
+        }
+      }
+    } else {
+      console.log("Chat Not Found!");
+      return null;  // o un valore di default in base alle tue esigenze
+    }
+  },
+
+ 
 };
 
 export default api;
