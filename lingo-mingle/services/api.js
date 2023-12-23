@@ -11,7 +11,7 @@ import {
   getDocs 
 } from "firebase/firestore";
 import { database } from "../config/firebase";
-
+import moment from 'moment';
 const api = {
   getUser: async (userId) => {
     const docRef = doc(database, "user", userId);
@@ -188,38 +188,71 @@ const api = {
       };
     }
   },
- 
 
-  //TODO: fix username inside inv
+  
   getInvitation: async (myUUID) => {
-    const q = query(collection(database, "invitation"), where("receiver", "==", myUUID));
-    let currentUser={};
-    let Invitations=[];
+    const q = query(
+      collection(database, "invitation"),
+      where("receiver", "==", myUUID)
+    );
+  
+    let Invitations = [];
     const querySnapshot = await getDocs(q);
-    console.log(querySnapshot);
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      
-      api.getUser(doc.data().sender)
-      .then((data)=>{currentUser=data
-      console.log("user: ",currentUser.username)
-      })
-      .catch((err)=>console.log(err))
-      let inv={
-        uiid:doc.id,
-        //...doc.data(),
-        //timestamp: moment(doc.data().timestamp).format('MMM DD YYYY'),
-        place: doc.data().place,
-        username:currentUser.username
-      }
-      Invitations.push(inv);
-      console.log(doc.id, " => ", doc.data());
+  
+    const senderDocumentIds = querySnapshot.docs.map(doc => doc.data().sender);
+  
+    const userDocsPromises = senderDocumentIds.map(async (senderId) => {
+      const userDocRef = doc(database, `user/${senderId}`);
+      const userDocSnapshot = await getDoc(userDocRef);
+      return { id: userDocSnapshot.id, data: userDocSnapshot.data() };
     });
+  
+    const userDocs = await Promise.all(userDocsPromises);
+  
+    const userMap = {};
+  
+    userDocs.forEach(userDoc => {
+      if (userDoc.data) {
+        const username = userDoc.data.username;
+        const userId = userDoc.id;
+        userMap[userId] = username;
+      }
+    });
+  
+    querySnapshot.forEach((doc) => {
+      const senderUserId = doc.data().sender;
+      let inv = {
+        uiid: doc.id,
+        timestamp: moment(doc.data().timestamp.toDate()).format("MMM DD YYYY"),
+        place: doc.data().place,
+        sender: senderUserId,
+        username: userMap[senderUserId] 
+      };
+      Invitations = [...Invitations, inv];
+    });
+  
     console.log(Invitations);
     return Invitations;
-    
   },
 
+  
+  addUserToInvitation: async (invitations) => {
+    let InvitationWithUser = [];
+    invitations.forEach((inv) => {
+      api
+        .getUser(inv.sender)
+        .then((data) => {
+          InvitationWithUser.push(data.username);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          console.log("arr: ", InvitationWithUser);
+        });
+    });
+  console.log(InvitationWithUser);
+  },
 };
 
 export default api;

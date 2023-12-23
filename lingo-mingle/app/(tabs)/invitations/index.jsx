@@ -29,10 +29,11 @@ const InvitationsPage = () => {
   useEffect(()=>{
     api
     .getInvitation(MY_UUID)
-    .then((data)=>{console.log("okay")
-     setInvitations(data)})
-    .catch((err)=>console.log(err))
-    .finally(()=>console.log("Client: ",invitations));
+    .then((data)=>{
+      setInvitations(data)
+      console.log("okay")
+     })
+    .catch((err)=>console.log(err));
   },[]);
 
   const handleSetNew = () => {
