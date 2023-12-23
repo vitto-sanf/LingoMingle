@@ -189,7 +189,7 @@ const api = {
     }
   },
 
-  
+  //TODO: differentiate between accepted and pending
   getInvitation: async (myUUID) => {
     const q = query(
       collection(database, "invitation"),
