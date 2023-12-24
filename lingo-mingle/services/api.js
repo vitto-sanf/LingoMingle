@@ -9,6 +9,7 @@ import {
   query,
   where,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 import moment from "moment";
@@ -261,6 +262,16 @@ const api = {
       return {
         message: "Error accept invitation",
       };
+    }
+  },
+  cancelInvitation: async (invitationUUID)=>{
+    try{
+      await deleteDoc(doc(database,"invitation",invitationUUID));
+      
+    }
+    catch (error){
+      console.log(error)
+      
     }
   }
 };

@@ -43,6 +43,28 @@ const InvitationsPage = () => {
       .catch((err) => notify.error(err.message));
   };
 
+  const handleCancelInvitation = (invitationUUID) => {
+    api
+      .cancelInvitation(invitationUUID)
+      .then((res) => {
+        setDirty(true);
+        setDirty2(true);
+        notify.success("Inviation deleted");
+      })
+      .catch((err) => notify.error("Error while deleting the invitation"));
+  };
+
+  const handleRejectInvitation = (invitationUUID) => {
+    api
+      .cancelInvitation(invitationUUID)
+      .then((res) => {
+        setDirty(true);
+        setDirty2(true);
+        notify.success("Inviation rejected");
+      })
+      .catch((err) => notify.error("Error while rejecting the invitation"));
+  };
+
   
   useEffect(()=>{
     if(dirty)
@@ -94,6 +116,8 @@ const InvitationsPage = () => {
   };
    if (loading) return <Loader />;
 
+   //TODO: implement modal for confirmation about accept/reject/delete invitation,
+          //implement the form for adding new invitation
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Invitations</Text>
@@ -118,7 +142,7 @@ const InvitationsPage = () => {
                 renderItem={({ item }) => (
                   <NewInvitationCard item={item} myUUID={MY_UUID}
                   onAcceptInvitation={(acceptedUUID) => handleAcceptInvitation(acceptedUUID)}
-
+                  onRejectInvitation={(rejectUUID) => handleRejectInvitation(rejectUUID)}
                    />
                 )}
                 keyExtractor={(item) => item.uuid}
@@ -137,7 +161,9 @@ const InvitationsPage = () => {
               <FlatList
                 data={accInvitations}
                 renderItem={({ item }) => (
-                  <ScheduledInvitationCard item={item} myUUID={MY_UUID} />
+                  <ScheduledInvitationCard item={item} myUUID={MY_UUID}
+                  onDeleteInvitation={(cancelUUID) => handleCancelInvitation(cancelUUID)}
+                   />
                 )}
                 keyExtractor={(item) => item.uuid}
                 showsHorizontalScrollIndicator={false}

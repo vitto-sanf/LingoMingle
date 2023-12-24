@@ -14,15 +14,17 @@ import { COLOR } from "../../../constants";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const NewInvitationCard = ({ item, myUUID }) => {
+const ScheduledInvitationCard = ({ item, myUUID,onDeleteInvitation }) => {
   const notify = useNotification();
+  const invitationUUID = item.uuid;
 
   //const friendRequestUUID = item.uuid;
-  const handleAcceptInvitation = () => {
+  const handleEditInvitation = () => {
    
   };
 
-  const handleRejectInvitation = () => {
+  const handleCancelInvitation = () => {
+    onDeleteInvitation(invitationUUID)
    
   };
 
@@ -43,10 +45,10 @@ const NewInvitationCard = ({ item, myUUID }) => {
         </View>
 
         <View style={styles.buttons}>
-          <Pressable style={styles.pressableEdit} onPress={handleAcceptInvitation}>
+          <Pressable style={styles.pressableEdit} onPress={handleEditInvitation}>
             <Text>Edit</Text>
           </Pressable>
-          <Pressable style={styles.pressableCancel} onPress={handleRejectInvitation}>
+          <Pressable style={styles.pressableCancel} onPress={handleCancelInvitation}>
           <Text>Cancel</Text>
           </Pressable>
         </View>
@@ -55,4 +57,4 @@ const NewInvitationCard = ({ item, myUUID }) => {
   );
 };
 
-export default NewInvitationCard;
+export default ScheduledInvitationCard;

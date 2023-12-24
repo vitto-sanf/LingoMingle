@@ -15,7 +15,7 @@ import api from "../../../services/api";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const NewInvitationCard = ({ item, myUUID,onAcceptInvitation }) => {
+const NewInvitationCard = ({ item, myUUID,onAcceptInvitation,onRejectInvitation }) => {
   const notify = useNotification();
 
   const invitationUUID = item.uuid;
@@ -26,7 +26,7 @@ const NewInvitationCard = ({ item, myUUID,onAcceptInvitation }) => {
   };
 
   const handleRejectInvitation = () => {
-   
+    onRejectInvitation(invitationUUID);
   };
 
  
