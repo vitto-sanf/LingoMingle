@@ -28,7 +28,7 @@ const NewInvitationCard = ({ item, myUUID }) => {
 
  
   return (
-    <View style={styles.container}>
+    <View style={styles.container} key={item.uuid}>
       <Text style={styles.userName}>{item.username}</Text>
       <View style={styles.container2}>
         <View style={styles.infos}>

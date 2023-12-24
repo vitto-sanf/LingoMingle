@@ -25,16 +25,18 @@ const InvitationsPage = () => {
   const[pageStatus,setPageStatus]=useState("new");
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const [invitations,setInvitations]=useState([]);
+  const [accInvitations,setAccInvitations]=useState([]);
   const [dirty,setDirty]=useState(true);
+  const [dirty2,setDirty2]=useState(true);
 
-  //TODO: Fix warning on first call
+  
   useEffect(()=>{
     if(dirty)
     {
     api
-    .getInvitation(MY_UUID)
+    .getInvitation(MY_UUID,"pending")
     .then((data)=>{
-      console.log("data: ", data);
+      
       if(data)
       {
         
@@ -42,11 +44,31 @@ const InvitationsPage = () => {
       setDirty(false);
       setLoading(false);
       }
-      //console.log("okay")
+      
      })
     .catch((err)=>console.log(err));
     }
   },[invitations]);
+
+  useEffect(()=>{
+    if(dirty2)
+    {
+    api
+    .getInvitation(MY_UUID,"accepted")
+    .then((data)=>{
+      
+      if(data)
+      {
+        
+      setAccInvitations(data);
+      setDirty2(false);
+      setLoading(false);
+      }
+      
+     })
+    .catch((err)=>console.log(err));
+    }
+  },[accInvitations]);
 
   const handleSetNew = () => {
     setPageStatus("new");
@@ -56,29 +78,6 @@ const InvitationsPage = () => {
     setPageStatus("scheduled");
     
   };
-
-  /*
-  const invitations = [
-    {
-      uuid: "1",
-      username: "User P",
-      timestamp: "20/12/2023  15:00",
-      place: "MixTo",
-    },
-    {
-      uuid: "2",
-      username: "User J",
-      timestamp: "20/12/2023  15:00",
-      place: "MixTo",
-    },
-    {
-      uuid: "3",
-      username: "User P",
-      timestamp: "20/12/2023  15:00",
-      place: "MixTo",
-    },
-  ];
-*/
    if (loading) return <Loader />;
 
   return (
@@ -110,7 +109,7 @@ const InvitationsPage = () => {
               />
             </>
           </ScrollView>
-        ) : pageStatus==="scheduled"?(
+        ) : accInvitations?.length !== 0 && pageStatus==="scheduled"?(
           <ScrollView
             horizontal={true}
             showsVerSectionListticalScrollIndicator={false}
@@ -119,7 +118,7 @@ const InvitationsPage = () => {
           >
             <>
               <FlatList
-                data={invitations}
+                data={accInvitations}
                 renderItem={({ item }) => (
                   <ScheduledInvitationCard item={item} myUUID={MY_UUID} />
                 )}

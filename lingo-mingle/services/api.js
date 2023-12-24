@@ -189,12 +189,26 @@ const api = {
     }
   },
 
-  //TODO: differentiate between accepted and pending
-  getInvitation: async (myUUID) => {
-    const q = query(
-      collection(database, "invitation"),
-      where("receiver", "==", myUUID)
-    );
+  
+  getInvitation: async (myUUID,type) => {
+    
+    let q;
+
+    if (type === "pending") {
+       q = query(
+        collection(database, "invitation"),
+        where("receiver", "==", myUUID),
+        where("status", "==", "pending")
+      );
+    }
+    else{
+       q = query(
+        collection(database, "invitation"),
+        where("receiver", "==", myUUID),
+        where("status", "==", "accepted")
+      );
+
+    }
   
     let Invitations = [];
     const querySnapshot = await getDocs(q);
@@ -222,7 +236,7 @@ const api = {
     querySnapshot.forEach((doc) => {
       const senderUserId = doc.data().sender;
       let inv = {
-        uiid: doc.id,
+        uuid: doc.id,
         timestamp: moment(doc.data().timestamp.toDate()).format("MMM DD YYYY"),
         place: doc.data().place,
         sender: senderUserId,
@@ -231,7 +245,7 @@ const api = {
       Invitations = [...Invitations, inv];
     });
   
-    console.log(Invitations);
+    
     return Invitations;
   },
 };
