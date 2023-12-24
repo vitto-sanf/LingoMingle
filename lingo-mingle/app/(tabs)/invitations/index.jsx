@@ -19,6 +19,7 @@ import { COLOR } from "../../../constants";
 import  {Link} from 'expo-router';
 // Services
 import api from "../../../services/api";
+import useNotification from "../../../hooks/useNotification";
 
 const InvitationsPage = () => {
   const [loading, setLoading] = useState(true);
@@ -28,6 +29,19 @@ const InvitationsPage = () => {
   const [accInvitations,setAccInvitations]=useState([]);
   const [dirty,setDirty]=useState(true);
   const [dirty2,setDirty2]=useState(true);
+  const notify = useNotification();
+  
+
+  const handleAcceptInvitation = (invitationUUID) => {
+    api
+      .acceptInvitation(invitationUUID)
+      .then((res) => {
+        setDirty(true);
+        setDirty2(true);
+        notify.success(res.message);
+      })
+      .catch((err) => notify.error(err.message));
+  };
 
   
   useEffect(()=>{
@@ -48,7 +62,7 @@ const InvitationsPage = () => {
      })
     .catch((err)=>console.log(err));
     }
-  },[invitations]);
+  },[invitations,dirty]);
 
   useEffect(()=>{
     if(dirty2)
@@ -68,7 +82,7 @@ const InvitationsPage = () => {
      })
     .catch((err)=>console.log(err));
     }
-  },[accInvitations]);
+  },[accInvitations,dirty2]);
 
   const handleSetNew = () => {
     setPageStatus("new");
@@ -102,7 +116,10 @@ const InvitationsPage = () => {
               <FlatList
                 data={invitations}
                 renderItem={({ item }) => (
-                  <NewInvitationCard item={item} myUUID={MY_UUID} />
+                  <NewInvitationCard item={item} myUUID={MY_UUID}
+                  onAcceptInvitation={(acceptedUUID) => handleAcceptInvitation(acceptedUUID)}
+
+                   />
                 )}
                 keyExtractor={(item) => item.uuid}
                 showsHorizontalScrollIndicator={false}

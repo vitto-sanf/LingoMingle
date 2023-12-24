@@ -8,10 +8,10 @@ import {
   collection,
   query,
   where,
-  getDocs 
+  getDocs,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
-import moment from 'moment';
+import moment from "moment";
 const api = {
   getUser: async (userId) => {
     const docRef = doc(database, "user", userId);
@@ -189,50 +189,48 @@ const api = {
     }
   },
 
-  
-  getInvitation: async (myUUID,type) => {
-    
+  getInvitation: async (myUUID, type) => {
     let q;
 
     if (type === "pending") {
-       q = query(
+      q = query(
         collection(database, "invitation"),
         where("receiver", "==", myUUID),
         where("status", "==", "pending")
       );
-    }
-    else{
-       q = query(
+    } else {
+      q = query(
         collection(database, "invitation"),
         where("receiver", "==", myUUID),
         where("status", "==", "accepted")
       );
-
     }
-  
+
     let Invitations = [];
     const querySnapshot = await getDocs(q);
-  
-    const senderDocumentIds = querySnapshot.docs.map(doc => doc.data().sender);
-  
+
+    const senderDocumentIds = querySnapshot.docs.map(
+      (doc) => doc.data().sender
+    );
+
     const userDocsPromises = senderDocumentIds.map(async (senderId) => {
       const userDocRef = doc(database, `user/${senderId}`);
       const userDocSnapshot = await getDoc(userDocRef);
       return { id: userDocSnapshot.id, data: userDocSnapshot.data() };
     });
-  
+
     const userDocs = await Promise.all(userDocsPromises);
-  
+
     const userMap = {};
-  
-    userDocs.forEach(userDoc => {
+
+    userDocs.forEach((userDoc) => {
       if (userDoc.data) {
         const username = userDoc.data.username;
         const userId = userDoc.id;
         userMap[userId] = username;
       }
     });
-  
+
     querySnapshot.forEach((doc) => {
       const senderUserId = doc.data().sender;
       let inv = {
@@ -240,14 +238,31 @@ const api = {
         timestamp: moment(doc.data().timestamp.toDate()).format("MMM DD YYYY"),
         place: doc.data().place,
         sender: senderUserId,
-        username: userMap[senderUserId] 
+        username: userMap[senderUserId],
       };
       Invitations = [...Invitations, inv];
     });
-  
-    
+
     return Invitations;
   },
+  acceptInvitation: async (inviationUUID) => {
+    try {
+      const invitationRef = doc(database, "invitation", inviationUUID);
+
+      await updateDoc(invitationRef, {
+        "status": "accepted",
+      });
+
+      return {
+        message: "Invitation accepted",
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        message: "Error accept invitation",
+      };
+    }
+  }
 };
 
 export default api;

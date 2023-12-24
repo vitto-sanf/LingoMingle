@@ -7,6 +7,7 @@ import styles from "./NewInvitationCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 
 import { COLOR } from "../../../constants";
+import api from "../../../services/api";
 
 // Services
 //import api from "../../../services/api";
@@ -14,12 +15,14 @@ import { COLOR } from "../../../constants";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const NewInvitationCard = ({ item, myUUID }) => {
+const NewInvitationCard = ({ item, myUUID,onAcceptInvitation }) => {
   const notify = useNotification();
 
-  //const friendRequestUUID = item.uuid;
+  const invitationUUID = item.uuid;
+  
+  
   const handleAcceptInvitation = () => {
-   
+    onAcceptInvitation(invitationUUID);
   };
 
   const handleRejectInvitation = () => {
