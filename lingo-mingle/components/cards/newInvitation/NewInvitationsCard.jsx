@@ -15,12 +15,16 @@ import api from "../../../services/api";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const NewInvitationCard = ({ item, myUUID,onAcceptInvitation,onRejectInvitation }) => {
+const NewInvitationCard = ({
+  item,
+  myUUID,
+  onAcceptInvitation,
+  onRejectInvitation,
+}) => {
   const notify = useNotification();
 
   const invitationUUID = item.uuid;
-  
-  
+
   const handleAcceptInvitation = () => {
     onAcceptInvitation(invitationUUID);
   };
@@ -29,20 +33,26 @@ const NewInvitationCard = ({ item, myUUID,onAcceptInvitation,onRejectInvitation 
     onRejectInvitation(invitationUUID);
   };
 
- 
   return (
     <View style={styles.container} key={item.uuid}>
       <Text style={styles.userName}>{item.username}</Text>
       <View style={styles.container2}>
         <View style={styles.infos}>
-          <Text>
-            <FA5Icon name="calendar" solid size={24} />
-            {item.timestamp}
-          </Text>
-          <Text>
-            <FA5Icon name="map-pin" solid size={24} />
-            {item.place}
-          </Text>
+          <View style={styles.textInfo}>
+            <View style={styles.textIcons}>
+              <FA5Icon
+                name="calendar"
+                solid
+                size={24}
+                style={styles.iconStyle}
+              />
+              <Text>{item.timestamp}</Text>
+            </View>
+            <View style={styles.textIcons}>
+              <FA5Icon name="map-pin" solid size={24} />
+              <Text style={styles.iconText}>{item.place}</Text>
+            </View>
+          </View>
         </View>
 
         <View style={styles.buttons}>

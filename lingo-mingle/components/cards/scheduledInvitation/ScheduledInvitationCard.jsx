@@ -34,15 +34,23 @@ const ScheduledInvitationCard = ({ item, myUUID,onDeleteInvitation }) => {
       <Text style={styles.userName}>{item.username}</Text>
       <View style={styles.container2}>
         <View style={styles.infos}>
-          <Text>
-            <FA5Icon name="calendar" solid size={24} />
-            {item.timestamp}
-          </Text>
-          <Text>
-            <FA5Icon name="map-pin" solid size={24} />
-            {item.place}
-          </Text>
+          <View style={styles.textInfo}>
+            <View style={styles.textIcons}>
+              <FA5Icon
+                name="calendar"
+                solid
+                size={24}
+                style={styles.iconStyle}
+              />
+              <Text>{item.timestamp}</Text>
+            </View>
+            <View style={styles.textIcons}>
+              <FA5Icon name="map-pin" solid size={24} />
+              <Text style={styles.iconText}>{item.place}</Text>
+            </View>
+          </View>
         </View>
+        
 
         <View style={styles.buttons}>
           <Pressable style={styles.pressableEdit} onPress={handleEditInvitation}>

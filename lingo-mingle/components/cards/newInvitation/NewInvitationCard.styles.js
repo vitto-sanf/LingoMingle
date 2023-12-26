@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
     paddingRight:30
   },
   buttons:{
-    flexDirection:"row"
+    flexDirection:"row",
+    paddingLeft:30
   },
   container2:{
     flexDirection:"row",
@@ -51,6 +52,21 @@ const styles = StyleSheet.create({
   },
   icons:{
     padding:20
+  },
+  textInfo: {
+    flexDirection: 'column',
+    paddingBottom: 5, // Adjust as needed
+  },
+  textIcons: {
+    flexDirection: 'row',
+    alignItems: 'center', // Adjust as needed
+    marginBottom: 5, // Adjust as needed
+  },
+  iconText: {
+    marginLeft: 8, // Adjust margin as needed
+  },
+  iconStyle: {
+    marginRight: 8, // Padding between icon and text
   }
 });
 
