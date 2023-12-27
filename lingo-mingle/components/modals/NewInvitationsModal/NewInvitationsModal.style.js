@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
   dateTimeInputText: {
     color:COLOR.black
   },
+  
   formview: {
     flex: 1,
     alignItems: "center",

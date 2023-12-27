@@ -184,9 +184,9 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
              
             <Pressable style={styles.dateTimeInput} onPress={toggleDatepicker}>
               <TextInput
-                style={styles.dateTimeInputText}
+                style={date ? styles.dateTimeInputText : ''}
                 onChangeText={onChangeText}
-                value={date? formatDate(date) : "Select date"}
+                value={date? formatDate(date) : null}
                 placeholder="Date"
                 editable={false}
               />
