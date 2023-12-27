@@ -124,7 +124,6 @@ const InvitationsPage = () => {
    if (loading) return <Loader />;
 
    //TODO: implement modal for confirmation about accept/reject/delete invitation,
-          //implement the form for adding new invitation
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Invitations</Text>
