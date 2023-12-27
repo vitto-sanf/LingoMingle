@@ -274,18 +274,16 @@ const api = {
     }
   },
 
-
-
-getChatParticipant : async (chatId, userId) => {
+  getChatParticipant: async (chatId, userId) => {
     const chatRef = doc(database, "chats", chatId);
     const chatSnap = await getDoc(chatRef);
-  
+
     if (chatSnap.exists()) {
       for (const key in chatSnap.data()) {
         if (chatSnap.data()[key] !== userId) {
           try {
             const data = await api.getUser(chatSnap.data()[key]);
-            return data;  // Restituisce direttamente l'oggetto ottenuto dall'API
+            return data; // Restituisce direttamente l'oggetto ottenuto dall'API
           } catch (error) {
             return { message: "Participant Information not Found " };
           }
@@ -293,11 +291,27 @@ getChatParticipant : async (chatId, userId) => {
       }
     } else {
       console.log("Chat Not Found!");
-      return null;  // o un valore di default in base alle tue esigenze
+      return null; // o un valore di default in base alle tue esigenze
     }
   },
+  editMessage: async (message, chatId) => {
+    const messageId = message.id;
 
- 
+    const data = {
+      createdAt: message.createdAt,
+      message: message.message,
+      sender: message.sender,
+      edited:true, 
+    };
+    try {
+      const messageRef = doc(database, `/chats/${chatId}/messages`, messageId);
+      await updateDoc(messageRef, data);
+    } catch (error) {
+      return {
+        message: "Error editing the message",
+      };
+    }
+  },
 };
 
 export default api;

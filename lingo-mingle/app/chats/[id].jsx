@@ -38,14 +38,26 @@ import api from "../../services/api";
 // Components
 import { Loader } from "../../components/common";
 
-const RenderMessage = ({ item, myId, setTargetMessage }) => {
+const RenderMessage = ({ item, myId, setTargetMessage,setIsEditing }) => {
   const myMessage = item.sender === myId;
   const [editVisible, setEditVisible] = useState(false);
+  const [lastDisplayedDate, setLastDisplayedDate] = useState(null);
   //TODO avvicinare messaggi a icone
   //TODO change date with hours ?
 
   const editMessage = () => {
     setTargetMessage(item);
+    setIsEditing()
+   
+  };
+   // Funzione per formattare l'orario
+   const formatTime = (date) => {
+    return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric" });
+  };
+
+  // Funzione per formattare la data
+  const formatDate = (date) => {
+    return date.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
   };
 
   return (
@@ -72,7 +84,7 @@ const RenderMessage = ({ item, myId, setTargetMessage }) => {
           >
             <Text style={styles.messageText}>{item.message}</Text>
             <Text style={styles.time}>
-              {item.createdAt?.toDate().toLocaleDateString()}
+            {formatTime(item.createdAt?.toDate())}
             </Text>
           </View>
         </View>
@@ -97,12 +109,23 @@ const RenderMessage = ({ item, myId, setTargetMessage }) => {
               <Text
                 style={[styles.messageText, myMessage && { color: "white" }]}
               >
+               
                 {item.message}
               </Text>
+              <View style={{flexDirection: "row", alignItems: "center"}}>
               <Text style={[styles.time, myMessage && { color: "white" }]}>
-                {item.createdAt?.toDate().toLocaleDateString()}
+              {formatTime(item.createdAt?.toDate())}
               </Text>
+            
+              <Text style={{marginLeft: 5}}>{item.edited ? "edited": null}</Text>
+              </View>
             </Pressable>
+            
+            {lastDisplayedDate !== item.createdAt?.toLocaleDateString() && (
+                  <Text style={{ marginLeft: 5, color: "grey" }}>
+                    {formatDate(item.createdAt?.toDate())}
+                  </Text>
+                )}
           </View>
 
           <Image
@@ -121,7 +144,8 @@ const Chat = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [headerTitle, setHeaderTitle] = useState("");
-  const [targetMessage, setTargetMessage] = useState("");
+  const [targetMessage, setTargetMessage] = useState({});
+  const [isEditing , setIsEditing]= useState(false)
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
 
@@ -152,12 +176,35 @@ const Chat = () => {
 
   const sendMessage = () => {
     const msg = message.trim();
-    if (msg.length === 0) return;
+    if (msg.length === 0 && targetMessage.message.length ===0) return;
 
-    api
+    console.log("HERE")
+    if(isEditing && targetMessage && targetMessage.message){
+
+      api.editMessage(targetMessage, id ).then(()=>{
+        setIsEditing(false);
+        setTargetMessage({});
+      }).catch((err) => notify.error(err))
+      
+    }else {
+      api
       .sendMessage(id, msg, MY_UUID)
       .then(setMessage(""))
       .catch((err) => notify.error(err));
+    }
+
+  };
+
+  const handleMessage = (text) => {
+    console.log(isEditing)
+    if (isEditing){
+      setTargetMessage((prevTargetMessage) => ({ ...prevTargetMessage, message: text }));
+    }else{
+      setMessage(text);
+    }
+    
+   
+   
   };
 
   if (loading) return <Loader />;
@@ -181,21 +228,22 @@ const Chat = () => {
             item={item}
             myId={MY_UUID}
             setTargetMessage={(message) => setTargetMessage(message)}
+            setIsEditing= {()=>setIsEditing(true)}
           />
         )}
       />
       <View style={styles.inputContainer}>
         <TextInput
           multiline
-          value={message /* || targetMessage.message */}
-          onChangeText={(text) => setMessage(text)}
+          value= {targetMessage.message || message }
+          onChangeText={(text) => handleMessage(text)}
           placeholder="Type a message"
           style={styles.messageInput}
         />
         <Pressable
           onPress={sendMessage}
           style={styles.sendButton}
-          disabled={message === ""}
+          disabled={message === "" && targetMessage.message === ""}
         >
           <FAIcons name="send" color={COLOR.white} solid size={24} />
         </Pressable>
