@@ -16,7 +16,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>FORM</Text>
+            <Text style={styles.modalText}>New invitation</Text>
 
 
             <Pressable
