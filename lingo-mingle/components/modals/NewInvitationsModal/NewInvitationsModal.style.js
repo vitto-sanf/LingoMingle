@@ -53,6 +53,23 @@ const styles = StyleSheet.create({
       marginBottom: 15,
       textAlign: 'center',
     },
+    input: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: COLOR.lightGrey,
+      padding: 10,
+    },
+    formview :{
+      flex:1,
+      alignItems:"center",
+      justifyContent:"center",
+      flexDirection:"row",
+      maxHeight:"40%",
+      maxWidth:"40%"
+      
+    }
   });
 
   export default styles;
