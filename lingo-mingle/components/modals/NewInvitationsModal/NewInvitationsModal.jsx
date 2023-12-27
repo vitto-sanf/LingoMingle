@@ -7,7 +7,7 @@ import {
   Pressable,
   View,
   TextInput,
-  FlatList
+  FlatList,
 } from "react-native";
 import styles from "./NewInvitationsModal.style";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
@@ -20,51 +20,67 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
 
   const [text, onChangeText] = useState("");
-  const [friend,SetFriend]=useState('');
-  const [dropdownOpen,setDropdownOpen]=useState(false)
-  const [users,setUsers]=useState([]);
-  const [currentDate,setCurrentDate]=useState(new Date());
-  const [date,setDate]=useState(null);
-  const [showPicker, setShowPicker]=useState(false);
+  const [friend, SetFriend] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [date, setDate] = useState(null);
+  const [time, setTime] = useState(null);
+  const [place, setPlace] = useState("");
+  const [showPicker, setShowPicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
-  const toggleDatepicker = () =>{
-    setShowPicker(!showPicker)
+  const toggleDatepicker = () => {
+    setShowPicker(!showPicker);
   };
 
-  const onDatechange = ({type}, selectedDate)=>{
-    if (type=="set"){
-      const currentDate = selectedDate;
-      
+  const toggleTimepicker = () => {
+    setShowTimePicker(!showTimePicker);
+  };
+
+  const onDatechange = ({ type }, selectedDate) => {
+    if (type == "set") {
+      //const currentDate = selectedDate;
+
       setDate(selectedDate);
-      
-     
+
+      toggleDatepicker();
+    } else {
       toggleDatepicker();
     }
-    else{
-      toggleDatepicker();
+  };
+
+  const onTimechange = ({ type }, selectedTime) => {
+    if (type == "set") {
+      //const currentDate = selectedDate;
+
+      setTime(selectedTime);
+
+      toggleTimepicker();
+    } else {
+      toggleTimepicker();
     }
   };
 
   const formatDate = (rawDate) => {
     let date = new Date(rawDate);
     let year = date.getFullYear();
-    let month = date.getMonth()+1;
-    let day= date.getDate();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
 
     month = month < 10 ? `0${month}` : month;
     day = day < 10 ? `0${day}` : day;
     return `${day}/${month}/${year}`;
-  }
+  };
 
-  const onChangeFriend = (value) =>{
+  const onChangeFriend = (value) => {
     setDropdownOpen(true);
-    console.log(value);
+    
     SetFriend(value);
-    onSearch(value);
-  }
-  const onSearch = (searchItem) =>{
-    console.log('search', searchItem);
-  }
+    
+  };
+
+  
 
   useEffect(() => {
     api
@@ -77,61 +93,39 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
           })
           .catch((err) => console.log(err));
       })
-      .catch((err) => console.log(err))
-      
+      .catch((err) => console.log(err));
   }, []);
 
-
-/*
-  const users=[
-    {
-      uuid:1,
-      username:"Matteo"
-    },
-    {
-      uuid:2,
-      username:"Francesca"
-    },
-    {
-      uuid:3,
-      username:"Giulia"
-    },
-    {
-      uuid:4,
-      username:"Matteo"
-    },
-    {
-      uuid:5,
-      username:"Matteo"
-    },
-    {
-      uuid:6,
-      username:"Matteo"
-    },
-    {
-      uuid:7,
-      username:"Matteo"
-    },
-    {
-      uuid:8,
-      username:"Matteo"
-    },
-  ]*/
- 
   return (
     <View style={styles.centeredView}>
-    {showPicker ?
-              <View>
-              <DateTimePicker
-              style={{zIndex:"auto"}}
-                mode="date"
-                display="spinner"
-                value={date? date : currentDate}
-                onChange={onDatechange}
-                minimumDate={new Date()}
-              />
-              </View>
-              :''}
+      {showPicker ? (
+        <View>
+          <DateTimePicker
+            style={{ zIndex: "auto" }}
+            mode="date"
+            display="spinner"
+            value={date ? date : currentDate}
+            onChange={onDatechange}
+            minimumDate={new Date()}
+          />
+        </View>
+      ) : (
+        ""
+      )}
+      {showTimePicker ? (
+        <View>
+          <DateTimePicker
+            style={{ zIndex: "auto" }}
+            mode="time"
+            display="spinner"
+            value={time ? time : currentDate}
+            onChange={onTimechange}
+            minimumDate={new Date()}
+          />
+        </View>
+      ) : (
+        ""
+      )}
       <Modal
         animationType="slide"
         transparent={true}
@@ -155,77 +149,97 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               <FA5Icon name="search" color={COLOR.gray} size={20} />
             </View>
 
-            {dropdownOpen? 
-            <View style={dropdownOpen? styles.dropdown : styles.dropdownEmpty}>
-              <FlatList
-                data={users.filter((item) => {
-                  const searchTerm = friend.toLowerCase();
-                  const nameuser = item.username.toLowerCase();
-                  return searchTerm && nameuser.startsWith(searchTerm) 
-                  && searchTerm!==nameuser;
-                }).slice(0,10)}
-                renderItem={({ item }) => (
-                  <Pressable onPress={()=>{SetFriend(item.username)
-                  setDropdownOpen(false)
-                  }} style={styles.dropdownRow} key={item.uuid}>
-                    <Text style={styles.friendStyle}>{item.username}</Text>
-                    {console.log(item.username)}
-                  </Pressable>
-                )}
-                keyExtractor={(item) => item.uuid}
-                showsHorizontalScrollIndicator={true}
-              />
-            </View>
-             : ''}
-
+            {dropdownOpen ? (
+              <View
+                style={dropdownOpen ? styles.dropdown : styles.dropdownEmpty}
+              >
+                <FlatList
+                  data={users
+                    .filter((item) => {
+                      const searchTerm = friend.toLowerCase();
+                      const nameuser = item.username.toLowerCase();
+                      return (
+                        searchTerm &&
+                        nameuser.startsWith(searchTerm) &&
+                        searchTerm !== nameuser
+                      );
+                    })
+                    .slice(0, 10)}
+                  renderItem={({ item }) => (
+                    <Pressable
+                      onPress={() => {
+                        SetFriend(item.username);
+                        setDropdownOpen(false);
+                      }}
+                      style={styles.dropdownRow}
+                      key={item.uuid}
+                    >
+                      <Text style={styles.friendStyle}>{item.username}</Text>
+                      
+                    </Pressable>
+                  )}
+                  keyExtractor={(item) => item.uuid}
+                  showsHorizontalScrollIndicator={true}
+                />
+              </View>
+            ) : (
+              ""
+            )}
 
             <View style={styles.formview}>
+              <Pressable
+                style={styles.dateTimeInput}
+                onPress={toggleDatepicker}
+              >
+                <TextInput
+                  style={date ? styles.dateTimeInputText : ""}
+                  
+                  value={date ? formatDate(date) : null}
+                  placeholder="Date"
+                  editable={false}
+                />
+              </Pressable>
 
-             
-            <Pressable style={styles.dateTimeInput} onPress={toggleDatepicker}>
+              <Pressable
+              style={styles.dateTimeInput}
+                onPress={toggleTimepicker}>
               <TextInput
-                style={date ? styles.dateTimeInputText : ''}
-                onChangeText={onChangeText}
-                value={date? formatDate(date) : null}
-                placeholder="Date"
+                style={time ? styles.dateTimeInputText : ""}
+                
+                value={time ? time.toLocaleTimeString('it-IT') : null}
+                placeholder="Hour"
                 editable={false}
               />
-            </Pressable>
-            
-              
-
-              <TextInput
-                style={styles.dateTimeInput}
-                onChangeText={onChangeText}
-                value={text}
-                placeholder="Hour"
-              />
+              </Pressable>
             </View>
             <TextInput
               style={styles.input}
-              onChangeText={onChangeText}
-              value={text}
+              onChangeText={setPlace}
+              value={place}
               placeholder="Place"
             />
 
             <View style={styles.formview}>
               <Pressable
                 style={[styles.button, styles.buttonCancel]}
-                onPress={() => {setModalVisible(!modalVisible)
-                setDropdownOpen(false)
-                SetFriend("")
-                setDate(null);
-                }
-                }
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  setDropdownOpen(false);
+                  SetFriend("");
+                  setDate(null);
+                  setTime(null);
+                }}
               >
                 <Text style={styles.cancelTextStyle}>Cancel</Text>
               </Pressable>
               <Pressable
                 style={[styles.button, styles.buttonSend]}
-                onPress={() => {setModalVisible(!modalVisible)
-                setDropdownOpen(false)
-                SetFriend("")
-                setDate(null);
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  setDropdownOpen(false);
+                  SetFriend("");
+                  setDate(null);
+                  setTime(null);
                 }}
               >
                 <Text style={styles.textStyle}>Send</Text>
