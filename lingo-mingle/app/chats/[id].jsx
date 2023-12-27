@@ -38,102 +38,134 @@ import api from "../../services/api";
 // Components
 import { Loader } from "../../components/common";
 
-const RenderMessage = ({ item, myId, setTargetMessage,setIsEditing }) => {
+const DateSeparator = ({ date }) => (
+  <View style={styles.dateSeparatorContainer}>
+    <Text style={styles.dateSeparatorText}>{date}</Text>
+  </View>
+);
+
+const RenderMessage = ({
+  item,
+  myId,
+  setTargetMessage,
+  setIsEditing,
+  setViewEditMessage,
+}) => {
   const myMessage = item.sender === myId;
   const [editVisible, setEditVisible] = useState(false);
-  const [lastDisplayedDate, setLastDisplayedDate] = useState(null);
-  //TODO avvicinare messaggi a icone
-  //TODO change date with hours ?
+
 
   const editMessage = () => {
     setTargetMessage(item);
-    setIsEditing()
-   
+    setIsEditing();
+    setEditVisible(false);
+    setViewEditMessage(item.message);
   };
-   // Funzione per formattare l'orario
-   const formatTime = (date) => {
-    return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric" });
+  // Funzione per formattare l'orario
+  const formatTime = (date) => {
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+    });
   };
 
   // Funzione per formattare la data
   const formatDate = (date) => {
-    return date.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   return (
-    <View
-      style={[
-        { flexDirection: "row", alignItems: "center" },
-        myMessage ? { alignSelf: "flex-end" } : { alignSelf: "flex-start" },
-      ]}
-    >
-      {!myMessage ? (
-        <View style={styles.messageRow}>
-          <Image
-            source={item.gender === "M" ? maleAvatar : femaleAvatar}
-            style={myMessage ? styles.imageUser : styles.imageOther}
-          />
+    <View>
+      {item.showDateSeparator && (
+        <DateSeparator date={item.createdAt?.toDate().toLocaleDateString()} />
+      )}
+      <View
+        style={[
+          { flexDirection: "row", alignItems: "center" },
+          myMessage ? { alignSelf: "flex-end" } : { alignSelf: "flex-start" },
+        ]}
+      >
+        {!myMessage ? (
+          <View style={styles.messageRow}>
+            <Image
+              source={item.gender === "M" ? maleAvatar : femaleAvatar}
+              style={myMessage ? styles.imageUser : styles.imageOther}
+            />
 
-          <View
-            style={[
-              styles.messageContainer,
-              myMessage
-                ? styles.userMessageContainer
-                : styles.otherMessageContainer,
-            ]}
-          >
-            <Text style={styles.messageText}>{item.message}</Text>
-            <Text style={styles.time}>
-            {formatTime(item.createdAt?.toDate())}
-            </Text>
+            <View
+              style={[
+                styles.messageContainer,
+                myMessage
+                  ? styles.userMessageContainer
+                  : styles.otherMessageContainer,
+              ]}
+            >
+              <Text style={styles.messageText}>{item.message}</Text>
+              <Text style={styles.time}>
+                {formatTime(item.createdAt?.toDate())}
+              </Text>
+            </View>
           </View>
-        </View>
-      ) : (
-        <>
-          {editVisible ? (
-            <View>
-              <Pressable onPress={editMessage}>
-                <Text>EDIT</Text>
+        ) : (
+          <>
+            {editVisible ? (
+              <View>
+                <Pressable onPress={editMessage} style={styles.editButton}>
+                  <FAIcons
+                    name="edit"
+                    style={{ marginRight: 5 }}
+                    color={COLOR.black}
+                    solid
+                    size={20}
+                  />
+                  <Text style={{ fontFamily: FONT.regular, fontSize: 15 }}>
+                    Edit
+                  </Text>
+                </Pressable>
+              </View>
+            ) : null}
+            <View
+              style={[
+                styles.messageContainer,
+                myMessage
+                  ? styles.userMessageContainer
+                  : styles.otherMessageContainer,
+              ]}
+            >
+              <Pressable onLongPress={() => setEditVisible(!editVisible)}>
+                <Text
+                  style={[styles.messageText, myMessage && { color: "white" }]}
+                >
+                  {item.message}
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={[styles.time, myMessage && { color: "white" }]}>
+                    {item.createdAt && (
+                      <Text style={styles.time}>
+                        {formatTime(item.createdAt.toDate())}
+                      </Text>
+                    )}
+                  </Text>
+
+                  <Text style={{ marginLeft: 5 }}>
+                    {item.edited ? "edited" : null}
+                  </Text>
+                </View>
               </Pressable>
             </View>
-          ) : null}
-          <View
-            style={[
-              styles.messageContainer,
-              myMessage
-                ? styles.userMessageContainer
-                : styles.otherMessageContainer,
-            ]}
-          >
-            <Pressable onLongPress={() => setEditVisible(!editVisible)}>
-              <Text
-                style={[styles.messageText, myMessage && { color: "white" }]}
-              >
-               
-                {item.message}
-              </Text>
-              <View style={{flexDirection: "row", alignItems: "center"}}>
-              <Text style={[styles.time, myMessage && { color: "white" }]}>
-              {formatTime(item.createdAt?.toDate())}
-              </Text>
-            
-              <Text style={{marginLeft: 5}}>{item.edited ? "edited": null}</Text>
-              </View>
-            </Pressable>
-            
-            {lastDisplayedDate !== item.createdAt?.toLocaleDateString() && (
-                  <Text style={{ marginLeft: 5, color: "grey" }}>
-                    {formatDate(item.createdAt?.toDate())}
-                  </Text>
-                )}
-          </View>
 
-          <Image
-            source={item.gender === "M" ? maleAvatar : femaleAvatar}
-            style={myMessage ? styles.imageUser : styles.imageOther}
-          />
-        </>
-      )}
+            <Image
+              source={item.gender === "M" ? maleAvatar : femaleAvatar}
+              style={myMessage ? styles.imageUser : styles.imageOther}
+            />
+          </>
+        )}
+      </View>
     </View>
   );
 };
@@ -145,7 +177,8 @@ const Chat = () => {
   const [loading, setLoading] = useState(true);
   const [headerTitle, setHeaderTitle] = useState("");
   const [targetMessage, setTargetMessage] = useState({});
-  const [isEditing , setIsEditing]= useState(false)
+  const [isEditing, setIsEditing] = useState(false);
+  const [viewEditMessage, setViewEditMessage] = useState("");
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
 
@@ -164,9 +197,22 @@ const Chat = () => {
   useLayoutEffect(() => {
     const msgCollectionRef = collection(database, `/chats/${id}/messages`);
     const q = query(msgCollectionRef, orderBy("createdAt", "asc"));
+    let displayedDate = null;
     const unsubscribe = onSnapshot(q, (chats) => {
-      const messages = chats.docs.map((doc) => {
-        return { id: doc.id, ...doc.data() };
+      const messages = chats.docs.map((doc, index) => {
+        let data = { id: doc.id, ...doc.data() };
+
+        if (index === 0) {
+          data = { showDateSeparator: true, ...data };
+
+          displayedDate = data.createdAt?.toDate().toLocaleDateString();
+        } else {
+          differentDate =
+            displayedDate !== data.createdAt?.toDate().toLocaleDateString();
+          data = { showDateSeparator: differentDate, ...data };
+          displayedDate = data.createdAt?.toDate().toLocaleDateString();
+        }
+        return data;
       });
       setMessages(messages);
     });
@@ -176,35 +222,38 @@ const Chat = () => {
 
   const sendMessage = () => {
     const msg = message.trim();
-    if (msg.length === 0 && targetMessage.message.length ===0) return;
+    if (msg.length === 0 && (!targetMessage || !targetMessage.message)) return;
 
-    console.log("HERE")
-    if(isEditing && targetMessage && targetMessage.message){
-
-      api.editMessage(targetMessage, id ).then(()=>{
-        setIsEditing(false);
-        setTargetMessage({});
-      }).catch((err) => notify.error(err))
-      
-    }else {
+    if (isEditing && targetMessage && targetMessage.message) {
       api
-      .sendMessage(id, msg, MY_UUID)
-      .then(setMessage(""))
-      .catch((err) => notify.error(err));
+        .editMessage(targetMessage, id)
+        .then(() => {
+          setIsEditing(false);
+          setTargetMessage({});
+        })
+        .catch((err) => notify.error(err));
+    } else {
+      api
+        .sendMessage(id, msg, MY_UUID)
+        .then(setMessage(""))
+        .catch((err) => notify.error(err));
     }
-
   };
 
   const handleMessage = (text) => {
-    console.log(isEditing)
-    if (isEditing){
-      setTargetMessage((prevTargetMessage) => ({ ...prevTargetMessage, message: text }));
-    }else{
+    if (isEditing) {
+      setTargetMessage((prevTargetMessage) => ({
+        ...prevTargetMessage,
+        message: text,
+      }));
+    } else {
       setMessage(text);
     }
-    
-   
-   
+  };
+  const handleEdit = () => {
+    setIsEditing(false);
+    setTargetMessage({});
+    setViewEditMessage("");
   };
 
   if (loading) return <Loader />;
@@ -218,6 +267,36 @@ const Chat = () => {
           headerTitle: loading ? "" : headerTitle,
           headerShadowVisible: false,
           headerTitleAlign: "center",
+          headerRight: () => (
+            <View style={{ flexDirection: "row", marginRight: 10 }}>
+              <Pressable
+                onPress={() => {
+                  // Azione da eseguire quando il primo bottone viene premuto
+                }}
+              >
+                <FAIcons
+                  name="calendar-plus-o"
+                  color={COLOR.black}
+                  solid
+                  size={26}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  // Azione da eseguire quando il secondo bottone viene premuto
+                }}
+                style={{ marginLeft: 15 }}
+              >
+                <FAIcons
+                  name="video-camera"
+                  color={COLOR.black}
+                  solid
+                  size={26}
+                />
+              </Pressable>
+              {/* Aggiungi altri bottoni se necessario */}
+            </View>
+          ),
         }}
       />
       <FlatList
@@ -228,22 +307,51 @@ const Chat = () => {
             item={item}
             myId={MY_UUID}
             setTargetMessage={(message) => setTargetMessage(message)}
-            setIsEditing= {()=>setIsEditing(true)}
+            setIsEditing={() => setIsEditing(true)}
+            setViewEditMessage={(text) => setViewEditMessage(text)}
           />
         )}
+        
+       
       />
+      <View style={{ flexDirection: "row" }}>
+        {isEditing && viewEditMessage ? (
+          <>
+            <Text
+              style={{ fontFamily: FONT.regular, fontSize: 15, marginLeft: 18 }}
+            >
+              Edit Message : {viewEditMessage}
+            </Text>
+            <Pressable style={{ marginLeft: 20 }} onPress={handleEdit}>
+              <FAIcons name="close" color={COLOR.black} solid size={20} />
+            </Pressable>
+          </>
+        ) : null}
+      </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           multiline
-          value= {targetMessage.message || message }
+          value={targetMessage.message || message}
           onChangeText={(text) => handleMessage(text)}
           placeholder="Type a message"
           style={styles.messageInput}
         />
         <Pressable
           onPress={sendMessage}
-          style={styles.sendButton}
-          disabled={message === "" && targetMessage.message === ""}
+          disabled={
+            message === "" && (!targetMessage || !targetMessage.message)
+          }
+          style={({ disabled }) => [
+            styles.sendButton,
+            {
+              backgroundColor:
+                disabled ||
+                (message === "" && (!targetMessage || !targetMessage.message))
+                  ? COLOR.gray2
+                  : COLOR.primary,
+            },
+          ]}
         >
           <FAIcons name="send" color={COLOR.white} solid size={24} />
         </Pressable>

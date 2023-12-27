@@ -64,7 +64,24 @@ const styles = StyleSheet.create({
   sendButton: {
     borderRadius: 100,
     padding: 10,
-    backgroundColor: COLOR.primary,
+   /*  backgroundColor: COLOR.primary, */
+  },
+  editButton :{
+    flexDirection:'row',
+     borderWidth: 1 , 
+     padding: 5, 
+     borderRadius: 15 
+  },
+  dateSeparatorContainer: {
+    alignSelf: "center",
+    marginVertical: 10,
+    padding: 5,
+    backgroundColor: COLOR.gray,
+    borderRadius: 5,
+  },
+  dateSeparatorText: {
+    color: COLOR.white,
+    fontFamily: FONT.regular,
   },
 });
 export default styles;
