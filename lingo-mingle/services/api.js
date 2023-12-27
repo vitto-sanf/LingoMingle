@@ -23,7 +23,20 @@ const api = {
       console.log("User Not Found!");
     }
   },
-
+  getAllUsers: async ()=> {
+    const querySnapshot = await getDocs(collection(database, "user"));
+    let users = [];
+    console.log(querySnapshot.docs.map(doc => doc.data()));
+      querySnapshot.forEach((doc) => {
+        let user={
+          uuid:doc.id,
+          username: doc.data().username
+        }
+        users.push(user);
+        console.log(doc.id, " => ", doc.data().username);
+      });
+    return users//snapshot.docs.map(doc => doc.data());
+},
   getLastUserContacted: async (lastUserContacted) => {
     const promises = lastUserContacted.map((doc) =>
       api.getUser(doc).then((data) => {
