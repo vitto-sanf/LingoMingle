@@ -32,13 +32,22 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     console.log('search', searchItem);
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     api
-    .getAllUsers()
-    .then((data)=>setUsers(data))
-    .catch((err)=>console.log(err));
-
-  },[])
+      .getUser(MY_UUID)
+      .then((data) => {
+        api
+          .getFriends(data.friends)
+          .then((friendsInfo) => {
+            setUsers(friendsInfo);
+            //setFilteredFriends(friendsInfo);
+            console.log(users)
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err))
+      
+  }, []);
 
 
 /*

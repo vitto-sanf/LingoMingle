@@ -65,6 +65,21 @@ const api = {
     return res;
   },
 
+  getFriends: async (friends) => {
+    let friendsId = friends.map((e) => e.id);
+    const promises = friendsId.map((doc) =>
+      api.getUser(doc).then((data) => {
+        data.uuid = doc;
+        return data;
+      })
+    );
+
+    const friendsArray = await Promise.all(promises);
+
+    const res = friendsArray.length > 0 ? friendsArray : [];
+    return res;
+  },
+
   getFriendsRequest: async (friendsRequest, myUUID) => {
     const filteredFriendRequests = friendsRequest.filter(
       (request) => request.receiver === myUUID
