@@ -9,13 +9,15 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 22,
+      marginTop: 80,
+      maxHeight:"60%",
+      maxWidth:"100%"
     },
     modalView: {
       margin: 20,
       backgroundColor: 'white',
       borderRadius: 20,
-      padding: 35,
+      padding: 20,
       alignItems: 'center',
       shadowColor: '#000',
       shadowOffset: {
@@ -25,11 +27,14 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.25,
       shadowRadius: 4,
       elevation: 5,
+      width:"80%",
+      height:"80%"
     },
     button: {
       borderRadius: 10,
       padding: 10,
       elevation: 2,
+      margin:5
     },
     buttonSend: {
       backgroundColor: COLOR.primary,
@@ -52,9 +57,22 @@ const styles = StyleSheet.create({
     modalText: {
       marginBottom: 15,
       textAlign: 'center',
+      fontWeight:"bold",
+      fontSize:20
     },
     input: {
       height: 40,
+      width:"100%",
+      margin: 12,
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: COLOR.lightGrey,
+      padding: 10,
+    },
+    dateTimeInput:
+    {
+      height: 40,
+      width:"40%",
       margin: 12,
       borderWidth: 1,
       borderRadius: 10,
@@ -64,10 +82,9 @@ const styles = StyleSheet.create({
     formview :{
       flex:1,
       alignItems:"center",
-      justifyContent:"center",
+      justifyContent:"space-between",
       flexDirection:"row",
-      maxHeight:"40%",
-      maxWidth:"40%"
+      
       
     }
   });

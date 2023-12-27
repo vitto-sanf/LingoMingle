@@ -32,23 +32,26 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
             
               <TextInput
+                
                 style={styles.input}
                 onChangeText={onChangeText}
                 value={text}
                 placeholder="Friend Username"
               />
+              <View style={styles.formview}>
               <TextInput
-                style={styles.input}
+                style={styles.dateTimeInput}
                 onChangeText={onChangeText}
                 value={text}
                 placeholder="Date"
               />
               <TextInput
-                style={styles.input}
+                style={styles.dateTimeInput}
                 onChangeText={onChangeText}
                 value={text}
                 placeholder="Hour"
               />
+              </View>
               <TextInput
                 style={styles.input}
                 onChangeText={onChangeText}
@@ -56,7 +59,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 placeholder="Place"
               />
               
-
+              <View style={styles.formview}>
               <Pressable
                 style={[styles.button, styles.buttonCancel]}
                 onPress={() => setModalVisible(!modalVisible)}
@@ -69,6 +72,8 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               >
                 <Text style={styles.textStyle}>Send</Text>
               </Pressable>
+              </View>
+              
             
           </View>
         </View>
