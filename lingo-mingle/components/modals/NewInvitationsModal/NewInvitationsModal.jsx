@@ -13,6 +13,7 @@ import styles from "./NewInvitationsModal.style";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import { COLOR } from "../../../constants";
 import api from "../../../services/api";
+import DateTimePicker from "@react-native-community/datetimepicker";
 //TODO: fix the correct type of each input, fix the styling
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   //const [modalVisible, setModalVisible] = useState(false);
@@ -22,6 +23,39 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const [friend,SetFriend]=useState('');
   const [dropdownOpen,setDropdownOpen]=useState(false)
   const [users,setUsers]=useState([]);
+  const [currentDate,setCurrentDate]=useState(new Date());
+  const [date,setDate]=useState(null);
+  const [showPicker, setShowPicker]=useState(false);
+
+  const toggleDatepicker = () =>{
+    setShowPicker(!showPicker)
+  };
+
+  const onDatechange = ({type}, selectedDate)=>{
+    if (type=="set"){
+      const currentDate = selectedDate;
+      
+      setDate(selectedDate);
+      
+     
+      toggleDatepicker();
+    }
+    else{
+      toggleDatepicker();
+    }
+  };
+
+  const formatDate = (rawDate) => {
+    let date = new Date(rawDate);
+    let year = date.getFullYear();
+    let month = date.getMonth()+1;
+    let day= date.getDate();
+
+    month = month < 10 ? `0${month}` : month;
+    day = day < 10 ? `0${day}` : day;
+    return `${day}/${month}/${year}`;
+  }
+
   const onChangeFriend = (value) =>{
     setDropdownOpen(true);
     console.log(value);
@@ -40,8 +74,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
           .getFriends(data.friends)
           .then((friendsInfo) => {
             setUsers(friendsInfo);
-            //setFilteredFriends(friendsInfo);
-            console.log(users)
           })
           .catch((err) => console.log(err));
       })
@@ -88,6 +120,18 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
  
   return (
     <View style={styles.centeredView}>
+    {showPicker ?
+              <View>
+              <DateTimePicker
+              style={{zIndex:"auto"}}
+                mode="date"
+                display="spinner"
+                value={date? date : currentDate}
+                onChange={onDatechange}
+                minimumDate={new Date()}
+              />
+              </View>
+              :''}
       <Modal
         animationType="slide"
         transparent={true}
@@ -136,12 +180,20 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
 
             <View style={styles.formview}>
+
+             
+            <Pressable style={styles.dateTimeInput} onPress={toggleDatepicker}>
               <TextInput
-                style={styles.dateTimeInput}
+                style={styles.dateTimeInputText}
                 onChangeText={onChangeText}
-                value={text}
+                value={date? formatDate(date) : "Select date"}
                 placeholder="Date"
+                editable={false}
               />
+            </Pressable>
+            
+              
+
               <TextInput
                 style={styles.dateTimeInput}
                 onChangeText={onChangeText}
@@ -162,6 +214,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 onPress={() => {setModalVisible(!modalVisible)
                 setDropdownOpen(false)
                 SetFriend("")
+                setDate(null);
                 }
                 }
               >
@@ -172,6 +225,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 onPress={() => {setModalVisible(!modalVisible)
                 setDropdownOpen(false)
                 SetFriend("")
+                setDate(null);
                 }}
               >
                 <Text style={styles.textStyle}>Send</Text>
