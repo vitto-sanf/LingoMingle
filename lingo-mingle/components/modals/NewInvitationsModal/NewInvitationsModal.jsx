@@ -14,7 +14,7 @@ import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import { COLOR } from "../../../constants";
 import api from "../../../services/api";
 import DateTimePicker from "@react-native-community/datetimepicker";
-//TODO: fix the styling
+//TODO: fix the styling, handle the form submit, field validation
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
 
