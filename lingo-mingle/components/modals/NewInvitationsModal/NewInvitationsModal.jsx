@@ -29,6 +29,14 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
+  const onCancel= ()=>{
+    setModalVisible(!modalVisible);
+    setDropdownOpen(false);
+    SetFriend("");
+    setDate(null);
+    setTime(null);
+    setPlace(null);
+  }
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
   };
@@ -213,11 +221,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               <Pressable
                 style={[styles.button, styles.buttonCancel]}
                 onPress={() => {
-                  setModalVisible(!modalVisible);
-                  setDropdownOpen(false);
-                  SetFriend("");
-                  setDate(null);
-                  setTime(null);
+                  onCancel()
                 }}
               >
                 <Text style={styles.cancelTextStyle}>Cancel</Text>
@@ -225,11 +229,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               <Pressable
                 style={[styles.button, styles.buttonSend]}
                 onPress={() => {
-                  setModalVisible(!modalVisible);
-                  setDropdownOpen(false);
-                  SetFriend("");
-                  setDate(null);
-                  setTime(null);
+                  onCancel()
                 }}
               >
                 <Text style={styles.textStyle}>Send</Text>
