@@ -14,9 +14,8 @@ import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import { COLOR } from "../../../constants";
 import api from "../../../services/api";
 import DateTimePicker from "@react-native-community/datetimepicker";
-//TODO: fix the correct type of each input, fix the styling
+//TODO: fix the styling
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
-  //const [modalVisible, setModalVisible] = useState(false);
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
 
   const [text, onChangeText] = useState("");
@@ -40,8 +39,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
   const onDatechange = ({ type }, selectedDate) => {
     if (type == "set") {
-      //const currentDate = selectedDate;
-
       setDate(selectedDate);
 
       toggleDatepicker();
@@ -52,8 +49,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
   const onTimechange = ({ type }, selectedTime) => {
     if (type == "set") {
-      //const currentDate = selectedDate;
-
       setTime(selectedTime);
 
       toggleTimepicker();
@@ -75,12 +70,9 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
   const onChangeFriend = (value) => {
     setDropdownOpen(true);
-    
-    SetFriend(value);
-    
-  };
 
-  
+    SetFriend(value);
+  };
 
   useEffect(() => {
     api
@@ -175,7 +167,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                       key={item.uuid}
                     >
                       <Text style={styles.friendStyle}>{item.username}</Text>
-                      
                     </Pressable>
                   )}
                   keyExtractor={(item) => item.uuid}
@@ -193,7 +184,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               >
                 <TextInput
                   style={date ? styles.dateTimeInputText : ""}
-                  
                   value={date ? formatDate(date) : null}
                   placeholder="Date"
                   editable={false}
@@ -201,15 +191,15 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               </Pressable>
 
               <Pressable
-              style={styles.dateTimeInput}
-                onPress={toggleTimepicker}>
-              <TextInput
-                style={time ? styles.dateTimeInputText : ""}
-                
-                value={time ? time.toLocaleTimeString('it-IT') : null}
-                placeholder="Hour"
-                editable={false}
-              />
+                style={styles.dateTimeInput}
+                onPress={toggleTimepicker}
+              >
+                <TextInput
+                  style={time ? styles.dateTimeInputText : ""}
+                  value={time ? time.toLocaleTimeString("it-IT") : null}
+                  placeholder="Hour"
+                  editable={false}
+                />
               </Pressable>
             </View>
             <TextInput
