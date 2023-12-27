@@ -185,6 +185,7 @@ const InvitationsPage = () => {
         
     }
 
+      {pageStatus==="new"?
       <View style={styles.buttonView}>
       <Pressable
       onPress={() => setModalVisible(true)}
@@ -192,6 +193,7 @@ const InvitationsPage = () => {
         <FA5Icon name="plus-circle"  color={COLOR.primary} regular size={56} />
       </Pressable>  
       </View>
+    : ''}
       
     </SafeAreaView>
   );
