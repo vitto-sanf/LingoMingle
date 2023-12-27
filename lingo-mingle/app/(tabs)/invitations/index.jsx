@@ -15,11 +15,13 @@ import { InvitationsPageStyle as styles } from "../../../styles";
 
 import { Loader } from "../../../components/common";
 import {NewInvitationCard, ScheduledInvitationCard } from "../../../components/cards";
+import { NewInvitaionModal } from "../../../components/modals";
 import { COLOR } from "../../../constants";
 import  {Link} from 'expo-router';
 // Services
 import api from "../../../services/api";
 import useNotification from "../../../hooks/useNotification";
+import NewInvitationModal from "../../../components/modals/NewInvitationsModal/NewInvitationsModal";
 
 const InvitationsPage = () => {
   const [loading, setLoading] = useState(true);
@@ -30,7 +32,12 @@ const InvitationsPage = () => {
   const [dirty,setDirty]=useState(true);
   const [dirty2,setDirty2]=useState(true);
   const notify = useNotification();
-  
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
 
   const handleAcceptInvitation = (invitationUUID) => {
     api
@@ -125,6 +132,7 @@ const InvitationsPage = () => {
       
       <Pressable style={ pageStatus==="new"?  styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetNew}><Text>New Invitations</Text></Pressable>
       <Pressable style={ pageStatus==="scheduled"? styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetScheduled} ><Text > Scheduled </Text></Pressable>
+      <NewInvitationModal modalVisible={modalVisible} setModalVisible={toggleModal}/>
       </View>
       
         {invitations?.length === 0 && pageStatus==="new"? (
@@ -178,9 +186,11 @@ const InvitationsPage = () => {
     }
 
       <View style={styles.buttonView}>
-        
+      <Pressable
+      onPress={() => setModalVisible(true)}
+      >
         <FA5Icon name="plus-circle"  color={COLOR.primary} regular size={56} />
-        
+      </Pressable>  
       </View>
       
     </SafeAreaView>
