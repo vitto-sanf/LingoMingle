@@ -16,6 +16,16 @@ import api from "../../../services/api";
 import DateTimePicker from "@react-native-community/datetimepicker";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
+//Form Validation
+import * as yup from "yup";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+//Form Validation Schema
+const schema = yup.object().shape({
+  date: yup.date().required("Date is required"),
+  time: yup.date().required("Date is required"),
+  place: yup.string().required("Place is required"),
+});
 //TODO: fix the styling, field validation
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
@@ -31,36 +41,60 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
-  const onCancel= ()=>{
+  //Form Validation control
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    
+    resolver: yupResolver(schema),
+    defaultValues: {
+      date: null,
+      time: null,
+      place: null,
+    },
+  });
+
+  //
+
+  const onCancel = () => {
     setModalVisible(!modalVisible);
     setDropdownOpen(false);
     SetFriend("");
     setDate(null);
     setTime(null);
     setPlace(null);
-  }
+    errors.date=null;
+    errors.time=null;
+    errors.time=null;
+  };
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
   };
 
-  onSubmit=()=>{
-    const formData= {
-      receiver:friend.uuid,
+  const onSubmit = (formData) => {
+    console.log(formData);
+    /*const formData = {
+      receiver: friend.uuid,
       sender: MY_UUID,
-      timestamp: new Date( `${date.toISOString().split('T')[0]}` + `${time.toISOString().substr(10,24)}`),
+      timestamp: new Date(
+        `${date.toISOString().split("T")[0]}` +
+          `${time.toISOString().substr(10, 24)}`
+      ),
       place: place,
-      status:"pending"
-    }
-    
-    api.addInvitation(formData)
-    .then(()=>{})
-    .catch((err)=>notify.error(err.message))
-    .finally(()=>{
-        notify.success("Invitation sent correctly!")
+      status: "pending",
+    };
+
+    api
+      .addInvitation(formData)
+      .then(() => {})
+      .catch((err) => notify.error(err.message))
+      .finally(() => {
+        notify.success("Invitation sent correctly!");
         onCancel();
-     })
-    
-  }
+      });*/
+  };
 
   const toggleTimepicker = () => {
     setShowTimePicker(!showTimePicker);
@@ -105,6 +139,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   };
 
   useEffect(() => {
+    console.log(errors),
     api
       .getUser(MY_UUID)
       .then((data) => {
@@ -165,7 +200,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               <TextInput
                 style={styles.userNameInput}
                 onChangeText={onChangeFriend}
-                value={friend? friend.username : friend}
+                value={friend ? friend.username : friend}
                 placeholder="Friend Username"
               />
               <FA5Icon name="search" color={COLOR.gray} size={20} />
@@ -190,7 +225,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   renderItem={({ item }) => (
                     <Pressable
                       onPress={() => {
-                        SetFriend({uuid:item.uuid,username: item.username});
+                        SetFriend({ uuid: item.uuid, username: item.username });
                         setDropdownOpen(false);
                       }}
                       style={styles.dropdownRow}
@@ -212,48 +247,79 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 style={styles.dateTimeInput}
                 onPress={toggleDatepicker}
               >
-                <TextInput
-                  style={date ? styles.dateTimeInputText : ""}
-                  value={date ? formatDate(date) : null}
-                  placeholder="Date"
-                  editable={false}
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      style={date ? styles.dateTimeInputText : ""}
+                      value={date ? formatDate(date) : null}
+                      placeholder="Date"
+                      editable={false}
+                    />
+                  )}
+                  name="date"
+                  
                 />
+                {errors.date && <Text>{errors.date.message}</Text>}
               </Pressable>
 
               <Pressable
                 style={styles.dateTimeInput}
                 onPress={toggleTimepicker}
               >
-                <TextInput
-                  style={time ? styles.dateTimeInputText : ""}
-                  value={time ? time.toLocaleTimeString("it-IT") : null}
-                  placeholder="Hour"
-                  editable={false}
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      style={time ? styles.dateTimeInputText : ""}
+                      value={time ? time.toLocaleTimeString("it-IT") : null}
+                      placeholder="Hour"
+                      editable={false}
+                      
+                    />
+                  )}
+                  name="time"
                 />
+                {errors.time && <Text>{errors.time.message}</Text>}
               </Pressable>
             </View>
-            <TextInput
-              style={styles.input}
-              onChangeText={setPlace}
-              value={place}
-              placeholder="Place"
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, value } }) => (
+                <TextInput
+                  style={styles.input}
+                  onChangeText={onChange}
+                  value={value}
+                  placeholder="Place"
+                />
+              )}
+              name="place"
             />
+            {errors.place && <Text>{errors.place.message}</Text>}
 
             <View style={styles.formview}>
               <Pressable
                 style={[styles.button, styles.buttonCancel]}
                 onPress={() => {
-                  onCancel()
+                  onCancel();
                 }}
               >
                 <Text style={styles.cancelTextStyle}>Cancel</Text>
               </Pressable>
               <Pressable
                 style={[styles.button, styles.buttonSend]}
-                onPress={() => {
-                  onSubmit();
-                  
-                }}
+                onPress={
+                  handleSubmit(onSubmit)
+                }
               >
                 <Text style={styles.textStyle}>Send</Text>
               </Pressable>
