@@ -14,10 +14,12 @@ import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import { COLOR } from "../../../constants";
 import api from "../../../services/api";
 import DateTimePicker from "@react-native-community/datetimepicker";
-//TODO: fix the styling, handle the form submit, field validation
+// Hooks
+import useNotification from "../../../hooks/useNotification";
+//TODO: fix the styling, field validation
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
-
+  const notify = useNotification();
   const [text, onChangeText] = useState("");
   const [friend, SetFriend] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -41,6 +43,25 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     setShowPicker(!showPicker);
   };
 
+  onSubmit=()=>{
+    const formData= {
+      receiver:friend.uuid,
+      sender: MY_UUID,
+      timestamp: new Date( `${date.toISOString().split('T')[0]}` + `${time.toISOString().substr(10,24)}`),
+      place: place,
+      status:"pending"
+    }
+    
+    api.addInvitation(formData)
+    .then(()=>{})
+    .catch((err)=>notify.error(err.message))
+    .finally(()=>{
+        notify.success("Invitation sent correctly!")
+        onCancel();
+     })
+    
+  }
+
   const toggleTimepicker = () => {
     setShowTimePicker(!showTimePicker);
   };
@@ -50,6 +71,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       setDate(selectedDate);
 
       toggleDatepicker();
+      toggleTimepicker();
     } else {
       toggleDatepicker();
     }
@@ -143,7 +165,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               <TextInput
                 style={styles.userNameInput}
                 onChangeText={onChangeFriend}
-                value={friend}
+                value={friend? friend.username : friend}
                 placeholder="Friend Username"
               />
               <FA5Icon name="search" color={COLOR.gray} size={20} />
@@ -168,7 +190,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   renderItem={({ item }) => (
                     <Pressable
                       onPress={() => {
-                        SetFriend(item.username);
+                        SetFriend({uuid:item.uuid,username: item.username});
                         setDropdownOpen(false);
                       }}
                       style={styles.dropdownRow}
@@ -229,7 +251,8 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               <Pressable
                 style={[styles.button, styles.buttonSend]}
                 onPress={() => {
-                  onCancel()
+                  onSubmit();
+                  
                 }}
               >
                 <Text style={styles.textStyle}>Send</Text>

@@ -10,6 +10,7 @@ import {
   where,
   getDocs,
   deleteDoc,
+  addDoc,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 import moment from "moment";
@@ -299,6 +300,18 @@ const api = {
     }
     catch (error){
       console.log(error)
+      
+    }
+  },
+  addInvitation: async (formData) =>{
+    try{
+      const docRef=addDoc(collection(database, 'invitation'), formData)
+      return docRef;
+    }
+    catch(err)
+    {
+      console.log(err);
+      return {message: "Error During invitation sent!"}
       
     }
   }
