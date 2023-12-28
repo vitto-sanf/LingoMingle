@@ -2,6 +2,7 @@
 import { ScrollView, Text, FlatList, Pressable } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Link, useRouter } from 'expo-router'
 
 // Styles
 import { HomePageStyle as styles } from "../../../styles";
@@ -25,10 +26,13 @@ const HomePage = () => {
   const [lastFriendsContacted, setLastFriendsContacted] = useState([]);
   const [friendsRequests, setFriendsRequest] = useState([]);
 
+  const router = useRouter();
+
   const { user } = useContext(AuthContext);
   const MY_UUID = user.uuid;
  
   useEffect(() => {
+
     const getUserInfo = async () => {
       try {
         const lastUserContacted = await api.getLastUserContacted(
@@ -64,6 +68,12 @@ const HomePage = () => {
 
     getUserInfo();
   }, [MY_UUID]);
+
+  	// Create random id and navigate to the room
+	const onStartMeeting = async () => {
+		const roomId = 100000;
+		 router.push(`/rooms/${roomId}`);
+	};
 
   if (loading) return <Loader />;
 
@@ -128,7 +138,7 @@ const HomePage = () => {
           )}
         </ScrollView>
       )}
-      <Pressable style={styles.button}>
+      <Pressable onPress={onStartMeeting} style={styles.button}>
         <Text style={styles.buttonTitle}>Start Videocall</Text>
       </Pressable>
     </SafeAreaView>
