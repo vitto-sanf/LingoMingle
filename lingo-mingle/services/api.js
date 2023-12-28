@@ -2,6 +2,7 @@
 import {
   doc,
   getDoc,
+  getDocs,
   updateDoc,
   arrayUnion,
   arrayRemove,
@@ -224,6 +225,14 @@ const api = {
 
   cancelFriend: async (myUUID, friendUUID, chatId) => {
     try {
+
+     
+
+      const querySnapshot = await getDocs( collection(database, `/chats/${chatId}/messages`));
+      querySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+      
       const firstData = {
         chatId: chatId,
         id: friendUUID,
@@ -250,6 +259,7 @@ const api = {
         message: "Friend cancelled from the list correctly",
       };
     } catch (error) {
+      console.log(error)
       return {
         message: "Error while Cancelling friend from the list",
       };
@@ -275,10 +285,12 @@ const api = {
   },
 
   getChatParticipant: async (chatId, userId) => {
+ 
     const chatRef = doc(database, "chats", chatId);
     const chatSnap = await getDoc(chatRef);
 
     if (chatSnap.exists()) {
+      
       for (const key in chatSnap.data()) {
         if (chatSnap.data()[key] !== userId) {
           try {

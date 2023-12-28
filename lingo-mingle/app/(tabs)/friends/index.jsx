@@ -8,7 +8,7 @@ import {
   TextInput,
   Modal,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 
@@ -28,19 +28,27 @@ import api from "../../../services/api";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
+//Contexts
+import { AuthContext } from "../../../contexts/AuthContext";
+
 //TODO change home icons: from user-times to user-minus and from user-check to user-plus
-const FriendsListItem = ({ item, openModal, setUsername, setTargetId }) => {
-  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
-  const chatId =
-    item.friends.map((e) => {
-      if (e.id === MY_UUID) return e.chatId;
-    })
-  
+const FriendsListItem = ({
+  item,
+  openModal,
+  setUsername,
+  setTargetId,
+  myUuid,
+  setTargetChat
+}) => {
+
+  const chatId = item.friends.find((e) => e.id === myUuid)?.chatId;
+
 
   const handleModal = () => {
     openModal();
     setUsername(item.username);
     setTargetId(item.uuid);
+    setTargetChat(chatId)
   };
 
   return (
@@ -83,7 +91,8 @@ const Friends = () => {
   const [targetChat, setTargetChat] = useState("");
   const notify = useNotification();
 
-  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
+  const { user } = useContext(AuthContext);
+  const MY_UUID = user.uuid;
 
   useEffect(() => {
     api
@@ -99,7 +108,7 @@ const Friends = () => {
       })
       .catch((err) => notify.error(err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   const handleOnChange = (text) => {
     if (typeof text === "object" && text.nativeEvent) {
@@ -192,6 +201,8 @@ const Friends = () => {
             openModal={() => setModalVisible(true)}
             setUsername={(e) => setTargetUsername(e)}
             setTargetId={(id) => setTargetId(id)}
+            myUuid={MY_UUID}
+            setTargetChat={(id)=>setTargetChat(id)}
           />
         )}
         keyExtractor={(item) => item.uuid}

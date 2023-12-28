@@ -6,6 +6,9 @@ import * as SplashScreen from "expo-splash-screen";
 import Toast from "react-native-toast-message";
 import { Stack } from "expo-router";
 
+// Context
+import { AuthProvider } from "../contexts/AuthContext";
+
 // Config
 import toastConfig from "../config/toastConfig";
 
@@ -27,10 +30,10 @@ const RootLayout = () => {
   if (!fontsLoaded && !fontError) return null;
 
   return (
-    <>
+    <AuthProvider>
       <Stack screenOptions={{ headerShown: false }} />
       <Toast config={toastConfig} />
-    </>
+    </AuthProvider>
   );
 };
 

@@ -14,7 +14,7 @@ import {
 import React from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useLayoutEffect, useEffect } from "react";
+import { useState, useLayoutEffect, useEffect, useContext} from "react";
 import {
   DocumentData,
   collection,
@@ -37,6 +37,10 @@ import api from "../../services/api";
 
 // Components
 import { Loader } from "../../components/common";
+
+
+//Contexts
+import { AuthContext } from "../../contexts/AuthContext";
 
 const DateSeparator = ({ date }) => (
   <View style={styles.dateSeparatorContainer}>
@@ -179,8 +183,12 @@ const Chat = () => {
   const [targetMessage, setTargetMessage] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [viewEditMessage, setViewEditMessage] = useState("");
-  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
+
+  const { user } = useContext(AuthContext);
+  const MY_UUID = user.uuid;
+
+
 
   useEffect(() => {
     api
@@ -192,7 +200,7 @@ const Chat = () => {
         notify.error(error.message);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   useLayoutEffect(() => {
     const msgCollectionRef = collection(database, `/chats/${id}/messages`);
