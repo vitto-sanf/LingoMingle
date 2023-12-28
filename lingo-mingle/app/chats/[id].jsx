@@ -51,6 +51,7 @@ const DateSeparator = ({ date }) => (
 const RenderMessage = ({
   item,
   myId,
+  gender,
   setTargetMessage,
   setIsEditing,
   setViewEditMessage,
@@ -164,7 +165,7 @@ const RenderMessage = ({
             </View>
 
             <Image
-              source={item.gender === "M" ? maleAvatar : femaleAvatar}
+              source={gender === "M" ? maleAvatar : femaleAvatar}
               style={myMessage ? styles.imageUser : styles.imageOther}
             />
           </>
@@ -314,6 +315,7 @@ const Chat = () => {
           <RenderMessage
             item={item}
             myId={MY_UUID}
+            gender = {user.gender}
             setTargetMessage={(message) => setTargetMessage(message)}
             setIsEditing={() => setIsEditing(true)}
             setViewEditMessage={(text) => setViewEditMessage(text)}
