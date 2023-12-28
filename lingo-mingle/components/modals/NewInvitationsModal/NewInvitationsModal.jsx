@@ -20,15 +20,11 @@ import useNotification from "../../../hooks/useNotification";
 import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-//Form Validation Schema
-const schema = yup.object().shape({
-  friend: yup.string().required("Friend is required"),
-  date: yup.date().required("Date is required"),
-  time: yup.date().required("Time is required"),
-  place: yup.string().required("Place is required"),
-});
-//TODO: fix the styling, reset field validation after the first submit/cancel
+
+//TODO: fix the styling, fix validation on friend invitation name
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
+
+
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
   const [text, onChangeText] = useState("");
@@ -41,9 +37,24 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const [place, setPlace] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [namesArray,setNamesArray]=useState([]);
+
+  //Form Validation Schema
+  const schema = yup.object().shape({
+    friend: yup.string().test({
+      message: () => 'Select the name from your friend!',
+      test(value) {
+        return namesArray.includes(value);
+      },
+    })
+    .required("Friend is required"),
+    date: yup.date().required("Date is required"),
+    time: yup.date().required("Time is required"),
+    place: yup.string().required("Place is required"),
+  });
 
   useEffect(() => {
-    console.log(errors),
+    
     api
       .getUser(MY_UUID)
       .then((data) => {
@@ -54,9 +65,17 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
           })
           .catch((err) => console.log(err));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(()=>{
+        let newArr = users.map((item) => {
+          return item.username
+        });
+        setNamesArray(namesArray,...newArr);
+        
+      });
   }, []);
 
+ 
   //Form Validation control
   const {
     control,
@@ -99,6 +118,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       place: place,
       status: "pending",
     };
+    console.log("Form Data: ", ModformData);
     onCancel();
     
 
@@ -176,7 +196,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 display="spinner"
                 value={value || new Date()}
                 onChange={({type},selectedDate) => {
-                  console.log(type,selectedDate);
+                  
                   onChange(selectedDate);
                   if (type == "set") {
                     setDate(selectedDate);
@@ -200,7 +220,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
         <View>
           <Controller
             control={control}
-            //name="selectedDate"
+            
             render={({ field: { onChange, value } }) => (
               <DateTimePicker
                 style={{ zIndex: "auto" }}
@@ -208,7 +228,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 display="spinner"
                 value={value || new Date()}
                 onChange={({type},selectedTime) => {
-                  console.log(type,selectedTime);
+                  
                   onChange(selectedTime);
                   if (type == "set") {
                     setTime(selectedTime);
