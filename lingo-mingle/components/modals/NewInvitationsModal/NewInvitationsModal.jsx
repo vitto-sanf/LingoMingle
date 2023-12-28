@@ -22,22 +22,23 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 //Form Validation Schema
 const schema = yup.object().shape({
+  friend: yup.string().required("Friend is required"),
   date: yup.date().required("Date is required"),
-  time: yup.date().required("Date is required"),
+  time: yup.date().required("Time is required"),
   place: yup.string().required("Place is required"),
 });
-//TODO: fix the styling, field validation
+//TODO: fix the styling, reset field validation after the first submit/cancel
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
   const [text, onChangeText] = useState("");
-  const [friend, SetFriend] = useState("");
+  const [friend, SetFriend] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [users, setUsers] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
-  const [place, setPlace] = useState("");
+  const [place, setPlace] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
@@ -50,6 +51,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     
     resolver: yupResolver(schema),
     defaultValues: {
+      friend: null,
       date: null,
       time: null,
       place: null,
@@ -58,24 +60,29 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
   //
 
-  const onCancel = () => {
+  const onCancel = (formData) => {
     setModalVisible(!modalVisible);
     setDropdownOpen(false);
-    SetFriend("");
+    SetFriend(null);
     setDate(null);
     setTime(null);
     setPlace(null);
+    formData=null;
     errors.date=null;
     errors.time=null;
     errors.time=null;
+    errors.place=null;
+    errors.friend=null;
   };
+
+
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
   };
 
   const onSubmit = (formData) => {
     console.log(formData);
-    /*const formData = {
+    const ModformData = {
       receiver: friend.uuid,
       sender: MY_UUID,
       timestamp: new Date(
@@ -86,7 +93,11 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       status: "pending",
     };
 
-    api
+    console.log(ModformData);
+    formData=null;
+    onCancel(formData);
+
+   /* api
       .addInvitation(formData)
       .then(() => {})
       .catch((err) => notify.error(err.message))
@@ -99,7 +110,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const toggleTimepicker = () => {
     setShowTimePicker(!showTimePicker);
   };
-
+/*
   const onDatechange = ({ type }, selectedDate) => {
     if (type == "set") {
       setDate(selectedDate);
@@ -109,7 +120,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     } else {
       toggleDatepicker();
     }
-  };
+  };*/
 
   const onTimechange = ({ type }, selectedTime) => {
     if (type == "set") {
@@ -157,13 +168,31 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     <View style={styles.centeredView}>
       {showPicker ? (
         <View>
-          <DateTimePicker
-            style={{ zIndex: "auto" }}
-            mode="date"
-            display="spinner"
-            value={date ? date : currentDate}
-            onChange={onDatechange}
-            minimumDate={new Date()}
+          <Controller
+            control={control}
+            //name="selectedDate"
+            render={({ field: { onChange, value } }) => (
+              <DateTimePicker
+                style={{ zIndex: "auto" }}
+                mode="date"
+                display="spinner"
+                value={value || new Date()}
+                onChange={({type},selectedDate) => {
+                  console.log(type,selectedDate);
+                  onChange(selectedDate);
+                  if (type == "set") {
+                    setDate(selectedDate);
+
+                    toggleDatepicker();
+                    
+                  } else {
+                    toggleDatepicker();
+                  }
+                }}
+                minimumDate={new Date()}
+              />
+            )}
+            name="date"
           />
         </View>
       ) : (
@@ -171,13 +200,31 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       )}
       {showTimePicker ? (
         <View>
-          <DateTimePicker
-            style={{ zIndex: "auto" }}
-            mode="time"
-            display="spinner"
-            value={time ? time : currentDate}
-            onChange={onTimechange}
-            minimumDate={new Date()}
+          <Controller
+            control={control}
+            //name="selectedDate"
+            render={({ field: { onChange, value } }) => (
+              <DateTimePicker
+                style={{ zIndex: "auto" }}
+                mode="time"
+                display="spinner"
+                value={value || new Date()}
+                onChange={({type},selectedTime) => {
+                  console.log(type,selectedTime);
+                  onChange(selectedTime);
+                  if (type == "set") {
+                    setTime(selectedTime);
+
+                    toggleTimepicker();
+                    
+                  } else {
+                    toggleTimepicker();
+                  }
+                }}
+                minimumDate={new Date()}
+              />
+            )}
+            name="time"
           />
         </View>
       ) : (
@@ -197,14 +244,30 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
             <Text style={styles.modalText}>New invitation</Text>
 
             <View style={styles.searchContainer}>
+
+            <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, value } }) => (
               <TextInput
                 style={styles.userNameInput}
-                onChangeText={onChangeFriend}
+                onChangeText={(text)=>{
+                  onChange(text)
+                  onChangeFriend(text)
+                }}
                 value={friend ? friend.username : friend}
                 placeholder="Friend Username"
               />
+              )}
+              name="friend"
+            />
+            
+
               <FA5Icon name="search" color={COLOR.gray} size={20} />
             </View>
+            {errors.friend && <Text>{errors.friend.message}</Text>}
 
             {dropdownOpen ? (
               <View
@@ -297,8 +360,13 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               render={({ field: { onChange, value } }) => (
                 <TextInput
                   style={styles.input}
-                  onChangeText={onChange}
-                  value={value}
+                  onChangeText={(text)=>
+                  {
+                    onChange(text)
+                    setPlace(text)
+                    }
+                  }
+                  value={place}
                   placeholder="Place"
                 />
               )}
