@@ -42,6 +42,21 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
+  useEffect(() => {
+    console.log(errors),
+    api
+      .getUser(MY_UUID)
+      .then((data) => {
+        api
+          .getFriends(data.friends)
+          .then((friendsInfo) => {
+            setUsers(friendsInfo);
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   //Form Validation control
   const {
     control,
@@ -67,21 +82,13 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     setDate(null);
     setTime(null);
     setPlace(null);
-    formData=null;
-    errors.date=null;
-    errors.time=null;
-    errors.time=null;
-    errors.place=null;
-    errors.friend=null;
+    control._reset();
   };
 
 
-  const toggleDatepicker = () => {
-    setShowPicker(!showPicker);
-  };
+  
 
   const onSubmit = (formData) => {
-    console.log(formData);
     const ModformData = {
       receiver: friend.uuid,
       sender: MY_UUID,
@@ -92,10 +99,8 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       place: place,
       status: "pending",
     };
-
-    console.log(ModformData);
-    formData=null;
-    onCancel(formData);
+    onCancel();
+    
 
    /* api
       .addInvitation(formData)
@@ -105,6 +110,11 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
         notify.success("Invitation sent correctly!");
         onCancel();
       });*/
+  };
+
+
+  const toggleDatepicker = () => {
+    setShowPicker(!showPicker);
   };
 
   const toggleTimepicker = () => {
@@ -122,6 +132,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     }
   };*/
 
+  /*
   const onTimechange = ({ type }, selectedTime) => {
     if (type == "set") {
       setTime(selectedTime);
@@ -130,7 +141,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     } else {
       toggleTimepicker();
     }
-  };
+  };*/
 
   const formatDate = (rawDate) => {
     let date = new Date(rawDate);
@@ -149,20 +160,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     SetFriend(value);
   };
 
-  useEffect(() => {
-    console.log(errors),
-    api
-      .getUser(MY_UUID)
-      .then((data) => {
-        api
-          .getFriends(data.friends)
-          .then((friendsInfo) => {
-            setUsers(friendsInfo);
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  
 
   return (
     <View style={styles.centeredView}>
