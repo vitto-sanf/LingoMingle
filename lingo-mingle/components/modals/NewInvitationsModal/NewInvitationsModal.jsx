@@ -118,18 +118,18 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       place: place,
       status: "pending",
     };
-    console.log("Form Data: ", ModformData);
-    onCancel();
+    /*console.log("Form Data: ", ModformData);
+    onCancel();*/
     
 
-   /* api
-      .addInvitation(formData)
+    api
+      .addInvitation(ModformData)
       .then(() => {})
       .catch((err) => notify.error(err.message))
       .finally(() => {
         notify.success("Invitation sent correctly!");
         onCancel();
-      });*/
+      });
   };
 
 
