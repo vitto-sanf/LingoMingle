@@ -22,7 +22,7 @@ import  {Link} from 'expo-router';
 import api from "../../../services/api";
 import useNotification from "../../../hooks/useNotification";
 import NewInvitationModal from "../../../components/modals/NewInvitationsModal/NewInvitationsModal";
-
+import EditInvitationModal from "../../../components/modals/EditInvitationsModal/EditInvitationsModal";
 const InvitationsPage = () => {
   const [loading, setLoading] = useState(true);
   const[pageStatus,setPageStatus]=useState("new");
@@ -33,9 +33,14 @@ const InvitationsPage = () => {
   const [dirty2,setDirty2]=useState(true);
   const notify = useNotification();
   const [modalVisible, setModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
+  };
+
+  const toggleModalEdit = () => {
+    setEditModalVisible(!editModalVisible);
   };
 
 
@@ -132,6 +137,7 @@ const InvitationsPage = () => {
       <Pressable style={ pageStatus==="new"?  styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetNew}><Text>New Invitations</Text></Pressable>
       <Pressable style={ pageStatus==="scheduled"? styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetScheduled} ><Text > Scheduled </Text></Pressable>
       <NewInvitationModal modalVisible={modalVisible} setModalVisible={toggleModal}/>
+      <EditInvitationModal modalVisible={editModalVisible} setModalVisible={toggleModalEdit}/>
       </View>
       
         {invitations?.length === 0 && pageStatus==="new"? (
@@ -170,6 +176,7 @@ const InvitationsPage = () => {
                 renderItem={({ item }) => (
                   <ScheduledInvitationCard item={item} myUUID={MY_UUID}
                   onDeleteInvitation={(cancelUUID) => handleCancelInvitation(cancelUUID)}
+                  modalVisible={editModalVisible} setModalVisible={toggleModalEdit}
                    />
                 )}
                 keyExtractor={(item) => item.uuid}

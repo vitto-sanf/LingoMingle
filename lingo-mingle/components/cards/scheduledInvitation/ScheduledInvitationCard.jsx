@@ -14,7 +14,7 @@ import { COLOR } from "../../../constants";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const ScheduledInvitationCard = ({ item, myUUID,onDeleteInvitation }) => {
+const ScheduledInvitationCard = ({ item, myUUID,onDeleteInvitation,modalVisible,setModalVisible }) => {
   const notify = useNotification();
   const invitationUUID = item.uuid;
 
@@ -53,7 +53,7 @@ const ScheduledInvitationCard = ({ item, myUUID,onDeleteInvitation }) => {
         
 
         <View style={styles.buttons}>
-          <Pressable style={styles.pressableEdit} onPress={handleEditInvitation}>
+          <Pressable style={styles.pressableEdit} onPress={() => setModalVisible(true)}>
             <Text>Edit</Text>
           </Pressable>
           <Pressable style={styles.pressableCancel} onPress={handleCancelInvitation}>
