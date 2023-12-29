@@ -21,7 +21,7 @@ import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-//TODO: fix the styling, fix validation on friend invitation name
+//TODO: fix the styling
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
 
@@ -195,14 +195,12 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 mode="date"
                 display="spinner"
                 value={value || new Date()}
-                onChange={({type},selectedDate) => {
-                  
+                onChange={({ type }, selectedDate) => {
                   onChange(selectedDate);
                   if (type == "set") {
                     setDate(selectedDate);
 
                     toggleDatepicker();
-                    
                   } else {
                     toggleDatepicker();
                   }
@@ -220,21 +218,18 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
         <View>
           <Controller
             control={control}
-            
             render={({ field: { onChange, value } }) => (
               <DateTimePicker
                 style={{ zIndex: "auto" }}
                 mode="time"
                 display="spinner"
                 value={value || new Date()}
-                onChange={({type},selectedTime) => {
-                  
+                onChange={({ type }, selectedTime) => {
                   onChange(selectedTime);
                   if (type == "set") {
                     setTime(selectedTime);
 
                     toggleTimepicker();
-                    
                   } else {
                     toggleTimepicker();
                   }
@@ -262,26 +257,24 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
             <Text style={styles.modalText}>New invitation</Text>
 
             <View style={styles.searchContainer}>
-
-            <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, value } }) => (
-              <TextInput
-                style={styles.userNameInput}
-                onChangeText={(text)=>{
-                  onChange(text)
-                  onChangeFriend(text)
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
                 }}
-                value={friend ? friend.username : friend}
-                placeholder="Friend Username"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    style={styles.userNameInput}
+                    onChangeText={(text) => {
+                      onChange(text);
+                      onChangeFriend(text);
+                    }}
+                    value={friend ? friend.username : friend}
+                    placeholder="Friend Username"
+                  />
+                )}
+                name="friend"
               />
-              )}
-              name="friend"
-            />
-            
 
               <FA5Icon name="search" color={COLOR.gray} size={20} />
             </View>
@@ -304,16 +297,31 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                     })
                     .slice(0, 10)}
                   renderItem={({ item }) => (
-                    <Pressable
-                      onPress={() => {
-                        SetFriend({ uuid: item.uuid, username: item.username });
-                        setDropdownOpen(false);
+                    <Controller
+                      control={control}
+                      rules={{
+                        required: true,
                       }}
-                      style={styles.dropdownRow}
-                      key={item.uuid}
-                    >
-                      <Text style={styles.friendStyle}>{item.username}</Text>
-                    </Pressable>
+                      render={({ field: { onChange, value } }) => (
+                        <Pressable
+                          onPress={() => {
+                            SetFriend({
+                              uuid: item.uuid,
+                              username: item.username,
+                            });
+                            onChange(item.username);
+                            setDropdownOpen(false);
+                          }}
+                          style={styles.dropdownRow}
+                          key={item.uuid}
+                        >
+                          <Text style={styles.friendStyle}>
+                            {item.username}
+                          </Text>
+                        </Pressable>
+                      )}
+                      name="friend"
+                    />
                   )}
                   keyExtractor={(item) => item.uuid}
                   showsHorizontalScrollIndicator={true}
@@ -342,7 +350,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                     />
                   )}
                   name="date"
-                  
                 />
                 {errors.date && <Text>{errors.date.message}</Text>}
               </Pressable>
@@ -362,7 +369,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                       value={time ? time.toLocaleTimeString("it-IT") : null}
                       placeholder="Hour"
                       editable={false}
-                      
                     />
                   )}
                   name="time"
@@ -378,12 +384,10 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               render={({ field: { onChange, value } }) => (
                 <TextInput
                   style={styles.input}
-                  onChangeText={(text)=>
-                  {
-                    onChange(text)
-                    setPlace(text)
-                    }
-                  }
+                  onChangeText={(text) => {
+                    onChange(text);
+                    setPlace(text);
+                  }}
                   value={place}
                   placeholder="Place"
                 />
@@ -403,9 +407,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               </Pressable>
               <Pressable
                 style={[styles.button, styles.buttonSend]}
-                onPress={
-                  handleSubmit(onSubmit)
-                }
+                onPress={handleSubmit(onSubmit)}
               >
                 <Text style={styles.textStyle}>Send</Text>
               </Pressable>
