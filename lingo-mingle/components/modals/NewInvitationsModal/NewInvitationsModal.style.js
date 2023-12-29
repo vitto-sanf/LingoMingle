@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: "80%",
-    height: "80%",
+    height: "82%",
   },
   button: {
     borderRadius: 10,
@@ -86,7 +86,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     borderColor: COLOR.lightGrey,
-    padding: 10,
+    paddingLeft:15,
+    paddingTop:3
   },
   dateTimeInputText: {
     color:COLOR.black
@@ -136,6 +137,15 @@ const styles = StyleSheet.create({
   friendStyle:{
     color:COLOR.black,
     
+  },
+  errros:{
+    color:COLOR.red,
+    fontWeight:"bold"
+  },
+  dateTimeErrors:{
+    color:COLOR.red,
+    fontWeight:"bold",
+    marginTop: 7
   }
 });
 

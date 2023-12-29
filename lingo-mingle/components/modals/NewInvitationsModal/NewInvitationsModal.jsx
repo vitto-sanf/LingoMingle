@@ -42,7 +42,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   //Form Validation Schema
   const schema = yup.object().shape({
     friend: yup.string().test({
-      message: () => 'Select the name from your friend!',
+      message: () => 'Select the name from your friends!',
       test(value) {
         return namesArray.includes(value);
       },
@@ -278,7 +278,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
               <FA5Icon name="search" color={COLOR.gray} size={20} />
             </View>
-            {errors.friend && <Text>{errors.friend.message}</Text>}
+            {errors.friend && <Text style={styles.errros}>{errors.friend.message}</Text>}
 
             {dropdownOpen ? (
               <View
@@ -351,7 +351,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   )}
                   name="date"
                 />
-                {errors.date && <Text>{errors.date.message}</Text>}
+                {errors.date && <Text style={styles.dateTimeErrors}>{errors.date.message}</Text>}
               </Pressable>
 
               <Pressable
@@ -373,7 +373,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   )}
                   name="time"
                 />
-                {errors.time && <Text>{errors.time.message}</Text>}
+                {errors.time && <Text style={styles.dateTimeErrors}>{errors.time.message}</Text>}
               </Pressable>
             </View>
             <Controller
@@ -394,7 +394,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               )}
               name="place"
             />
-            {errors.place && <Text>{errors.place.message}</Text>}
+            {errors.place && <Text style={styles.errros}>{errors.place.message}</Text>}
 
             <View style={styles.formview}>
               <Pressable
