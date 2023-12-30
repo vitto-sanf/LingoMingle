@@ -36,11 +36,9 @@ const InitialLayout = () => {
   const { user, token } = useContext(AuthContext);
 
   useEffect(() => {
-    
     if (token) {
       const userId = { id: user.uuid };
 
-      
       try {
         const clientInfo = new StreamVideoClient({
           apiKey: STREAM_KEY,
@@ -52,7 +50,7 @@ const InitialLayout = () => {
         console.log("Error creating client: ", e);
       }
     }
-  }, [token]);
+  }, [token, user]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
