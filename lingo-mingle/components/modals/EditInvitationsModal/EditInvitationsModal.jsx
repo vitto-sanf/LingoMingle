@@ -61,7 +61,6 @@ const EditInvitationModal = ({
 
   const onCancel = (formData) => {
     setModalVisible(!modalVisible);
-    setDropdownOpen(false);
     setDate(null);
     setTime(null);
     setPlace(null);
