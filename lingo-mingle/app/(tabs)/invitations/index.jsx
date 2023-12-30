@@ -34,13 +34,17 @@ const InvitationsPage = () => {
   const notify = useNotification();
   const [modalVisible, setModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [toEdit,setToEdit]=useState(null);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
 
-  const toggleModalEdit = () => {
+  const toggleModalEdit = (value,item) => {
     setEditModalVisible(!editModalVisible);
+    if (!editModalVisible){
+      setToEdit(item);
+    }
   };
 
 
@@ -137,7 +141,9 @@ const InvitationsPage = () => {
       <Pressable style={ pageStatus==="new"?  styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetNew}><Text>New Invitations</Text></Pressable>
       <Pressable style={ pageStatus==="scheduled"? styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetScheduled} ><Text > Scheduled </Text></Pressable>
       <NewInvitationModal modalVisible={modalVisible} setModalVisible={toggleModal}/>
-      <EditInvitationModal modalVisible={editModalVisible} setModalVisible={toggleModalEdit}/>
+      {editModalVisible?
+      <EditInvitationModal modalVisible={editModalVisible} setModalVisible={toggleModalEdit} toEdit={toEdit}/>
+      :''}
       </View>
       
         {invitations?.length === 0 && pageStatus==="new"? (
@@ -171,12 +177,16 @@ const InvitationsPage = () => {
             bounces={false}
           >
             <>
+            
               <FlatList
                 data={accInvitations}
                 renderItem={({ item }) => (
+                  
                   <ScheduledInvitationCard item={item} myUUID={MY_UUID}
                   onDeleteInvitation={(cancelUUID) => handleCancelInvitation(cancelUUID)}
                   modalVisible={editModalVisible} setModalVisible={toggleModalEdit}
+                  setToEdit={setToEdit}
+                  
                    />
                 )}
                 keyExtractor={(item) => item.uuid}

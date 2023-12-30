@@ -265,7 +265,8 @@ const api = {
       const senderUserId = doc.data().sender;
       let inv = {
         uuid: doc.id,
-        timestamp: moment(doc.data().timestamp.toDate()).format("MMM DD YYYY"),
+        timestamp: moment(doc.data().timestamp.toDate()).format("MMM DD YYYY hh:mm a"),
+        nonFormattedTimestamp: doc.data().timestamp.toDate(),
         place: doc.data().place,
         sender: senderUserId,
         username: userMap[senderUserId],

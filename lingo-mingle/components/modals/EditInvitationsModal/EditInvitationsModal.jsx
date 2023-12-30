@@ -22,17 +22,15 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 //TODO: fix the styling
-const EditInvitationModal = ({ modalVisible, setModalVisible }) => {
-
-
+const EditInvitationModal = ({ modalVisible, setModalVisible,item,toEdit}) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
  
   const [dropdownOpen, setDropdownOpen] = useState(false);
   
-  const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
-  const [place, setPlace] = useState(null);
+  const [date, setDate] = useState(toEdit.nonFormattedTimestamp);
+  const [time, setTime] = useState(toEdit.nonFormattedTimestamp);
+  const [place, setPlace] = useState(toEdit.place);
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   
@@ -98,14 +96,11 @@ const EditInvitationModal = ({ modalVisible, setModalVisible }) => {
 
   const onSubmit = (formData) => {
     const ModformData = {
-      receiver: friend.uuid,
-      sender: MY_UUID,
       timestamp: new Date(
         `${date.toISOString().split("T")[0]}` +
           `${time.toISOString().substr(10, 24)}`
       ),
       place: place,
-      status: "pending",
     };
     console.log("Form Data: ", ModformData);
     onCancel();
@@ -183,7 +178,7 @@ const EditInvitationModal = ({ modalVisible, setModalVisible }) => {
                 style={{ zIndex: "auto" }}
                 mode="date"
                 display="spinner"
-                value={value || new Date()}
+                value={date ? date : value || new Date()}
                 onChange={({ type }, selectedDate) => {
                   onChange(selectedDate);
                   if (type == "set") {
@@ -194,7 +189,8 @@ const EditInvitationModal = ({ modalVisible, setModalVisible }) => {
                     toggleDatepicker();
                   }
                 }}
-                minimumDate={new Date()}
+                
+                minimumDate={date}
               />
             )}
             name="date"
@@ -212,7 +208,7 @@ const EditInvitationModal = ({ modalVisible, setModalVisible }) => {
                 style={{ zIndex: "auto" }}
                 mode="time"
                 display="spinner"
-                value={value || new Date()}
+                value={time ? new Date(time): value || new Date()}
                 onChange={({ type }, selectedTime) => {
                   onChange(selectedTime);
                   if (type == "set") {
@@ -263,8 +259,10 @@ const EditInvitationModal = ({ modalVisible, setModalVisible }) => {
                       value={date ? formatDate(date) : null}
                       placeholder="Date"
                       editable={false}
+                      onLayout={()=>{onChange(date)}}
                     />
                   )}
+                  
                   name="date"
                 />
                 {errors.date && <Text style={styles.dateTimeErrors}>{errors.date.message}</Text>}
@@ -282,9 +280,10 @@ const EditInvitationModal = ({ modalVisible, setModalVisible }) => {
                   render={({ field: { onChange, value } }) => (
                     <TextInput
                       style={time ? styles.dateTimeInputText : ""}
-                      value={time ? time.toLocaleTimeString("it-IT") : null}
+                      value={time ? time.toLocaleTimeString("en-US"): null}
                       placeholder="Hour"
                       editable={false}
+                      onLayout={()=>{onChange(date)}}
                     />
                   )}
                   name="time"
@@ -298,6 +297,7 @@ const EditInvitationModal = ({ modalVisible, setModalVisible }) => {
                 required: true,
               }}
               render={({ field: { onChange, value } }) => (
+                
                 <TextInput
                   style={styles.input}
                   onChangeText={(text) => {
@@ -305,6 +305,7 @@ const EditInvitationModal = ({ modalVisible, setModalVisible }) => {
                     setPlace(text);
                   }}
                   value={place}
+                  onLayout={()=>{onChange(place)}}
                   placeholder="Place"
                 />
               )}

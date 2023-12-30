@@ -366,7 +366,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   render={({ field: { onChange, value } }) => (
                     <TextInput
                       style={time ? styles.dateTimeInputText : ""}
-                      value={time ? time.toLocaleTimeString("it-IT") : null}
+                      value={time ? time.toLocaleTimeString("en-US") : null}
                       placeholder="Hour"
                       editable={false}
                     />
