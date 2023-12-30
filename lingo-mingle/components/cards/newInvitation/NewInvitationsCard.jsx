@@ -19,6 +19,10 @@ const NewInvitationCard = ({
   myUUID,
   onAcceptInvitation,
   onRejectInvitation,
+  modalVisible,
+  setModalVisible,
+  setInvitationUUID,
+  setConfirmationModalStatus
 }) => {
   const notify = useNotification();
 
@@ -55,10 +59,19 @@ const NewInvitationCard = ({
         </View>
 
         <View style={styles.buttons}>
-          <Pressable style={styles.pressable} onPress={handleAcceptInvitation}>
+          <Pressable style={styles.pressable} onPress={() => 
+          {
+            setInvitationUUID(invitationUUID)
+            setModalVisible(true)
+            setConfirmationModalStatus("accept")
+            }/*handleAcceptInvitation*/}>
             <FA5Icon name="check-circle" color={COLOR.green} solid size={44} />
           </Pressable>
-          <Pressable style={styles.pressable} onPress={handleRejectInvitation}>
+          <Pressable style={styles.pressable} onPress={()=>{
+            setInvitationUUID(invitationUUID)
+            setModalVisible(true)
+            setConfirmationModalStatus("decline")
+          }/*handleRejectInvitation*/}>
             <FA5Icon name="times-circle" color={COLOR.red} solid size={44} />
           </Pressable>
         </View>

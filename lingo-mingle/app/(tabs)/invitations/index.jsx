@@ -1,3 +1,9 @@
+//Hooks
+import React, { useEffect, useState } from "react";
+import useNotification from "../../../hooks/useNotification";
+// Styles
+import { InvitationsPageStyle as styles } from "../../../styles";
+// Components
 import {
   ScrollView,
   Text,
@@ -6,26 +12,23 @@ import {
   View,
   SectionList,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import FA5Icon from "react-native-vector-icons/FontAwesome5";
-// Styles
-import { InvitationsPageStyle as styles } from "../../../styles";
-// Components
-
 import { Loader } from "../../../components/common";
 import {
   NewInvitationCard,
   ScheduledInvitationCard,
 } from "../../../components/cards";
 import { NewInvitaionModal } from "../../../components/modals";
-import { COLOR } from "../../../constants";
-import { Link } from "expo-router";
-// Services
-import api from "../../../services/api";
-import useNotification from "../../../hooks/useNotification";
 import NewInvitationModal from "../../../components/modals/NewInvitationsModal/NewInvitationsModal";
 import EditInvitationModal from "../../../components/modals/EditInvitationsModal/EditInvitationsModal";
+import AcceptDeclineInvitationsModal from "../../../components/modals/AcceptDeclineInvitation/AcceptDeclineInvitation";
+import { SafeAreaView } from "react-native-safe-area-context";
+import FA5Icon from "react-native-vector-icons/FontAwesome5";
+import { Link } from "expo-router";
+//Constants
+import { COLOR } from "../../../constants";
+// Services
+import api from "../../../services/api";
+
 const InvitationsPage = () => {
   const [loading, setLoading] = useState(true);
   const [pageStatus, setPageStatus] = useState("new");
@@ -37,11 +40,15 @@ const InvitationsPage = () => {
   const notify = useNotification();
   const [modalVisible, setModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
+  const [confirmationModalStatus,setConfirmationModalStatus]=useState(null);
   const [toEdit, setToEdit] = useState(null);
+  const [invitationUUID,setInvitationUUID]=useState(null);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
+
 
   const toggleModalEdit = (value, item) => {
     setEditModalVisible(!editModalVisible);
@@ -50,37 +57,47 @@ const InvitationsPage = () => {
     }
   };
 
+  const toggleModalConfirmation = () => {
+    setConfirmationModalVisible(!confirmationModalVisible);
+  };
+
   const handleAcceptInvitation = (invitationUUID) => {
-    api
+    console.log("accepted:", invitationUUID);
+    toggleModalConfirmation();
+    /*api
       .acceptInvitation(invitationUUID)
       .then((res) => {
         setDirty(true);
         setDirty2(true);
         notify.success(res.message);
       })
-      .catch((err) => notify.error(err.message));
+      .catch((err) => notify.error(err.message));*/
   };
 
   const handleCancelInvitation = (invitationUUID) => {
-    api
+    console.log("canceled:", invitationUUID);
+    toggleModalConfirmation();
+   /* api
       .cancelInvitation(invitationUUID)
       .then((res) => {
         setDirty(true);
         setDirty2(true);
         notify.success("Inviation deleted");
       })
-      .catch((err) => notify.error("Error while deleting the invitation"));
+      .catch((err) => notify.error("Error while deleting the invitation"));*/
   };
 
   const handleRejectInvitation = (invitationUUID) => {
-    api
+    console.log("rejected:", invitationUUID);
+    toggleModalConfirmation();
+    /*api
       .cancelInvitation(invitationUUID)
       .then((res) => {
         setDirty(true);
         setDirty2(true);
         notify.success("Inviation rejected");
       })
-      .catch((err) => notify.error("Error while rejecting the invitation"));
+      .catch((err) => notify.error("Error while rejecting the invitation"));*/
   };
 
   useEffect(() => {
@@ -160,6 +177,14 @@ const InvitationsPage = () => {
         ) : (
           ""
         )}
+        <AcceptDeclineInvitationsModal
+          modalVisible={confirmationModalVisible}
+          setModalVisible={toggleModalConfirmation}
+          handleAcceptInvitation={handleAcceptInvitation}
+          handleRejectInvitation={handleRejectInvitation}
+          invitationUUID={invitationUUID}
+          confirmationModalStatus={confirmationModalStatus}
+        />
       </View>
 
       {invitations?.length === 0 && pageStatus === "new" ? (
@@ -181,9 +206,13 @@ const InvitationsPage = () => {
                   onAcceptInvitation={(acceptedUUID) =>
                     handleAcceptInvitation(acceptedUUID)
                   }
+                  setInvitationUUID={setInvitationUUID}
                   onRejectInvitation={(rejectUUID) =>
                     handleRejectInvitation(rejectUUID)
                   }
+                  modalVisible={confirmationModalVisible}
+                  setModalVisible={toggleModalConfirmation}
+                  setConfirmationModalStatus={setConfirmationModalStatus}
                 />
               )}
               keyExtractor={(item) => item.uuid}
