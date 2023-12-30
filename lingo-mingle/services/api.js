@@ -11,6 +11,7 @@ import {
   getDocs,
   deleteDoc,
   addDoc,
+  setDoc
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 import moment from "moment";
@@ -307,6 +308,25 @@ const api = {
   addInvitation: async (formData) =>{
     try{
       const docRef=addDoc(collection(database, 'invitation'), formData)
+      return docRef;
+    }
+    catch(err)
+    {
+      console.log(err);
+      return {message: "Error During invitation sent!"}
+      
+    }
+  },
+  editInvitation: async (formData) =>{
+    try{
+      
+      const docRef = await setDoc(doc(database, "invitation", formData.uuid), {
+        receiver: formData.receiver,
+        sender: formData.sender,
+        place: formData.place,
+        timestamp: formData.timestamp,
+        status: formData.status
+      });
       return docRef;
     }
     catch(err)

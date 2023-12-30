@@ -142,7 +142,7 @@ const InvitationsPage = () => {
       <Pressable style={ pageStatus==="scheduled"? styles.topNavLinksSelected : styles.topNavLinks} onPress={handleSetScheduled} ><Text > Scheduled </Text></Pressable>
       <NewInvitationModal modalVisible={modalVisible} setModalVisible={toggleModal}/>
       {editModalVisible?
-      <EditInvitationModal modalVisible={editModalVisible} setModalVisible={toggleModalEdit} toEdit={toEdit}/>
+      <EditInvitationModal modalVisible={editModalVisible} setModalVisible={toggleModalEdit} toEdit={toEdit} setDirty={setDirty2}/>
       :''}
       </View>
       

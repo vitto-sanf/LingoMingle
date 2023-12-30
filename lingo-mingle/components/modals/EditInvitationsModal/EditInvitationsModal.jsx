@@ -22,10 +22,10 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 //TODO: fix the styling
-const EditInvitationModal = ({ modalVisible, setModalVisible,item,toEdit}) => {
+const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
- 
+ //console.log(toEdit);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   
   const [date, setDate] = useState(toEdit.nonFormattedTimestamp);
@@ -96,24 +96,29 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,item,toEdit}) => {
 
   const onSubmit = (formData) => {
     const ModformData = {
+      uuid: toEdit.uuid,
+      receiver: MY_UUID,
+      sender: toEdit.sender,
       timestamp: new Date(
         `${date.toISOString().split("T")[0]}` +
           `${time.toISOString().substr(10, 24)}`
       ),
       place: place,
+      status: "accepted"
     };
-    console.log("Form Data: ", ModformData);
-    onCancel();
+    //console.log("Form Data: ", ModformData);
+    //onCancel();
     
-/*
+
     api
-      .addInvitation(ModformData)
+      .editInvitation(ModformData)
       .then(() => {})
       .catch((err) => notify.error(err.message))
       .finally(() => {
-        notify.success("Invitation sent correctly!");
+        setDirty(true);
+        notify.success("Invitation modified correctly!");
         onCancel();
-      });*/
+      });
   };
 
 
