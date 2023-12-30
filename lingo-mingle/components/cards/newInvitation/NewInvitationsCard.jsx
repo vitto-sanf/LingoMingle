@@ -9,8 +9,7 @@ import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import { COLOR } from "../../../constants";
 import api from "../../../services/api";
 
-// Services
-//import api from "../../../services/api";
+
 
 // Hooks
 import useNotification from "../../../hooks/useNotification";

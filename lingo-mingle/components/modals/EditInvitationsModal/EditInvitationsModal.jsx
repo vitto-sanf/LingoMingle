@@ -22,18 +22,19 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 //TODO: fix the styling
-const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) => {
+const EditInvitationModal = ({
+  modalVisible,
+  setModalVisible,
+  toEdit,
+  setDirty,
+}) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
- //console.log(toEdit);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  
   const [date, setDate] = useState(toEdit.nonFormattedTimestamp);
   const [time, setTime] = useState(toEdit.nonFormattedTimestamp);
   const [place, setPlace] = useState(toEdit.place);
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  
 
   //Form Validation Schema
   const schema = yup.object().shape({
@@ -42,36 +43,12 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
     place: yup.string().required("Place is required"),
   });
 
-  /*useEffect(() => {
-    
-    api
-      .getUser(MY_UUID)
-      .then((data) => {
-        api
-          .getFriends(data.friends)
-          .then((friendsInfo) => {
-            setUsers(friendsInfo);
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err))
-      .finally(()=>{
-        let newArr = users.map((item) => {
-          return item.username
-        });
-        setNamesArray(namesArray,...newArr);
-        
-      });
-  }, []);*/
-
- 
   //Form Validation control
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    
     resolver: yupResolver(schema),
     defaultValues: {
       date: null,
@@ -91,9 +68,6 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
     control._reset();
   };
 
-
-  
-
   const onSubmit = (formData) => {
     const ModformData = {
       uuid: toEdit.uuid,
@@ -104,11 +78,8 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
           `${time.toISOString().substr(10, 24)}`
       ),
       place: place,
-      status: "accepted"
+      status: "accepted",
     };
-    //console.log("Form Data: ", ModformData);
-    //onCancel();
-    
 
     api
       .editInvitation(ModformData)
@@ -121,7 +92,6 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
       });
   };
 
-
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
   };
@@ -129,28 +99,6 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
   const toggleTimepicker = () => {
     setShowTimePicker(!showTimePicker);
   };
-/*
-  const onDatechange = ({ type }, selectedDate) => {
-    if (type == "set") {
-      setDate(selectedDate);
-
-      toggleDatepicker();
-      toggleTimepicker();
-    } else {
-      toggleDatepicker();
-    }
-  };*/
-
-  /*
-  const onTimechange = ({ type }, selectedTime) => {
-    if (type == "set") {
-      setTime(selectedTime);
-
-      toggleTimepicker();
-    } else {
-      toggleTimepicker();
-    }
-  };*/
 
   const formatDate = (rawDate) => {
     let date = new Date(rawDate);
@@ -169,15 +117,12 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
     SetFriend(value);
   };
 
-  
-
   return (
     <View style={styles.centeredView}>
       {showPicker ? (
         <View>
           <Controller
             control={control}
-            //name="selectedDate"
             render={({ field: { onChange, value } }) => (
               <DateTimePicker
                 style={{ zIndex: "auto" }}
@@ -194,7 +139,6 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
                     toggleDatepicker();
                   }
                 }}
-                
                 minimumDate={date}
               />
             )}
@@ -213,7 +157,7 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
                 style={{ zIndex: "auto" }}
                 mode="time"
                 display="spinner"
-                value={time ? new Date(time): value || new Date()}
+                value={time ? new Date(time) : value || new Date()}
                 onChange={({ type }, selectedTime) => {
                   onChange(selectedTime);
                   if (type == "set") {
@@ -246,8 +190,6 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Edit invitation</Text>
 
-            
-
             <View style={styles.formview}>
               <Pressable
                 style={styles.dateTimeInput}
@@ -264,13 +206,18 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
                       value={date ? formatDate(date) : null}
                       placeholder="Date"
                       editable={false}
-                      onLayout={()=>{onChange(date)}}
+                      onLayout={() => {
+                        onChange(date);
+                      }}
                     />
                   )}
-                  
                   name="date"
                 />
-                {errors.date && <Text style={styles.dateTimeErrors}>{errors.date.message}</Text>}
+                {errors.date && (
+                  <Text style={styles.dateTimeErrors}>
+                    {errors.date.message}
+                  </Text>
+                )}
               </Pressable>
 
               <Pressable
@@ -285,15 +232,21 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
                   render={({ field: { onChange, value } }) => (
                     <TextInput
                       style={time ? styles.dateTimeInputText : ""}
-                      value={time ? time.toLocaleTimeString("en-US"): null}
+                      value={time ? time.toLocaleTimeString("en-US") : null}
                       placeholder="Hour"
                       editable={false}
-                      onLayout={()=>{onChange(date)}}
+                      onLayout={() => {
+                        onChange(date);
+                      }}
                     />
                   )}
                   name="time"
                 />
-                {errors.time && <Text style={styles.dateTimeErrors}>{errors.time.message}</Text>}
+                {errors.time && (
+                  <Text style={styles.dateTimeErrors}>
+                    {errors.time.message}
+                  </Text>
+                )}
               </Pressable>
             </View>
             <Controller
@@ -302,7 +255,6 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
                 required: true,
               }}
               render={({ field: { onChange, value } }) => (
-                
                 <TextInput
                   style={styles.input}
                   onChangeText={(text) => {
@@ -310,13 +262,17 @@ const EditInvitationModal = ({ modalVisible, setModalVisible,toEdit,setDirty}) =
                     setPlace(text);
                   }}
                   value={place}
-                  onLayout={()=>{onChange(place)}}
+                  onLayout={() => {
+                    onChange(place);
+                  }}
                   placeholder="Place"
                 />
               )}
               name="place"
             />
-            {errors.place && <Text style={styles.errros}>{errors.place.message}</Text>}
+            {errors.place && (
+              <Text style={styles.errros}>{errors.place.message}</Text>
+            )}
 
             <View style={styles.formview}>
               <Pressable

@@ -11,7 +11,7 @@ import {
   getDocs,
   deleteDoc,
   addDoc,
-  setDoc
+  setDoc,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 import moment from "moment";
@@ -25,20 +25,20 @@ const api = {
       console.log("User Not Found!");
     }
   },
-  getAllUsers: async ()=> {
+  getAllUsers: async () => {
     const querySnapshot = await getDocs(collection(database, "user"));
     let users = [];
-    console.log(querySnapshot.docs.map(doc => doc.data()));
-      querySnapshot.forEach((doc) => {
-        let user={
-          uuid:doc.id,
-          username: doc.data().username
-        }
-        users.push(user);
-        console.log(doc.id, " => ", doc.data().username);
-      });
-    return users//snapshot.docs.map(doc => doc.data());
-},
+    console.log(querySnapshot.docs.map((doc) => doc.data()));
+    querySnapshot.forEach((doc) => {
+      let user = {
+        uuid: doc.id,
+        username: doc.data().username,
+      };
+      users.push(user);
+      console.log(doc.id, " => ", doc.data().username);
+    });
+    return users; //snapshot.docs.map(doc => doc.data());
+  },
   getLastUserContacted: async (lastUserContacted) => {
     const promises = lastUserContacted.map((doc) =>
       api.getUser(doc).then((data) => {
@@ -266,7 +266,9 @@ const api = {
       const senderUserId = doc.data().sender;
       let inv = {
         uuid: doc.id,
-        timestamp: moment(doc.data().timestamp.toDate()).format("MMM DD YYYY hh:mm a"),
+        timestamp: moment(doc.data().timestamp.toDate()).format(
+          "MMM DD YYYY hh:mm a"
+        ),
         nonFormattedTimestamp: doc.data().timestamp.toDate(),
         place: doc.data().place,
         sender: senderUserId,
@@ -282,7 +284,7 @@ const api = {
       const invitationRef = doc(database, "invitation", inviationUUID);
 
       await updateDoc(invitationRef, {
-        "status": "accepted",
+        status: "accepted",
       });
 
       return {
@@ -295,47 +297,37 @@ const api = {
       };
     }
   },
-  cancelInvitation: async (invitationUUID)=>{
-    try{
-      await deleteDoc(doc(database,"invitation",invitationUUID));
-      
-    }
-    catch (error){
-      console.log(error)
-      
+  cancelInvitation: async (invitationUUID) => {
+    try {
+      await deleteDoc(doc(database, "invitation", invitationUUID));
+    } catch (error) {
+      console.log(error);
     }
   },
-  addInvitation: async (formData) =>{
-    try{
-      const docRef=addDoc(collection(database, 'invitation'), formData)
+  addInvitation: async (formData) => {
+    try {
+      const docRef = addDoc(collection(database, "invitation"), formData);
       return docRef;
-    }
-    catch(err)
-    {
+    } catch (err) {
       console.log(err);
-      return {message: "Error During invitation sent!"}
-      
+      return { message: "Error During invitation sent!" };
     }
   },
-  editInvitation: async (formData) =>{
-    try{
-      
+  editInvitation: async (formData) => {
+    try {
       const docRef = await setDoc(doc(database, "invitation", formData.uuid), {
         receiver: formData.receiver,
         sender: formData.sender,
         place: formData.place,
         timestamp: formData.timestamp,
-        status: formData.status
+        status: formData.status,
       });
       return docRef;
-    }
-    catch(err)
-    {
+    } catch (err) {
       console.log(err);
-      return {message: "Error During invitation sent!"}
-      
+      return { message: "Error During invitation sent!" };
     }
-  }
+  },
 };
 
 export default api;

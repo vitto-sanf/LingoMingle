@@ -8,27 +8,26 @@ import FA5Icon from "react-native-vector-icons/FontAwesome5";
 
 import { COLOR } from "../../../constants";
 
-// Services
-//import api from "../../../services/api";
-
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const ScheduledInvitationCard = ({ item, myUUID,onDeleteInvitation,modalVisible,setModalVisible,setToEdit }) => {
+const ScheduledInvitationCard = ({
+  item,
+  myUUID,
+  onDeleteInvitation,
+  modalVisible,
+  setModalVisible,
+  setToEdit,
+}) => {
   const notify = useNotification();
   const invitationUUID = item.uuid;
 
-  //const friendRequestUUID = item.uuid;
-  const handleEditInvitation = () => {
-   
-  };
+  const handleEditInvitation = () => {};
 
   const handleCancelInvitation = () => {
-    onDeleteInvitation(invitationUUID)
-   
+    onDeleteInvitation(invitationUUID);
   };
 
- 
   return (
     <View style={styles.container} key={item.uuid}>
       <Text style={styles.userName}>{item.username}</Text>
@@ -50,18 +49,21 @@ const ScheduledInvitationCard = ({ item, myUUID,onDeleteInvitation,modalVisible,
             </View>
           </View>
         </View>
-        
 
         <View style={styles.buttons}>
-          <Pressable style={styles.pressableEdit} onPress={() => {
-            //setToEdit(item);
-            setModalVisible(true,item);
-            //call a function after aother in javascript?
-            }}>
+          <Pressable
+            style={styles.pressableEdit}
+            onPress={() => {
+              setModalVisible(true, item);
+            }}
+          >
             <Text>Edit</Text>
           </Pressable>
-          <Pressable style={styles.pressableCancel} onPress={handleCancelInvitation}>
-          <Text>Cancel</Text>
+          <Pressable
+            style={styles.pressableCancel}
+            onPress={handleCancelInvitation}
+          >
+            <Text>Cancel</Text>
           </Pressable>
         </View>
       </View>

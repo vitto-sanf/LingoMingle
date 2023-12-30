@@ -23,8 +23,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 //TODO: fix the styling
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
-
-
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
   const [text, onChangeText] = useState("");
@@ -37,24 +35,25 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const [place, setPlace] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [namesArray,setNamesArray]=useState([]);
+  const [namesArray, setNamesArray] = useState([]);
 
   //Form Validation Schema
   const schema = yup.object().shape({
-    friend: yup.string().test({
-      message: () => 'Select the name from your friends!',
-      test(value) {
-        return namesArray.includes(value);
-      },
-    })
-    .required("Friend is required"),
+    friend: yup
+      .string()
+      .test({
+        message: () => "Select the name from your friends!",
+        test(value) {
+          return namesArray.includes(value);
+        },
+      })
+      .required("Friend is required"),
     date: yup.date().required("Date is required"),
     time: yup.date().required("Time is required"),
     place: yup.string().required("Place is required"),
   });
 
   useEffect(() => {
-    
     api
       .getUser(MY_UUID)
       .then((data) => {
@@ -66,23 +65,20 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
           .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err))
-      .finally(()=>{
+      .finally(() => {
         let newArr = users.map((item) => {
-          return item.username
+          return item.username;
         });
-        setNamesArray(namesArray,...newArr);
-        
+        setNamesArray(namesArray, ...newArr);
       });
   }, []);
 
- 
   //Form Validation control
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    
     resolver: yupResolver(schema),
     defaultValues: {
       friend: null,
@@ -104,9 +100,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     control._reset();
   };
 
-
-  
-
   const onSubmit = (formData) => {
     const ModformData = {
       receiver: friend.uuid,
@@ -118,9 +111,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       place: place,
       status: "pending",
     };
-    /*console.log("Form Data: ", ModformData);
-    onCancel();*/
-    
 
     api
       .addInvitation(ModformData)
@@ -132,7 +122,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       });
   };
 
-
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
   };
@@ -140,28 +129,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const toggleTimepicker = () => {
     setShowTimePicker(!showTimePicker);
   };
-/*
-  const onDatechange = ({ type }, selectedDate) => {
-    if (type == "set") {
-      setDate(selectedDate);
-
-      toggleDatepicker();
-      toggleTimepicker();
-    } else {
-      toggleDatepicker();
-    }
-  };*/
-
-  /*
-  const onTimechange = ({ type }, selectedTime) => {
-    if (type == "set") {
-      setTime(selectedTime);
-
-      toggleTimepicker();
-    } else {
-      toggleTimepicker();
-    }
-  };*/
 
   const formatDate = (rawDate) => {
     let date = new Date(rawDate);
@@ -180,15 +147,12 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     SetFriend(value);
   };
 
-  
-
   return (
     <View style={styles.centeredView}>
       {showPicker ? (
         <View>
           <Controller
             control={control}
-            //name="selectedDate"
             render={({ field: { onChange, value } }) => (
               <DateTimePicker
                 style={{ zIndex: "auto" }}
@@ -278,7 +242,9 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
               <FA5Icon name="search" color={COLOR.gray} size={20} />
             </View>
-            {errors.friend && <Text style={styles.errros}>{errors.friend.message}</Text>}
+            {errors.friend && (
+              <Text style={styles.errros}>{errors.friend.message}</Text>
+            )}
 
             {dropdownOpen ? (
               <View
@@ -351,7 +317,11 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   )}
                   name="date"
                 />
-                {errors.date && <Text style={styles.dateTimeErrors}>{errors.date.message}</Text>}
+                {errors.date && (
+                  <Text style={styles.dateTimeErrors}>
+                    {errors.date.message}
+                  </Text>
+                )}
               </Pressable>
 
               <Pressable
@@ -373,7 +343,11 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   )}
                   name="time"
                 />
-                {errors.time && <Text style={styles.dateTimeErrors}>{errors.time.message}</Text>}
+                {errors.time && (
+                  <Text style={styles.dateTimeErrors}>
+                    {errors.time.message}
+                  </Text>
+                )}
               </Pressable>
             </View>
             <Controller
@@ -394,7 +368,9 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               )}
               name="place"
             />
-            {errors.place && <Text style={styles.errros}>{errors.place.message}</Text>}
+            {errors.place && (
+              <Text style={styles.errros}>{errors.place.message}</Text>
+            )}
 
             <View style={styles.formview}>
               <Pressable
