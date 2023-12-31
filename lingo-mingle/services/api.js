@@ -325,7 +325,7 @@ const api = {
       return docRef;
     } catch (err) {
       console.log(err);
-      return { message: "Error During invitation sent!" };
+      return { message: "Error During edit invitation!" };
     }
   },
 };
