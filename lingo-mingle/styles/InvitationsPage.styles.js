@@ -64,11 +64,11 @@ const styles = StyleSheet.create({
   topNav:{
     paddingTop:10,
     alignItems:"center",
-    justifyContent:"center",
+    justifyContent:"space-between",
     flexDirection:"row"
   },
   topNavLinks:{
-    width:190,
+    width:"55%",//190
     textAlign:"center",
     padding:10,
     borderColor:'#D9D9D9',
