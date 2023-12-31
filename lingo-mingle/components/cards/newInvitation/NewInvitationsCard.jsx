@@ -7,34 +7,14 @@ import styles from "./NewInvitationCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 
 import { COLOR } from "../../../constants";
-import api from "../../../services/api";
-
-
-
-// Hooks
-import useNotification from "../../../hooks/useNotification";
 
 const NewInvitationCard = ({
   item,
-  myUUID,
-  onAcceptInvitation,
-  onRejectInvitation,
-  modalVisible,
   setModalVisible,
   setInvitationUUID,
-  setConfirmationModalStatus
+  setConfirmationModalStatus,
 }) => {
-  const notify = useNotification();
-
   const invitationUUID = item.uuid;
-
-  const handleAcceptInvitation = () => {
-    onAcceptInvitation(invitationUUID);
-  };
-
-  const handleRejectInvitation = () => {
-    onRejectInvitation(invitationUUID);
-  };
 
   return (
     <View style={styles.container} key={item.uuid}>
@@ -59,19 +39,24 @@ const NewInvitationCard = ({
         </View>
 
         <View style={styles.buttons}>
-          <Pressable style={styles.pressable} onPress={() => 
-          {
-            setInvitationUUID(invitationUUID)
-            setModalVisible(true)
-            setConfirmationModalStatus("accept")
-            }/*handleAcceptInvitation*/}>
+          <Pressable
+            style={styles.pressable}
+            onPress={() => {
+              setInvitationUUID(invitationUUID);
+              setModalVisible(true);
+              setConfirmationModalStatus("accept");
+            }}
+          >
             <FA5Icon name="check-circle" color={COLOR.green} solid size={44} />
           </Pressable>
-          <Pressable style={styles.pressable} onPress={()=>{
-            setInvitationUUID(invitationUUID)
-            setModalVisible(true)
-            setConfirmationModalStatus("decline")
-          }/*handleRejectInvitation*/}>
+          <Pressable
+            style={styles.pressable}
+            onPress={() => {
+              setInvitationUUID(invitationUUID);
+              setModalVisible(true);
+              setConfirmationModalStatus("decline");
+            }}
+          >
             <FA5Icon name="times-circle" color={COLOR.red} solid size={44} />
           </Pressable>
         </View>

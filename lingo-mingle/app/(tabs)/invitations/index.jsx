@@ -40,15 +40,15 @@ const InvitationsPage = () => {
   const notify = useNotification();
   const [modalVisible, setModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
-  const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
-  const [confirmationModalStatus,setConfirmationModalStatus]=useState(null);
+  const [confirmationModalVisible, setConfirmationModalVisible] =
+    useState(false);
+  const [confirmationModalStatus, setConfirmationModalStatus] = useState(null);
   const [toEdit, setToEdit] = useState(null);
-  const [invitationUUID,setInvitationUUID]=useState(null);
+  const [invitationUUID, setInvitationUUID] = useState(null);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
-
 
   const toggleModalEdit = (value, item) => {
     setEditModalVisible(!editModalVisible);
@@ -62,42 +62,36 @@ const InvitationsPage = () => {
   };
 
   const handleAcceptInvitation = (invitationUUID) => {
-    console.log("accepted:", invitationUUID);
-    toggleModalConfirmation();
-    /*api
+    api
       .acceptInvitation(invitationUUID)
       .then((res) => {
         setDirty(true);
         setDirty2(true);
         notify.success(res.message);
       })
-      .catch((err) => notify.error(err.message));*/
+      .catch((err) => notify.error(err.message));
   };
 
   const handleCancelInvitation = (invitationUUID) => {
-    console.log("canceled:", invitationUUID);
-    toggleModalConfirmation();
-   /* api
+    api
       .cancelInvitation(invitationUUID)
       .then((res) => {
         setDirty(true);
         setDirty2(true);
         notify.success("Inviation deleted");
       })
-      .catch((err) => notify.error("Error while deleting the invitation"));*/
+      .catch((err) => notify.error("Error while deleting the invitation"));
   };
 
   const handleRejectInvitation = (invitationUUID) => {
-    console.log("rejected:", invitationUUID);
-    toggleModalConfirmation();
-    /*api
+    api
       .cancelInvitation(invitationUUID)
       .then((res) => {
         setDirty(true);
         setDirty2(true);
         notify.success("Inviation rejected");
       })
-      .catch((err) => notify.error("Error while rejecting the invitation"));*/
+      .catch((err) => notify.error("Error while rejecting the invitation"));
   };
 
   useEffect(() => {
@@ -138,7 +132,7 @@ const InvitationsPage = () => {
   };
   if (loading) return <Loader />;
 
-  //TODO: implement modal for confirmation about accept/reject/delete invitation,
+  //TODO: implement modal to confirm invitation sent
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Invitations</Text>
@@ -182,6 +176,7 @@ const InvitationsPage = () => {
           setModalVisible={toggleModalConfirmation}
           handleAcceptInvitation={handleAcceptInvitation}
           handleRejectInvitation={handleRejectInvitation}
+          handleCancelInvitation={handleCancelInvitation}
           invitationUUID={invitationUUID}
           confirmationModalStatus={confirmationModalStatus}
         />
@@ -203,13 +198,7 @@ const InvitationsPage = () => {
                 <NewInvitationCard
                   item={item}
                   myUUID={MY_UUID}
-                  onAcceptInvitation={(acceptedUUID) =>
-                    handleAcceptInvitation(acceptedUUID)
-                  }
                   setInvitationUUID={setInvitationUUID}
-                  onRejectInvitation={(rejectUUID) =>
-                    handleRejectInvitation(rejectUUID)
-                  }
                   modalVisible={confirmationModalVisible}
                   setModalVisible={toggleModalConfirmation}
                   setConfirmationModalStatus={setConfirmationModalStatus}
@@ -234,12 +223,13 @@ const InvitationsPage = () => {
                 <ScheduledInvitationCard
                   item={item}
                   myUUID={MY_UUID}
-                  onDeleteInvitation={(cancelUUID) =>
-                    handleCancelInvitation(cancelUUID)
-                  }
                   modalVisible={editModalVisible}
                   setModalVisible={toggleModalEdit}
                   setToEdit={setToEdit}
+                  confirmationModalVisible={confirmationModalVisible}
+                  setConfirmationModalVisible={toggleModalConfirmation}
+                  setConfirmationModalStatus={setConfirmationModalStatus}
+                  setInvitationUUID={setInvitationUUID}
                 />
               )}
               keyExtractor={(item) => item.uuid}

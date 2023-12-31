@@ -25,11 +25,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
-  const [text, onChangeText] = useState("");
   const [friend, SetFriend] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [users, setUsers] = useState([]);
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
   const [place, setPlace] = useState(null);

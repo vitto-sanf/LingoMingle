@@ -13,20 +13,14 @@ import useNotification from "../../../hooks/useNotification";
 
 const ScheduledInvitationCard = ({
   item,
-  myUUID,
-  onDeleteInvitation,
-  modalVisible,
   setModalVisible,
-  setToEdit,
+  confirmationModalVisible,
+  setConfirmationModalVisible,
+  setConfirmationModalStatus,
+  setInvitationUUID,
 }) => {
   const notify = useNotification();
   const invitationUUID = item.uuid;
-
-  const handleEditInvitation = () => {};
-
-  const handleCancelInvitation = () => {
-    onDeleteInvitation(invitationUUID);
-  };
 
   return (
     <View style={styles.container} key={item.uuid}>
@@ -61,7 +55,11 @@ const ScheduledInvitationCard = ({
           </Pressable>
           <Pressable
             style={styles.pressableCancel}
-            onPress={handleCancelInvitation}
+            onPress={() => {
+              setConfirmationModalVisible(true);
+              setInvitationUUID(invitationUUID);
+              setConfirmationModalStatus("cancel");
+            }}
           >
             <Text>Cancel</Text>
           </Pressable>
