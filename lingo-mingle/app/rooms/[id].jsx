@@ -8,7 +8,7 @@ import {
   Text,
 } from "react-native";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-
+import GamesModal from "../../components/modals/GamesModal/GamesModal";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
   Call,
@@ -30,6 +30,7 @@ const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 const Room = () => {
+  const [modalVisible, setModalVisible] = useState(true);
   const { user, token } = useContext(AuthContext);
   const router = useRouter();
   const navigation = useNavigation();
@@ -37,6 +38,10 @@ const Room = () => {
   const [call, setCall] = useState(null);
   const client = useStreamVideoClient();
   const { id } = useLocalSearchParams();
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
 
   // Join the call
   useEffect(() => {
@@ -100,6 +105,11 @@ const Room = () => {
 
       <StreamCall call={call}>
         <CallContent onHangupCallHandler={goToHomeScreen} />
+
+        <GamesModal
+          modalVisible={modalVisible}
+          setModalVisible={toggleModal}
+        />
         {/* <View style={styles.container}>
           <CallContent onHangupCallHandler={goToHomeScreen} layout="grid" />
 

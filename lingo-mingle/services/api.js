@@ -12,9 +12,6 @@ import {
   serverTimestamp,
   query,
   where,
-  getDocs,
-  deleteDoc,
-  addDoc,
   setDoc,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
