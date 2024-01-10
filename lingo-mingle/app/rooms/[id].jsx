@@ -25,12 +25,13 @@ import CustomBottomSheet from "../../components/videocall/CustomBottomSheet";
 import ChatView from "../../components/videocall/ChatView";
 
 import { AuthContext } from "../../contexts/AuthContext";
+import CustomCallControls from "../../components/videocall/CustomCallControls";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 const Room = () => {
-  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
   const { user, token } = useContext(AuthContext);
   const router = useRouter();
   const navigation = useNavigation();
@@ -97,16 +98,29 @@ const Room = () => {
     router.back();
   };
 
+  const customCallControlsProps = {
+    
+    toggleModal: toggleModal
+    
+  };
+
   if (!call) return null;
+
+  
 
   return (
     <View style={{ flex: 1 }}>
       <Spinner visible={!call} />
 
       <StreamCall call={call}>
-        <CallContent onHangupCallHandler={goToHomeScreen} />
+        <CallContent 
+        CallControls={(props)=><CustomCallControls {...customCallControlsProps}/>}
+        onHangupCallHandler={goToHomeScreen} 
+        toggleModal={toggleModal}
 
-        <GamesModal
+        />
+
+      <GamesModal
           modalVisible={modalVisible}
           setModalVisible={toggleModal}
         />

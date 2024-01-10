@@ -81,7 +81,7 @@ const GamesModal = ({
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              //onPress={handleSubmit(onSubmit)}
+              onPress={onCancel}
             >
             <FA5Icon name="times-circle" color={COLOR.white} size={20} />
               <Text style={styles.textStyle}>Close                    </Text>
