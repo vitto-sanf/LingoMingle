@@ -54,29 +54,39 @@ const GamesModal = ({
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
+          
           <Text style={styles.modalText}>Choose a game</Text>
+          
           <View styles={styles.formview}>
             <Pressable
               style={[styles.button, styles.buttonSend]}
               //onPress={handleSubmit(onSubmit)}
             >
-            <FA5Icon name="search" color={COLOR.gray} size={20} />
+            <FA5Icon name="search" color={COLOR.white} size={20} />
               <Text style={styles.textStyle}>Adivina la palabra</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonSend]}
               //onPress={handleSubmit(onSubmit)}
             >
-            <FA5Icon name="search" color={COLOR.gray} size={20} />
+            <FA5Icon name="music" color={COLOR.white} size={20} />
               <Text style={styles.textStyle}>Canten juntos      </Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonSend]}
               //onPress={handleSubmit(onSubmit)}
             >
-            <FA5Icon name="search" color={COLOR.gray} size={20} />
+            <FA5Icon name="stack-exchange" color={COLOR.white} size={20} />
               <Text style={styles.textStyle}>Nuevo tema         </Text>
             </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              //onPress={handleSubmit(onSubmit)}
+            >
+            <FA5Icon name="times-circle" color={COLOR.white} size={20} />
+              <Text style={styles.textStyle}>Close                    </Text>
+            </Pressable>
+            
           </View>
         </View>
       </View>

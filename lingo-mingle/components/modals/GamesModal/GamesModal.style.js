@@ -46,6 +46,9 @@ const styles = StyleSheet.create({
   buttonSend: {
     backgroundColor: COLOR.primary,
   },
+  buttonClose: {
+    backgroundColor: COLOR.red,
+  },
   buttonCancel: {
     backgroundColor: COLOR.white,
     borderColor: "#D9D9D9",
