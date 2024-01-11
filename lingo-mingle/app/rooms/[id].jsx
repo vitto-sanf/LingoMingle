@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import GamesModal from "../../components/modals/GamesModal/GamesModal";
+import AdivinaLaPalabraModal from "../../components/modals/AdivinaLaPalabraModal/AdivinaLaPalabraModal";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
   Call,
@@ -32,6 +33,7 @@ const HEIGHT = Dimensions.get("window").height;
 
 const Room = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [advinaLaPalabraVisible,setAdivinaLaPalabraVisible]=useState(false)
   const { user, token } = useContext(AuthContext);
   const router = useRouter();
   const navigation = useNavigation();
@@ -42,6 +44,10 @@ const Room = () => {
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
+  };
+  const toggleModalAdivina = () => {
+    setModalVisible(!modalVisible);
+    setAdivinaLaPalabraVisible(!advinaLaPalabraVisible);
   };
 
   // Join the call
@@ -123,7 +129,13 @@ const Room = () => {
       <GamesModal
           modalVisible={modalVisible}
           setModalVisible={toggleModal}
+          AdivinamodalVisible={advinaLaPalabraVisible}
+          setModalAdivinaVisible={toggleModalAdivina}
         />
+      <AdivinaLaPalabraModal
+        modalVisible={advinaLaPalabraVisible}
+        setModalVisible={toggleModalAdivina}
+      />
         {/* <View style={styles.container}>
           <CallContent onHangupCallHandler={goToHomeScreen} layout="grid" />
 
