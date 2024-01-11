@@ -3,3 +3,5 @@ export { default as InvitationsPageStyle } from "./InvitationsPage.styles";
 
 export { default as UnmatchedStyle } from "./Unmatched.styles";
 export { default as ProfileStyle } from "./Profile.styles";
+
+export { default as CustomCallControlsStyle } from "./CustomCallControls.styles";
