@@ -106,7 +106,8 @@ const Room = () => {
 
   const customCallControlsProps = {
     
-    toggleModal: toggleModal
+    toggleModal: toggleModal,
+    onHangupCallHandler : goToHomeScreen
     
   };
 
