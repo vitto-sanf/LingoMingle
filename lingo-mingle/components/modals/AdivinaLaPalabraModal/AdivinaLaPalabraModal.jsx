@@ -30,17 +30,12 @@ const AdivinaLaPalabraModal = ({
 }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
- 
-  
 
   const onCancel = (formData) => {
     setModalVisible(!modalVisible);
-    
   };
 
-  const onSubmit = () => {
-    
-  };
+  const onSubmit = () => {};
 
   return (
     <Modal
@@ -54,47 +49,52 @@ const AdivinaLaPalabraModal = ({
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          
-          <Text style={styles.modalText}>Adivina La Palabra</Text>
-          
-          <View styles={styles.formview}>
+          <View style={styles.headContainer}>
           <Pressable
-              style={[styles.button, styles.buttonSend]}
-              //onPress={onCancel}
-            >
-            
-              <Text style={styles.textStyle}>SOL </Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonSend]}
-              //onPress={onCancel}
-            >
-            
-              <Text style={styles.textStyle}>NUBE</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonSend]}
-              //onPress={onCancel}
-            >
-            
-              <Text style={styles.textStyle}>SUEL</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonSend]}
-              //onPress={onCancel}
-            >
-            
-              <Text style={styles.textStyle}>LUNA</Text>
-            </Pressable>
-          
-          </View>
-          <Pressable
-              style={[styles.button, styles.buttonClose]}
+              style={[styles.buttonBack, styles.buttonClose]}
               onPress={onCancel}
             >
-            <FA5Icon name="arrow-left" color={COLOR.white} size={10} />
+              <FA5Icon name="arrow-left" color={COLOR.white} size={10} />
               <Text style={styles.textStyle}>Back</Text>
             </Pressable>
+            <Text style={styles.modalText}>                                        </Text>
+            
+          </View>
+          <Text style={styles.modalText}>Adivina La Palabra</Text>
+          <Text>
+            <FA5Icon name="sun" color={COLOR.black} size={60} />
+          </Text>
+
+          <View style={styles.formview}>
+            <View style={styles.column}>
+              <Pressable
+                style={[styles.button, styles.buttonSend]}
+                //onPress={onCancel}
+              >
+                <Text style={styles.textStyle}>SOL </Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonSend]}
+                //onPress={onCancel}
+              >
+                <Text style={styles.textStyle}>NUBE</Text>
+              </Pressable>
+            </View>
+            <View style={styles.column}>
+              <Pressable
+                style={[styles.button, styles.buttonSend]}
+                //onPress={onCancel}
+              >
+                <Text style={styles.textStyle}>SUEL</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonSend]}
+                //onPress={onCancel}
+              >
+                <Text style={styles.textStyle}>LUNA</Text>
+              </Pressable>
+            </View>
+          </View>
         </View>
       </View>
     </Modal>

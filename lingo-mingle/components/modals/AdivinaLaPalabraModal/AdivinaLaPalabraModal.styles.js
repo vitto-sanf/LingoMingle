@@ -36,8 +36,20 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
     margin: 5,
+    width:"70%",
+    height:"15%",
+    flex:0,
+    flexDirection:"row",
+    justifyContent:"center",
+    alignItems:"center"
+  },
+  buttonBack: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    margin: 5,
     width:"35%",
-    height:"13%",
+    height:"70%",
     flex:0,
     flexDirection:"row",
     justifyContent:"center",
@@ -107,8 +119,8 @@ const styles = StyleSheet.create({
   
   formview: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "space-between",
+    //alignItems: "center",
+    justifyContent: "space-around",
     flexDirection: "row",
   },
   searchContainer: {
@@ -158,6 +170,14 @@ const styles = StyleSheet.create({
     color:COLOR.red,
     fontWeight:"bold",
     marginTop: 7
+  },
+  column: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headContainer:{
+    alignItems: 'center',
+    flexDirection:"row"
   }
 });
 
