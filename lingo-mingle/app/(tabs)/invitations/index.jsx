@@ -23,12 +23,14 @@ import EditInvitationModal from "../../../components/modals/EditInvitationsModal
 import AcceptDeclineInvitationsModal from "../../../components/modals/AcceptDeclineInvitation/AcceptDeclineInvitation";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
+import AntIcon from "react-native-vector-icons/AntDesign";
 import { Link } from "expo-router";
 //Constants
 import { COLOR } from "../../../constants";
 // Services
 import api from "../../../services/api";
 
+// TODO: Implementare lo swipe che permette di passare fra le tab
 const InvitationsPage = () => {
   const [loading, setLoading] = useState(true);
   const [pageStatus, setPageStatus] = useState("new");
@@ -136,6 +138,7 @@ const InvitationsPage = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Invitations</Text>
+      {/* Top Navigation Bar */}
       <View style={styles.topNav}>
         <Pressable
           style={
@@ -145,7 +148,7 @@ const InvitationsPage = () => {
           }
           onPress={handleSetNew}
         >
-          <Text>New Invitations</Text>
+          <Text style={styles.topNavLinkText}>New Invitations</Text>
         </Pressable>
         <Pressable
           style={
@@ -155,7 +158,7 @@ const InvitationsPage = () => {
           }
           onPress={handleSetScheduled}
         >
-          <Text> Scheduled </Text>
+          <Text style={styles.topNavLinkText}>Scheduled</Text>
         </Pressable>
         <NewInvitationModal
           modalVisible={modalVisible}
@@ -191,23 +194,21 @@ const InvitationsPage = () => {
           style={styles.sectionContainer}
           bounces={false}
         >
-          <>
-            <FlatList
-              data={invitations}
-              renderItem={({ item }) => (
-                <NewInvitationCard
-                  item={item}
-                  myUUID={MY_UUID}
-                  setInvitationUUID={setInvitationUUID}
-                  modalVisible={confirmationModalVisible}
-                  setModalVisible={toggleModalConfirmation}
-                  setConfirmationModalStatus={setConfirmationModalStatus}
-                />
-              )}
-              keyExtractor={(item) => item.uuid}
-              showsHorizontalScrollIndicator={false}
-            />
-          </>
+          <FlatList
+            data={invitations}
+            renderItem={({ item }) => (
+              <NewInvitationCard
+                item={item}
+                myUUID={MY_UUID}
+                setInvitationUUID={setInvitationUUID}
+                modalVisible={confirmationModalVisible}
+                setModalVisible={toggleModalConfirmation}
+                setConfirmationModalStatus={setConfirmationModalStatus}
+              />
+            )}
+            keyExtractor={(item) => item.uuid}
+            showsHorizontalScrollIndicator={false}
+          />
         </ScrollView>
       ) : accInvitations?.length !== 0 && pageStatus === "scheduled" ? (
         <ScrollView
@@ -242,18 +243,10 @@ const InvitationsPage = () => {
           <Text style={styles.noInfoText}>There are no new Scheduled</Text>
         </View>
       )}
-
       {pageStatus === "new" ? (
-        <View style={styles.buttonView}>
-          <Pressable onPress={() => setModalVisible(true)}>
-            <FA5Icon
-              name="plus-circle"
-              color={COLOR.primary}
-              regular
-              size={56}
-            />
-          </Pressable>
-        </View>
+        <Pressable onPress={() => setModalVisible(true)} style={styles.button}>
+          <AntIcon name="pluscircleo" size={44} />
+        </Pressable>
       ) : (
         ""
       )}

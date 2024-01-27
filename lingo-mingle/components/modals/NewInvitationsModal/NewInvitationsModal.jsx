@@ -217,7 +217,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>New invitation</Text>
-
             <View style={styles.searchContainer}>
               <Controller
                 control={control}
@@ -238,7 +237,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 name="friend"
               />
 
-              <FA5Icon name="search" color={COLOR.gray} size={20} />
+              <FA5Icon name="search" size={20} />
             </View>
             {errors.friend && (
               <Text style={styles.errros}>{errors.friend.message}</Text>
@@ -296,57 +295,59 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
             )}
 
             <View style={styles.formview}>
-              <Pressable
-                style={styles.dateTimeInput}
-                onPress={toggleDatepicker}
-              >
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <TextInput
-                      style={date ? styles.dateTimeInputText : ""}
-                      value={date ? formatDate(date) : null}
-                      placeholder="Date"
-                      editable={false}
-                    />
+              <View style={styles.dateTimeInputContainer}>
+                <Pressable
+                  style={[styles.dateTimeInput, { marginRight: 10 }]}
+                  onPress={toggleDatepicker}
+                >
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <TextInput
+                        style={date ? styles.dateTimeInputText : ""}
+                        value={date ? formatDate(date) : null}
+                        placeholder="Date"
+                        editable={false}
+                      />
+                    )}
+                    name="date"
+                  />
+                  {errors.date && (
+                    <Text style={styles.dateTimeErrors}>
+                      {errors.date.message}
+                    </Text>
                   )}
-                  name="date"
-                />
-                {errors.date && (
-                  <Text style={styles.dateTimeErrors}>
-                    {errors.date.message}
-                  </Text>
-                )}
-              </Pressable>
+                </Pressable>
 
-              <Pressable
-                style={styles.dateTimeInput}
-                onPress={toggleTimepicker}
-              >
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <TextInput
-                      style={time ? styles.dateTimeInputText : ""}
-                      value={time ? time.toLocaleTimeString("en-US") : null}
-                      placeholder="Hour"
-                      editable={false}
-                    />
+                <Pressable
+                  style={styles.dateTimeInput}
+                  onPress={toggleTimepicker}
+                >
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <TextInput
+                        style={time ? styles.dateTimeInputText : ""}
+                        value={time ? time.toLocaleTimeString("en-US") : null}
+                        placeholder="Hour"
+                        editable={false}
+                      />
+                    )}
+                    name="time"
+                  />
+                  {errors.time && (
+                    <Text style={styles.dateTimeErrors}>
+                      {errors.time.message}
+                    </Text>
                   )}
-                  name="time"
-                />
-                {errors.time && (
-                  <Text style={styles.dateTimeErrors}>
-                    {errors.time.message}
-                  </Text>
-                )}
-              </Pressable>
+                </Pressable>
+              </View>
             </View>
             <Controller
               control={control}
@@ -370,7 +371,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               <Text style={styles.errros}>{errors.place.message}</Text>
             )}
 
-            <View style={styles.formview}>
+            <View style={styles.buttonContainer}>
               <Pressable
                 style={[styles.button, styles.buttonCancel]}
                 onPress={() => {

@@ -1,4 +1,7 @@
+// Imports
 import { Alert, Modal, Text, Pressable, View } from "react-native";
+
+// Styles
 import styles from "./AcceptDeclineInvitation.style";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import { COLOR } from "../../../constants";
@@ -27,7 +30,7 @@ const AcceptDeclineInvitationsModal = ({
           {confirmationModalStatus === "accept" ? (
             <View style={styles.modalView}>
               <Text style={styles.modalText}>
-                Are you sure you want to ACCEPT the invitation?
+                Are you sure you want to accept the invitation?
               </Text>
 
               <View style={styles.buttons}>
@@ -58,7 +61,7 @@ const AcceptDeclineInvitationsModal = ({
           ) : confirmationModalStatus === "decline" ? (
             <View style={styles.modalView}>
               <Text style={styles.modalText}>
-                Are you sure you want to DECLINE the invitation?
+                Are you sure you want to decline the invitation?
               </Text>
 
               <View style={styles.buttons}>
@@ -89,7 +92,7 @@ const AcceptDeclineInvitationsModal = ({
           ) : confirmationModalStatus === "cancel" ? (
             <View style={styles.modalView}>
               <Text style={styles.modalText}>
-                Are you sure you want to CANCEL the invitation?
+                Are you sure you want to cancel the invitation?
               </Text>
 
               <View style={styles.buttons}>

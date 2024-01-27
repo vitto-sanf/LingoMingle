@@ -17,49 +17,41 @@ const NewInvitationCard = ({
   const invitationUUID = item.uuid;
 
   return (
-    <View style={styles.container} key={item.uuid}>
+    <View style={styles.container}>
       <Text style={styles.userName}>{item.username}</Text>
-      <View style={styles.container2}>
-        <View style={styles.infos}>
-          <View style={styles.textInfo}>
-            <View style={styles.textIcons}>
-              <FA5Icon
-                name="calendar"
-                solid
-                size={24}
-                style={styles.iconStyle}
-              />
-              <Text>{item.timestamp}</Text>
-            </View>
-            <View style={styles.textIcons}>
-              <FA5Icon name="map-pin" solid size={24} />
-              <Text style={styles.iconText}>{item.place}</Text>
-            </View>
-          </View>
+      <View style={styles.row}>
+        <View style={styles.meetingContainer}>
+          <FA5Icon name="calendar-alt" solid size={24} style={styles.icon} />
+          <Text style={styles.iconText}>{item.timestamp}</Text>
         </View>
-
-        <View style={styles.buttons}>
-          <Pressable
-            style={styles.pressable}
-            onPress={() => {
-              setInvitationUUID(invitationUUID);
-              setModalVisible(true);
-              setConfirmationModalStatus("accept");
-            }}
-          >
-            <FA5Icon name="check-circle" color={COLOR.green} solid size={44} />
-          </Pressable>
-          <Pressable
-            style={styles.pressable}
-            onPress={() => {
-              setInvitationUUID(invitationUUID);
-              setModalVisible(true);
-              setConfirmationModalStatus("decline");
-            }}
-          >
-            <FA5Icon name="times-circle" color={COLOR.red} solid size={44} />
-          </Pressable>
+        <Pressable
+          onPress={() => {
+            setInvitationUUID(invitationUUID);
+            setModalVisible(true);
+            setConfirmationModalStatus("accept");
+          }}
+        >
+          <FA5Icon name="check-circle" color={COLOR.green} solid size={30} />
+        </Pressable>
+      </View>
+      <View style={styles.row}>
+        <View style={styles.meetingContainer}>
+          <FA5Icon
+            name="map-pin"
+            size={24}
+            style={[styles.icon, { marginRight: 18 }]}
+          />
+          <Text style={styles.iconText}>{item.place}</Text>
         </View>
+        <Pressable
+          onPress={() => {
+            setInvitationUUID(invitationUUID);
+            setModalVisible(true);
+            setConfirmationModalStatus("decline");
+          }}
+        >
+          <FA5Icon name="times-circle" color={COLOR.red} solid size={30} />
+        </Pressable>
       </View>
     </View>
   );

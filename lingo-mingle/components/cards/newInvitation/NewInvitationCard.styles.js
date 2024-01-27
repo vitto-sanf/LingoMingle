@@ -2,72 +2,96 @@
 import { StyleSheet } from "react-native";
 
 // Styles
-import { FONT,COLOR } from "../../../constants";
+import { FONT, COLOR } from "../../../constants";
 
 const styles = StyleSheet.create({
   container: {
-    width: 330,
-    alignItems: "left",
-    justifyContent:"center",
-    padding: 15,
-    margin: 10,
-    borderColor:'#D9D9D9',
-    borderWidth:0.8,
-    borderRightWidth:0,
-    borderLeftWidth:0,
-    backgroundColor: COLOR.lightWhite,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    
+    borderBottomColor: COLOR.lightGrey,
+    borderBottomWidth: 1,
+    width: 350,
+    marginBottom: 10,
   },
   userName: {
     marginBottom: 10,
     fontFamily: FONT.medium,
     fontSize: 20,
   },
-  infos: {
-    flexDirection: "column",
-    paddingRight:30
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
-  buttons:{
-    flexDirection:"row",
-    paddingLeft:25
+  meetingContainer: {
+    flexDirection: "row",
+    marginBottom: 10,
+    alignItems: "center",
   },
-  container2:{
-    flexDirection:"row",
-  },
-  pressable:{
-    paddingRight:10
-  },
-  textInfo:{
-    
-    flexDirection:"row",
-    paddingBottom:5
-  },
-  textIcons:{
-    flexDirection:"row"
-    
-  },
-  icons:{
-    padding:20
-  },
-  textInfo: {
-    flexDirection: 'column',
-    paddingBottom: 5, // Adjust as needed
-  },
-  textIcons: {
-    flexDirection: 'row',
-    alignItems: 'center', // Adjust as needed
-    marginBottom: 5, // Adjust as needed
+  icon: {
+    marginRight: 10,
   },
   iconText: {
-    marginLeft: 8, // Adjust margin as needed
+    fontFamily: FONT.regular,
+    fontSize: 15,
   },
-  iconStyle: {
-    marginRight: 8, // Padding between icon and text
-  }
+  // container: {
+  //   width: 330,
+  //   alignItems: "left",
+  //   justifyContent: "center",
+  //   padding: 15,
+  //   margin: 10,
+  //   borderColor: "#D9D9D9",
+  //   borderWidth: 0.8,
+  //   borderRightWidth: 0,
+  //   borderLeftWidth: 0,
+  //   backgroundColor: COLOR.lightWhite,
+  //   shadowColor: "#000",
+  //   shadowOffset: { width: 0, height: 2 },
+  //   shadowOpacity: 0.3,
+  //   shadowRadius: 3,
+  // },
+  // userName: {
+  //   marginBottom: 10,
+  //   fontFamily: FONT.medium,
+  //   fontSize: 20,
+  // },
+  // infos: {
+  //   flexDirection: "column",
+  //   paddingRight: 30,
+  // },
+  // buttons: {
+  //   flexDirection: "row",
+  //   paddingLeft: 25,
+  // },
+  // container2: {
+  //   flexDirection: "row",
+  // },
+  // pressable: {
+  //   paddingRight: 10,
+  // },
+  // textInfo: {
+  //   flexDirection: "row",
+  //   paddingBottom: 5,
+  // },
+  // textIcons: {
+  //   flexDirection: "row",
+  // },
+  // icons: {
+  //   padding: 20,
+  // },
+  // textInfo: {
+  //   flexDirection: "column",
+  //   paddingBottom: 5, // Adjust as needed
+  // },
+  // textIcons: {
+  //   flexDirection: "row",
+  //   alignItems: "center", // Adjust as needed
+  //   marginBottom: 5, // Adjust as needed
+  // },
+  // iconText: {
+  //   marginLeft: 8, // Adjust margin as needed
+  // },
+  // iconStyle: {
+  //   marginRight: 8, // Padding between icon and text
+  // },
 });
 
 export default styles;
