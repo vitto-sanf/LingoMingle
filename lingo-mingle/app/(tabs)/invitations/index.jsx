@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, FlatList, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Swiper from "react-native-swiper";
 
 // Components
 import { Loader } from "../../../components/common";
@@ -27,6 +28,8 @@ import api from "../../../services/api";
 const InvitationsPage = () => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
+
+  const [swiperIndex, setSwiperIndex] = useState(0);
 
   const [loading, setLoading] = useState(true);
   const [pageStatus, setPageStatus] = useState("new");
@@ -124,19 +127,16 @@ const InvitationsPage = () => {
     }
   }, [accInvitations, dirty2]);
 
-  const handleSetNew = () => {
-    setPageStatus("new");
+  const handleNavigation = (index) => {
+    setPageStatus(index === 0 ? "new" : "scheduled");
+    setSwiperIndex(index);
   };
-  const handleSetScheduled = () => {
-    setPageStatus("scheduled");
-  };
+
   if (loading) return <Loader />;
 
-  //TODO: implement modal to confirm invitation sent
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Invitations</Text>
-      {/* Top Navigation Bar */}
       <View style={styles.topNav}>
         <Pressable
           style={
@@ -144,7 +144,7 @@ const InvitationsPage = () => {
               ? styles.topNavLinksSelected
               : styles.topNavLinks
           }
-          onPress={handleSetNew}
+          onPress={() => handleNavigation(0)}
         >
           <Text style={styles.topNavLinkText}>New Invitations</Text>
         </Pressable>
@@ -154,7 +154,7 @@ const InvitationsPage = () => {
               ? styles.topNavLinksSelected
               : styles.topNavLinks
           }
-          onPress={handleSetScheduled}
+          onPress={() => handleNavigation(1)}
         >
           <Text style={styles.topNavLinkText}>Scheduled</Text>
         </Pressable>
@@ -162,15 +162,13 @@ const InvitationsPage = () => {
           modalVisible={modalVisible}
           setModalVisible={toggleModal}
         />
-        {editModalVisible ? (
+        {editModalVisible && (
           <EditInvitationModal
             modalVisible={editModalVisible}
             setModalVisible={toggleModalEdit}
             toEdit={toEdit}
             setDirty={setDirty2}
           />
-        ) : (
-          ""
         )}
         <AcceptDeclineInvitationsModal
           modalVisible={confirmationModalVisible}
@@ -182,44 +180,55 @@ const InvitationsPage = () => {
           confirmationModalStatus={confirmationModalStatus}
         />
       </View>
-
-      {invitations?.length === 0 && pageStatus === "new" ? (
-        <Text style={styles.noInfoText}>There are no new invitations</Text>
-      ) : invitations?.length !== 0 && pageStatus === "new" ? (
-        <ScrollView
-          horizontal={true}
-          showsVerSectionListticalScrollIndicator={false}
-          style={styles.sectionContainer}
-          bounces={false}
+      <Swiper
+        loop={false}
+        showsButtons={false}
+        showsPagination={false}
+        index={swiperIndex}
+        onIndexChanged={handleNavigation}
+      >
+        {/* New Invitation Section */}
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <FlatList
-            data={invitations}
-            renderItem={({ item, index }) => {
-              const lastItem = index === invitations.length - 1;
-              return (
-                <NewInvitationCard
-                  item={item}
-                  lastItem={lastItem}
-                  myUUID={MY_UUID}
-                  setInvitationUUID={setInvitationUUID}
-                  modalVisible={confirmationModalVisible}
-                  setModalVisible={toggleModalConfirmation}
-                  setConfirmationModalStatus={setConfirmationModalStatus}
+          {invitations?.length === 0 && pageStatus === "new" ? (
+            <Text style={styles.noInfoText}>There are no new invitations</Text>
+          ) : (
+            invitations?.length !== 0 &&
+            pageStatus === "new" && (
+              <View style={{ marginTop: 10 }}>
+                <FlatList
+                  data={invitations}
+                  renderItem={({ item, index }) => {
+                    const lastItem = index === invitations.length - 1;
+                    return (
+                      <NewInvitationCard
+                        item={item}
+                        lastItem={lastItem}
+                        myUUID={MY_UUID}
+                        setInvitationUUID={setInvitationUUID}
+                        modalVisible={confirmationModalVisible}
+                        setModalVisible={toggleModalConfirmation}
+                        setConfirmationModalStatus={setConfirmationModalStatus}
+                      />
+                    );
+                  }}
+                  keyExtractor={(item) => item.uuid}
+                  showsVerticalScrollIndicator={false}
                 />
-              );
-            }}
-            keyExtractor={(item) => item.uuid}
-            showsVerticalScrollIndicator={false}
-          />
-        </ScrollView>
-      ) : accInvitations?.length !== 0 && pageStatus === "scheduled" ? (
-        <ScrollView
-          horizontal={true}
-          showsVerSectionListticalScrollIndicator={false}
-          style={styles.sectionContainer}
-          bounces={false}
-        >
-          <>
+                <Pressable
+                  onPress={() => setModalVisible(true)}
+                  style={styles.button}
+                >
+                  <AntIcon name="pluscircleo" size={44} />
+                </Pressable>
+              </View>
+            )
+          )}
+        </View>
+        {/* Scheduled Invitation Section */}
+        <View style={styles.container}>
+          {accInvitations?.length !== 0 && pageStatus === "scheduled" ? (
             <FlatList
               data={accInvitations}
               renderItem={({ item, index }) => {
@@ -242,20 +251,18 @@ const InvitationsPage = () => {
               keyExtractor={(item) => item.uuid}
               showsVerticalScrollIndicator={false}
             />
-          </>
-        </ScrollView>
-      ) : (
-        <View>
-          <Text style={styles.noInfoText}>There are no new Scheduled</Text>
+          ) : (
+            accInvitations?.length === 0 &&
+            pageStatus === "scheduled" && (
+              <View>
+                <Text style={styles.noInfoText}>
+                  There are no new scheduled invitations
+                </Text>
+              </View>
+            )
+          )}
         </View>
-      )}
-      {pageStatus === "new" ? (
-        <Pressable onPress={() => setModalVisible(true)} style={styles.button}>
-          <AntIcon name="pluscircleo" size={44} />
-        </Pressable>
-      ) : (
-        ""
-      )}
+      </Swiper>
     </SafeAreaView>
   );
 };
