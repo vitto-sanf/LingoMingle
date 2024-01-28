@@ -2,29 +2,32 @@ import React, { useEffect, useState } from "react";
 import {
   Alert,
   Modal,
-  StyleSheet,
   Text,
   Pressable,
   View,
   TextInput,
   FlatList,
 } from "react-native";
-import styles from "./NewInvitationsModal.style";
-import FA5Icon from "react-native-vector-icons/FontAwesome5";
-import { COLOR } from "../../../constants";
-import api from "../../../services/api";
 import DateTimePicker from "@react-native-community/datetimepicker";
-// Hooks
-import useNotification from "../../../hooks/useNotification";
-//Form Validation
 import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+
+// Styles
+import styles from "./NewInvitationsModal.style";
+import FA5Icon from "react-native-vector-icons/FontAwesome5";
+
+// Services
+import api from "../../../services/api";
+
+// Hooks
+import useNotification from "../../../hooks/useNotification";
 
 //TODO: fix the styling, fix bugs on DatePicker
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
+
   const [friend, SetFriend] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [users, setUsers] = useState([]);
@@ -85,8 +88,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       place: null,
     },
   });
-
-  //
 
   const onCancel = (formData) => {
     setModalVisible(!modalVisible);
@@ -161,7 +162,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   onChange(selectedDate);
                   if (type == "set") {
                     setDate(selectedDate);
-
                     toggleDatepicker();
                   } else {
                     toggleDatepicker();
@@ -190,7 +190,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   onChange(selectedTime);
                   if (type == "set") {
                     setTime(selectedTime);
-
                     toggleTimepicker();
                   } else {
                     toggleTimepicker();
@@ -236,13 +235,11 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 )}
                 name="friend"
               />
-
               <FA5Icon name="search" size={20} />
             </View>
             {errors.friend && (
               <Text style={styles.errros}>{errors.friend.message}</Text>
             )}
-
             {dropdownOpen ? (
               <View
                 style={dropdownOpen ? styles.dropdown : styles.dropdownEmpty}
@@ -293,7 +290,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
             ) : (
               ""
             )}
-
             <View style={styles.formview}>
               <View style={styles.dateTimeInputContainer}>
                 <Pressable
@@ -321,7 +317,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                     </Text>
                   )}
                 </Pressable>
-
                 <Pressable
                   style={styles.dateTimeInput}
                   onPress={toggleTimepicker}
@@ -370,7 +365,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
             {errors.place && (
               <Text style={styles.errros}>{errors.place.message}</Text>
             )}
-
             <View style={styles.buttonContainer}>
               <Pressable
                 style={[styles.button, styles.buttonCancel]}

@@ -1,50 +1,48 @@
-//Hooks
+// Imports
 import React, { useEffect, useState } from "react";
-import useNotification from "../../../hooks/useNotification";
-// Styles
-import { InvitationsPageStyle as styles } from "../../../styles";
+import { ScrollView, Text, FlatList, Pressable, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 // Components
-import {
-  ScrollView,
-  Text,
-  FlatList,
-  Pressable,
-  View,
-  SectionList,
-} from "react-native";
 import { Loader } from "../../../components/common";
 import {
   NewInvitationCard,
   ScheduledInvitationCard,
 } from "../../../components/cards";
-import { NewInvitaionModal } from "../../../components/modals";
 import NewInvitationModal from "../../../components/modals/NewInvitationsModal/NewInvitationsModal";
 import EditInvitationModal from "../../../components/modals/EditInvitationsModal/EditInvitationsModal";
 import AcceptDeclineInvitationsModal from "../../../components/modals/AcceptDeclineInvitation/AcceptDeclineInvitation";
-import { SafeAreaView } from "react-native-safe-area-context";
-import FA5Icon from "react-native-vector-icons/FontAwesome5";
+
+//Hooks
+import useNotification from "../../../hooks/useNotification";
+
+// Styles
+import { InvitationsPageStyle as styles } from "../../../styles";
 import AntIcon from "react-native-vector-icons/AntDesign";
-import { Link } from "expo-router";
-//Constants
-import { COLOR } from "../../../constants";
+
 // Services
 import api from "../../../services/api";
 
 // TODO: Implementare lo swipe che permette di passare fra le tab
 const InvitationsPage = () => {
+  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
+  const notify = useNotification();
+
   const [loading, setLoading] = useState(true);
   const [pageStatus, setPageStatus] = useState("new");
-  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
+
   const [invitations, setInvitations] = useState([]);
-  const [accInvitations, setAccInvitations] = useState([]);
   const [dirty, setDirty] = useState(true);
+
+  const [accInvitations, setAccInvitations] = useState([]);
   const [dirty2, setDirty2] = useState(true);
-  const notify = useNotification();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [confirmationModalVisible, setConfirmationModalVisible] =
     useState(false);
   const [confirmationModalStatus, setConfirmationModalStatus] = useState(null);
+
   const [toEdit, setToEdit] = useState(null);
   const [invitationUUID, setInvitationUUID] = useState(null);
 
@@ -80,7 +78,7 @@ const InvitationsPage = () => {
       .then((res) => {
         setDirty(true);
         setDirty2(true);
-        notify.success("Inviation deleted");
+        notify.success("Invitation deleted");
       })
       .catch((err) => notify.error("Error while deleting the invitation"));
   };
@@ -91,7 +89,7 @@ const InvitationsPage = () => {
       .then((res) => {
         setDirty(true);
         setDirty2(true);
-        notify.success("Inviation rejected");
+        notify.success("Invitation rejected");
       })
       .catch((err) => notify.error("Error while rejecting the invitation"));
   };
@@ -196,18 +194,22 @@ const InvitationsPage = () => {
         >
           <FlatList
             data={invitations}
-            renderItem={({ item }) => (
-              <NewInvitationCard
-                item={item}
-                myUUID={MY_UUID}
-                setInvitationUUID={setInvitationUUID}
-                modalVisible={confirmationModalVisible}
-                setModalVisible={toggleModalConfirmation}
-                setConfirmationModalStatus={setConfirmationModalStatus}
-              />
-            )}
+            renderItem={({ item, index }) => {
+              const lastItem = index === invitations.length - 1;
+              return (
+                <NewInvitationCard
+                  item={item}
+                  lastItem={lastItem}
+                  myUUID={MY_UUID}
+                  setInvitationUUID={setInvitationUUID}
+                  modalVisible={confirmationModalVisible}
+                  setModalVisible={toggleModalConfirmation}
+                  setConfirmationModalStatus={setConfirmationModalStatus}
+                />
+              );
+            }}
             keyExtractor={(item) => item.uuid}
-            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
           />
         </ScrollView>
       ) : accInvitations?.length !== 0 && pageStatus === "scheduled" ? (
@@ -220,21 +222,25 @@ const InvitationsPage = () => {
           <>
             <FlatList
               data={accInvitations}
-              renderItem={({ item }) => (
-                <ScheduledInvitationCard
-                  item={item}
-                  myUUID={MY_UUID}
-                  modalVisible={editModalVisible}
-                  setModalVisible={toggleModalEdit}
-                  setToEdit={setToEdit}
-                  confirmationModalVisible={confirmationModalVisible}
-                  setConfirmationModalVisible={toggleModalConfirmation}
-                  setConfirmationModalStatus={setConfirmationModalStatus}
-                  setInvitationUUID={setInvitationUUID}
-                />
-              )}
+              renderItem={({ item, index }) => {
+                const lastItem = index === accInvitations.length - 1;
+                return (
+                  <ScheduledInvitationCard
+                    item={item}
+                    lastItem={lastItem}
+                    myUUID={MY_UUID}
+                    modalVisible={editModalVisible}
+                    setModalVisible={toggleModalEdit}
+                    setToEdit={setToEdit}
+                    confirmationModalVisible={confirmationModalVisible}
+                    setConfirmationModalVisible={toggleModalConfirmation}
+                    setConfirmationModalStatus={setConfirmationModalStatus}
+                    setInvitationUUID={setInvitationUUID}
+                  />
+                );
+              }}
               keyExtractor={(item) => item.uuid}
-              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
             />
           </>
         </ScrollView>

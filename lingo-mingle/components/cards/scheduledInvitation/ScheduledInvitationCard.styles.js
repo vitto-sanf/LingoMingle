@@ -11,6 +11,10 @@ const styles = StyleSheet.create({
     width: 350,
     marginBottom: 10,
   },
+  lastItemContainer: {
+    width: 350,
+    // marginBottom: 60,
+  },
   userName: {
     marginBottom: 10,
     fontFamily: FONT.medium,

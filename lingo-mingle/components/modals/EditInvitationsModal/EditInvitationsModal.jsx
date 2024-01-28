@@ -1,25 +1,19 @@
-import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  Text,
-  Pressable,
-  View,
-  TextInput,
-  FlatList,
-} from "react-native";
-import styles from "./EditInvitationsModal.style";
-import FA5Icon from "react-native-vector-icons/FontAwesome5";
-import { COLOR } from "../../../constants";
-import api from "../../../services/api";
-import DateTimePicker from "@react-native-community/datetimepicker";
-// Hooks
-import useNotification from "../../../hooks/useNotification";
-//Form Validation
+// Imports
+import React, { useState } from "react";
+import { Alert, Modal, Text, Pressable, View, TextInput } from "react-native";
 import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import DateTimePicker from "@react-native-community/datetimepicker";
+
+// Styles
+import styles from "./EditInvitationsModal.style";
+
+// Services
+import api from "../../../services/api";
+
+// Hooks
+import useNotification from "../../../hooks/useNotification";
 
 //TODO: fix the styling
 const EditInvitationModal = ({
@@ -30,9 +24,11 @@ const EditInvitationModal = ({
 }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
+
   const [date, setDate] = useState(toEdit.nonFormattedTimestamp);
   const [time, setTime] = useState(toEdit.nonFormattedTimestamp);
   const [place, setPlace] = useState(toEdit.place);
+
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
@@ -56,8 +52,6 @@ const EditInvitationModal = ({
       place: null,
     },
   });
-
-  //
 
   const onCancel = (formData) => {
     setModalVisible(!modalVisible);
@@ -132,7 +126,6 @@ const EditInvitationModal = ({
                   onChange(selectedDate);
                   if (type == "set") {
                     setDate(selectedDate);
-
                     toggleDatepicker();
                   } else {
                     toggleDatepicker();
@@ -161,7 +154,6 @@ const EditInvitationModal = ({
                   onChange(selectedTime);
                   if (type == "set") {
                     setTime(selectedTime);
-
                     toggleTimepicker();
                   } else {
                     toggleTimepicker();
@@ -190,63 +182,65 @@ const EditInvitationModal = ({
             <Text style={styles.modalText}>Edit invitation</Text>
 
             <View style={styles.formview}>
-              <Pressable
-                style={styles.dateTimeInput}
-                onPress={toggleDatepicker}
-              >
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <TextInput
-                      style={date ? styles.dateTimeInputText : ""}
-                      value={date ? formatDate(date) : null}
-                      placeholder="Date"
-                      editable={false}
-                      onLayout={() => {
-                        onChange(date);
-                      }}
-                    />
+              <View style={styles.dateTimeInputContainer}>
+                <Pressable
+                  style={[styles.dateTimeInput, { marginRight: 10 }]}
+                  onPress={toggleDatepicker}
+                >
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <TextInput
+                        style={date ? styles.dateTimeInputText : ""}
+                        value={date ? formatDate(date) : null}
+                        placeholder="Date"
+                        editable={false}
+                        onLayout={() => {
+                          onChange(date);
+                        }}
+                      />
+                    )}
+                    name="date"
+                  />
+                  {errors.date && (
+                    <Text style={styles.dateTimeErrors}>
+                      {errors.date.message}
+                    </Text>
                   )}
-                  name="date"
-                />
-                {errors.date && (
-                  <Text style={styles.dateTimeErrors}>
-                    {errors.date.message}
-                  </Text>
-                )}
-              </Pressable>
+                </Pressable>
 
-              <Pressable
-                style={styles.dateTimeInput}
-                onPress={toggleTimepicker}
-              >
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <TextInput
-                      style={time ? styles.dateTimeInputText : ""}
-                      value={time ? time.toLocaleTimeString("en-US") : null}
-                      placeholder="Hour"
-                      editable={false}
-                      onLayout={() => {
-                        onChange(date);
-                      }}
-                    />
+                <Pressable
+                  style={styles.dateTimeInput}
+                  onPress={toggleTimepicker}
+                >
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <TextInput
+                        style={time ? styles.dateTimeInputText : ""}
+                        value={time ? time.toLocaleTimeString("en-US") : null}
+                        placeholder="Hour"
+                        editable={false}
+                        onLayout={() => {
+                          onChange(date);
+                        }}
+                      />
+                    )}
+                    name="time"
+                  />
+                  {errors.time && (
+                    <Text style={styles.dateTimeErrors}>
+                      {errors.time.message}
+                    </Text>
                   )}
-                  name="time"
-                />
-                {errors.time && (
-                  <Text style={styles.dateTimeErrors}>
-                    {errors.time.message}
-                  </Text>
-                )}
-              </Pressable>
+                </Pressable>
+              </View>
             </View>
             <Controller
               control={control}
@@ -273,7 +267,7 @@ const EditInvitationModal = ({
               <Text style={styles.errros}>{errors.place.message}</Text>
             )}
 
-            <View style={styles.formview}>
+            <View style={styles.buttonContainer}>
               <Pressable
                 style={[styles.button, styles.buttonCancel]}
                 onPress={() => {

@@ -1,5 +1,5 @@
 // Imports
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import React from "react";
 
 // Styles
@@ -10,6 +10,7 @@ import { COLOR } from "../../../constants";
 
 const NewInvitationCard = ({
   item,
+  lastItem,
   setModalVisible,
   setInvitationUUID,
   setConfirmationModalStatus,
@@ -17,7 +18,7 @@ const NewInvitationCard = ({
   const invitationUUID = item.uuid;
 
   return (
-    <View style={styles.container}>
+    <View style={lastItem ? styles.lastItemContainer : styles.container}>
       <Text style={styles.userName}>{item.username}</Text>
       <View style={styles.row}>
         <View style={styles.meetingContainer}>

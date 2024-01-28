@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+// Imports
 import React from "react";
 import { Slot } from "expo-router";
 
