@@ -27,13 +27,14 @@ import ChatView from "../../components/videocall/ChatView";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import CustomCallControls from "../../components/videocall/CustomCallControls";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 const Room = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [advinaLaPalabraVisible,setAdivinaLaPalabraVisible]=useState(false)
+  const [advinaLaPalabraVisible, setAdivinaLaPalabraVisible] = useState(false);
   const { user, token } = useContext(AuthContext);
   const router = useRouter();
   const navigation = useNavigation();
@@ -105,38 +106,35 @@ const Room = () => {
   };
 
   const customCallControlsProps = {
-    
     toggleModal: toggleModal,
-    onHangupCallHandler : goToHomeScreen
-    
+    onHangupCallHandler: goToHomeScreen,
   };
 
   if (!call) return null;
 
-  
-
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Spinner visible={!call} />
 
       <StreamCall call={call}>
-        <CallContent 
-        CallControls={(props)=><CustomCallControls {...customCallControlsProps}/>}
-        onHangupCallHandler={goToHomeScreen} 
-        toggleModal={toggleModal}
-
+        <CallContent
+          CallControls={(props) => (
+            <CustomCallControls {...customCallControlsProps} />
+          )}
+          onHangupCallHandler={goToHomeScreen}
+          toggleModal={toggleModal}
         />
 
-      <GamesModal
+        <GamesModal
           modalVisible={modalVisible}
           setModalVisible={toggleModal}
           AdivinamodalVisible={advinaLaPalabraVisible}
           setModalAdivinaVisible={toggleModalAdivina}
         />
-      <AdivinaLaPalabraModal
-        modalVisible={advinaLaPalabraVisible}
-        setModalVisible={toggleModalAdivina}
-      />
+        <AdivinaLaPalabraModal
+          modalVisible={advinaLaPalabraVisible}
+          setModalVisible={toggleModalAdivina}
+        />
         {/* <View style={styles.container}>
           <CallContent onHangupCallHandler={goToHomeScreen} layout="grid" />
 
@@ -149,7 +147,7 @@ const Room = () => {
           )}
         </View> */}
       </StreamCall>
-    </View>
+    </SafeAreaView>
   );
 };
 
