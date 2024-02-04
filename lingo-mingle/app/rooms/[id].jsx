@@ -10,6 +10,7 @@ import {
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import GamesModal from "../../components/modals/GamesModal/GamesModal";
 import AdivinaLaPalabraModal from "../../components/modals/AdivinaLaPalabraModal/AdivinaLaPalabraModal";
+import CantenJuntosModal from "../../components/modals/CantenJuntosModal/CantenJuntosModal";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
   Call,
@@ -35,6 +36,7 @@ const HEIGHT = Dimensions.get("window").height;
 const Room = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [advinaLaPalabraVisible, setAdivinaLaPalabraVisible] = useState(false);
+  const [cantenJuntosVisible, setCantenJuntosVisible] = useState(false);
   const { user, token } = useContext(AuthContext);
   const router = useRouter();
   const navigation = useNavigation();
@@ -46,6 +48,11 @@ const Room = () => {
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
+  const toggleModalCantenJuntos = () => {
+    setModalVisible(!modalVisible);
+    setCantenJuntosVisible(!cantenJuntosVisible);
+  };
+
   const toggleModalAdivina = () => {
     setModalVisible(!modalVisible);
     setAdivinaLaPalabraVisible(!advinaLaPalabraVisible);
@@ -129,11 +136,18 @@ const Room = () => {
           modalVisible={modalVisible}
           setModalVisible={toggleModal}
           AdivinamodalVisible={advinaLaPalabraVisible}
+          
           setModalAdivinaVisible={toggleModalAdivina}
+          setModalCantenJuntosVisible={toggleModalCantenJuntos}
+
         />
         <AdivinaLaPalabraModal
           modalVisible={advinaLaPalabraVisible}
           setModalVisible={toggleModalAdivina}
+        />
+        <CantenJuntosModal
+          modalVisible={cantenJuntosVisible}
+          setModalVisible={toggleModalCantenJuntos}
         />
         {/* <View style={styles.container}>
           <CallContent onHangupCallHandler={goToHomeScreen} layout="grid" />
