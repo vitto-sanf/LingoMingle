@@ -13,41 +13,45 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
 
   const [sound, setSound] = useState();
   const [playGame, setPlayGame]=useState(false);
-  const [nameSong, setNameSong]= useState(0);
+  const [songTextIndex, setSongTextIndex]= useState(0);
   const [answer, setAnswer]= useState("");
-
   const text = [
     "Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la",
     "Vivir mi vida, la la la la",
     "A veces llega la lluvia Para _ _ _ _ _ _ _ las heridas",
-    "A veces llega la lluvia Para limpiar las heridas"
+    "A veces llega la lluvia Para limpiar las heridas",
+    "Sueño cuando era pequeño,Sin preocupación en el _ _ _ _ _ _ _",
+    "Sueño cuando era pequeño,Sin preocupación en el corazón",
+    "Sigo viendo aquel momento Se desvaneció, _ _ _ _ _ _ _ _ _ _ _",
+    "Sigo viendo aquel momento Se desvaneció, desapareció"
   ];
 
-  const songs =  ["../../../assets/sounds/VivirMiVida.mp3","../../../assets/sounds/VivirMiVida.mp3"];
+ 
+
+
 
   async function playSound() {
 
-
+    
 
 
     console.log('Loading Sound');
   
-    let audio=songs[nameSong];
-    
-    //let audioPath= `../../../assets/sounds/${audio}` //`${audio}`;
-    const { sound } = await Audio.Sound.createAsync( require("../../../assets/sounds/VivirMiVida.mp3"));
-  
-    
+    //TO DO: scegliere il giusto sound con istruzioni condizionali
+    const {sound} = await Audio.Sound.createAsync( require("../../../assets/sounds/VivirMiVida.mp3"));
     setSound(sound);
 
     
 
     console.log('Playing Sound');
     await sound.playAsync();
-    const time = 23500;
+    const time = 10000;
     const songTimeout = setTimeout(async ()=>{
       await sound.pauseAsync();
     },time)
+
+
+
   }
 
   /*
@@ -66,7 +70,7 @@ const restartSong = async ()=>{
   
   const audio = await sound.getStatusAsync()
   console.log(audio.positionMillis)
-  const time = 23500;
+  const time = 10000;
   const positionMillis = audio.positionMillis - time
   await sound.playFromPositionAsync(positionMillis)
   
@@ -77,6 +81,8 @@ const restartSong = async ()=>{
 
   
   const onCancel = () => {
+    setSongTextIndex(0);
+    setAnswer("");
     setModalVisible(!modalVisible);
     sound.unloadAsync();
   };
@@ -84,11 +90,19 @@ const restartSong = async ()=>{
   const verifyAnswer = async() =>{
     console.log(answer);
     if (answer=="vida"){
-      await sound.playAsync();
-      const time = 23500;
-      const songTimeout = setTimeout(async ()=>{
-        await sound.pauseAsync();
-      },time)
+      //setAnswer("");
+      setSongTextIndex(songTextIndex+1);
+      setTimeout(async ()=>{
+        setSongTextIndex(songTextIndex+2);
+        setAnswer("");
+        await sound.playAsync();
+        const time = 10000;
+        const songTimeout = setTimeout(async ()=>{
+          await sound.pauseAsync();
+        },time)
+
+      },1000)
+      
   }
 };
 
@@ -133,14 +147,14 @@ const restartSong = async ()=>{
 
                 <View style={styles.gameOptionsColumn}>
                   <Text>
-                    <FontistoIcon name="music-note" size={20} /> Feliz Navidad{" "}
+                    <FontistoIcon name="music-note" size={20} /> Vivir Mi Vida{" "}
                     <FontistoIcon name="music-note" size={20} />
                   </Text>
                 </View>
 
                 <View style={styles.gameOptionsColumn}>
                   <Text>
-                  Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la
+                  {text[songTextIndex]}
                   </Text>
                 </View>
 
