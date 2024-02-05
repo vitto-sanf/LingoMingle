@@ -19,7 +19,6 @@ import { AuthProvider, AuthContext } from "../contexts/AuthContext";
 
 // Config
 import toastConfig from "../config/toastConfig";
-import { useFormState } from "react-hook-form";
 
 SplashScreen.preventAutoHideAsync();
 

@@ -1,8 +1,16 @@
 // Imports
-import { ScrollView, Text, FlatList, Pressable } from "react-native";
+import {
+  ScrollView,
+  Text,
+  FlatList,
+  Pressable,
+  Modal,
+  View,
+  StyleSheet,
+} from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, useRouter } from 'expo-router'
+import { useRouter } from "expo-router";
 
 // Styles
 import { HomePageStyle as styles } from "../../../styles";
@@ -19,6 +27,116 @@ import { Loader } from "../../../components/common";
 import api from "../../../services/api";
 //Contexts
 import { AuthContext } from "../../../contexts/AuthContext";
+import { COLOR, FONT } from "../../../constants";
+
+// TODO: Inserire questo modal all'interno della cartella modal dopo il merge di tutti i branch
+const StartVideoCallModal = ({ isModalVisible, setIsModalVisible }) => {
+  const router = useRouter();
+
+  const onConfirmStartMeeting = () => {
+    const roomId = 100000;
+    router.push(`/rooms/${roomId}`);
+    setIsModalVisible(false);
+  };
+
+  const onCancelStartMeeting = () => {
+    setIsModalVisible(false);
+  };
+
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isModalVisible}
+      onRequestClose={() => {
+        Alert.alert("Modal has been closed.");
+        setIsModalVisible(!isModalVisible);
+      }}
+    >
+      <View style={modalStyles.centeredView}>
+        <View style={modalStyles.modalView}>
+          <Text
+            style={{
+              fontSize: 18,
+              fontFamily: FONT.bold,
+              textAlign: "center",
+              marginBottom: 10,
+            }}
+          >
+            You are going to be connected with random user on videocall
+          </Text>
+          <View style={modalStyles.buttonContainer}>
+            <Pressable
+              onPress={onConfirmStartMeeting}
+              style={modalStyles.button}
+            >
+              <Text
+                style={[
+                  modalStyles.buttonText,
+                  { backgroundColor: COLOR.green },
+                ]}
+              >
+                Continue
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={onCancelStartMeeting}
+              style={modalStyles.button}
+            >
+              <Text
+                style={[modalStyles.buttonText, { backgroundColor: COLOR.red }]}
+              >
+                Exit
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+const modalStyles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: "80%",
+    height: "22%",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginTop: 10,
+  },
+  button: {
+    borderRadius: 100,
+    width: "40%",
+    overflow: "hidden",
+  },
+  buttonText: {
+    textAlign: "center",
+    fontFamily: FONT.medium,
+    fontSize: 16,
+    padding: 10,
+  },
+});
 
 const HomePage = () => {
   const [loading, setLoading] = useState(true);
@@ -26,13 +144,12 @@ const HomePage = () => {
   const [lastFriendsContacted, setLastFriendsContacted] = useState([]);
   const [friendsRequests, setFriendsRequest] = useState([]);
 
-  const router = useRouter();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { user } = useContext(AuthContext);
   const MY_UUID = user.uuid;
- 
-  useEffect(() => {
 
+  useEffect(() => {
     const getUserInfo = async () => {
       try {
         const lastUserContacted = await api.getLastUserContacted(
@@ -47,7 +164,6 @@ const HomePage = () => {
           user?.friends_request,
           MY_UUID
         );
-        
 
         Promise.all([lastUserContacted, lastFriendsContacted, friendsRequest])
           .then(
@@ -55,25 +171,19 @@ const HomePage = () => {
               setLastUserContacted(UserContactedList);
               setLastFriendsContacted(FriendsContactedList);
               setFriendsRequest(FriendsRequestList);
-              setLoading(false)
+              setLoading(false);
             }
           )
           .catch((error) => {
             console.error("Error during api calling", error);
           });
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     };
 
     getUserInfo();
   }, [MY_UUID]);
-
-  	// Create random id and navigate to the room
-	const onStartMeeting = async () => {
-		const roomId = 100000;
-		 router.push(`/rooms/${roomId}`);
-	};
 
   if (loading) return <Loader />;
 
@@ -138,9 +248,15 @@ const HomePage = () => {
           )}
         </ScrollView>
       )}
-      <Pressable onPress={onStartMeeting} style={styles.button}>
+      <Pressable onPress={() => setIsModalVisible(true)} style={styles.button}>
         <Text style={styles.buttonTitle}>Start Videocall</Text>
       </Pressable>
+      {isModalVisible && (
+        <StartVideoCallModal
+          isModalVisible={isModalVisible}
+          setIsModalVisible={setIsModalVisible}
+        />
+      )}
     </SafeAreaView>
   );
 };
