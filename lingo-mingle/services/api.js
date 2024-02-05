@@ -285,9 +285,11 @@ const api = {
   },
 
   getChatParticipant: async (chatId, userId) => {
- 
+    
+    console.log("API", chatId)
     const chatRef = doc(database, "chats", chatId);
     const chatSnap = await getDoc(chatRef);
+    console.log("SNAP", chatSnap)
 
     if (chatSnap.exists()) {
       

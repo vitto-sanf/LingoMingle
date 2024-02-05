@@ -193,7 +193,7 @@ const Chat = () => {
 
   useEffect(() => {
     api
-      .getChatParticipant(id, MY_UUID)
+      .getChatParticipant(id.replace(',','').trim(), MY_UUID)
       .then((data) => {
         setHeaderTitle(data.username);
       })
@@ -267,8 +267,7 @@ const Chat = () => {
 
   if (loading) return <Loader />;
 
-  //TODO change button color when the pressable is disabled
-  //TODO add videocall button and send invitation button
+ 
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Stack.Screen

@@ -12,7 +12,7 @@ import { COLOR } from "../../../constants";
 
 const LastFriendCard = ({ item, my_uuid }) => {
   const chatId = item.friends.map((e) => {
-    if (e.id === my_uuid) return e.chatId;
+    if (e.id === my_uuid){ console.log("CHAT", e.chatId);return e.chatId};
   });
   const handleSendFriendRequest = () => {
     // TODO: Implement interaction with db
@@ -31,7 +31,7 @@ const LastFriendCard = ({ item, my_uuid }) => {
       />
       <Text style={styles.userName}>{item.username}</Text>
       <View style={styles.actions}>
-        <Link href={`/chats/${chatId}`} asChild>
+      <Link href={`/chats/${chatId}`} asChild>
           <Pressable style={styles.sendFriendRequestBtn}>
             <FA5Icon name="comment" color={COLOR.lightBlue} solid size={20} />
           </Pressable>
