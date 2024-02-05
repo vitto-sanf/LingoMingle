@@ -5,6 +5,12 @@ import { StyleSheet } from "react-native";
 import { FONT, COLOR } from "../../../constants";
 
 const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -43,7 +49,7 @@ const styles = StyleSheet.create({
   },
   gameOptionsContainer: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: "column",
   },
   gameOptionsColumn: {
     alignItems: "center",

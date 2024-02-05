@@ -1,6 +1,6 @@
 // Imports
 import React, { useState, useEffect } from "react";
-import { Alert, Modal, Text, Pressable, View } from "react-native";
+import { Alert, Modal, Text, Pressable, View, TextInput } from "react-native";
 
 // Styles
 import styles from "./CantenJuntosModal.styles";
@@ -12,17 +12,45 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
 
 
   const [sound, setSound] = useState();
+  const [playGame, setPlayGame]=useState(false);
+  const [nameSong, setNameSong]= useState(0);
+  const [answer, setAnswer]= useState("");
+
+  const text = [
+    "Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la",
+    "Vivir mi vida, la la la la",
+    "A veces llega la lluvia Para _ _ _ _ _ _ _ las heridas",
+    "A veces llega la lluvia Para limpiar las heridas"
+  ];
+
+  const songs =  ["../../../assets/sounds/VivirMiVida.mp3","../../../assets/sounds/VivirMiVida.mp3"];
 
   async function playSound() {
+
+
+
+
     console.log('Loading Sound');
-    const { sound } = await Audio.Sound.createAsync( require('../../../assets/sounds/testSound.mp3')
-    );
+  
+    let audio=songs[nameSong];
+    
+    //let audioPath= `../../../assets/sounds/${audio}` //`${audio}`;
+    const { sound } = await Audio.Sound.createAsync( require("../../../assets/sounds/VivirMiVida.mp3"));
+  
+    
     setSound(sound);
+
+    
 
     console.log('Playing Sound');
     await sound.playAsync();
+    const time = 23500;
+    const songTimeout = setTimeout(async ()=>{
+      await sound.pauseAsync();
+    },time)
   }
 
+  /*
   useEffect(() => {
     return sound
       ? () => {
@@ -30,54 +58,51 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
           sound.unloadAsync();
         }
       : undefined;
-  }, [sound]);
+  }, [sound]);*/
 
 
+const restartSong = async ()=>{
+  
+  
+  const audio = await sound.getStatusAsync()
+  console.log(audio.positionMillis)
+  const time = 23500;
+  const positionMillis = audio.positionMillis - time
+  await sound.playFromPositionAsync(positionMillis)
+  
+  const songTimeout = setTimeout(async ()=>{
+    await sound.pauseAsync();
+  },time)
+} 
 
-  /*const words = [
-    { word: "SOL", correctAnswer: true },
-    { word: "NUBE", correctAnswer: false },
-    { word: "SUEL", correctAnswer: false },
-    { word: "LUNA", correctAnswer: false },
-    { word: "NUBE", correctAnswer: true },
-    { word: "FUERTE", correctAnswer: false },
-    { word: "LLUVIA", correctAnswer: false },
-    { word: "NIEVE", correctAnswer: false },
-  ];*/
-
-  /*
-  const icons = [{ icon: "day-sunny" }, { icon: "cloudy" }];
-
-  const initialButtonStates = Array.from(
-    { length: words.length + 1 },
-    () => null
-  );
-
-  const [buttonStates, setButtonStates] = useState(initialButtonStates);
-
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [currentIconIndex, setCurrentIconIndex] = useState(0);
-*/
+  
   const onCancel = () => {
     setModalVisible(!modalVisible);
+    sound.unloadAsync();
   };
+
+  const verifyAnswer = async() =>{
+    console.log(answer);
+    if (answer=="vida"){
+      await sound.playAsync();
+      const time = 23500;
+      const songTimeout = setTimeout(async ()=>{
+        await sound.pauseAsync();
+      },time)
+  }
+};
 
   const handleBackButton = () => {
-    setCurrentWordIndex(0);
-    setCurrentIconIndex(0);
+    //setCurrentWordIndex(0);
+    //setCurrentIconIndex(0);
+    setPlayGame(false);
     onCancel();
   };
-/*
-  const checkAnswer = (isCorrect, index) => {
-    const newButtonStates = initialButtonStates.slice();
-    newButtonStates[index] = isCorrect;
-    setButtonStates(newButtonStates);
 
-    if (isCorrect) {
-      setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
-      setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
-    }
-  };*/
+  const onChangeText = (value) =>{
+    setAnswer(value);
+  }
+
 
   return (
     <Modal
@@ -100,25 +125,65 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
             </View>
           </View>
           <View style={styles.gameOptionsContainer}>
-          <Pressable
-                  /*key={index}
-                  style={[
-                    styles.gameOptionButton,
-                    {
-                      backgroundColor:
-                        buttonStates[index] === true
-                          ? COLOR.green
-                          : buttonStates[index] === false
-                          ? COLOR.red
-                          : COLOR.lightWhite,
-                    },
-                  ]}*/
-                  onPress={playSound}
-                >
-                  <Text style={styles.gameOptionTextButton}>
-                    Play
+            {playGame ? (
+              <>
+                <Text>
+                  <FontistoIcon name="volume-up" size={20} />
+                </Text>
+
+                <View style={styles.gameOptionsColumn}>
+                  <Text>
+                    <FontistoIcon name="music-note" size={20} /> Feliz Navidad{" "}
+                    <FontistoIcon name="music-note" size={20} />
                   </Text>
+                </View>
+
+                <View style={styles.gameOptionsColumn}>
+                  <Text>
+                  Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la
+                  </Text>
+                </View>
+
+                <TextInput
+                  style={styles.input}
+                  onChangeText={onChangeText}
+                  value={answer}
+                  placeholder="Insert the correct word"
+                />
+                <Pressable onPress={() => {
+                  verifyAnswer(answer);
+                  
+                }
+                 }>
+                  <Text style={styles.gameOptionTextButton}>Insert</Text>
                 </Pressable>
+                <Pressable onPress={() => {
+                restartSong();
+                
+              }
+               }>
+                <Text style={styles.gameOptionTextButton}>restart</Text>
+              </Pressable>
+
+              </>
+            ) : (
+              <>
+                <Text>
+                  In this a song will be played and you have to insert the
+                  correct missing word
+                </Text>
+
+                <Pressable onPress={() => {
+                  setPlayGame(true);
+                  playSound();
+                }
+                 }>
+                  <Text style={styles.gameOptionTextButton}>play</Text>
+                </Pressable>
+              
+              
+            </>
+            )}
           </View>
           {/*
           <FontistoIcon
@@ -186,7 +251,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
             </View>
           </View>
         */}
-
         </View>
       </View>
     </Modal>
