@@ -193,7 +193,7 @@ const Chat = () => {
 
   useEffect(() => {
     api
-      .getChatParticipant(id, MY_UUID)
+      .getChatParticipant(id.replace(',',''), MY_UUID)
       .then((data) => {
         setHeaderTitle(data.username);
       })
@@ -204,7 +204,7 @@ const Chat = () => {
   }, [user]);
 
   useLayoutEffect(() => {
-    const msgCollectionRef = collection(database, `/chats/${id}/messages`);
+    const msgCollectionRef = collection(database, `/chats/${id.replace(',','')}/messages`);
     const q = query(msgCollectionRef, orderBy("createdAt", "asc"));
     let displayedDate = null;
     const unsubscribe = onSnapshot(q, (chats) => {
