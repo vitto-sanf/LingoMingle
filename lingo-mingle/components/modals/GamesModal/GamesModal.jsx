@@ -12,6 +12,7 @@ const GamesModal = ({
   setModalVisible,
   setModalAdivinaVisible,
   setModalCantenJuntosVisible,
+  setModalNuevoTemaVisible,
 }) => {
   const onCancel = () => {
     setModalVisible(!modalVisible);
@@ -62,7 +63,7 @@ const GamesModal = ({
           {/* Game 3 - Nuevo Tema */}
           <Pressable
             style={styles.button}
-            onPress={setModalCantenJuntosVisible}
+            onPress={setModalNuevoTemaVisible}
           >
             <FA5Icon
               name="stack-exchange"
