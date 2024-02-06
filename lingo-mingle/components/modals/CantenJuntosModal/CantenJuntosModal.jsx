@@ -6,15 +6,13 @@ import { Alert, Modal, Text, Pressable, View, TextInput } from "react-native";
 import styles from "./CantenJuntosModal.styles";
 import FontistoIcon from "react-native-vector-icons/Fontisto";
 import { COLOR } from "../../../constants";
-import { Audio } from 'expo-av';
+import { Audio } from "expo-av";
 
 const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
-
-
   const [sound, setSound] = useState();
-  const [playGame, setPlayGame]=useState(false);
-  const [songTextIndex, setSongTextIndex]= useState(0);
-  const [answer, setAnswer]= useState("");
+  const [playGame, setPlayGame] = useState(false);
+  const [songTextIndex, setSongTextIndex] = useState(0);
+  const [answer, setAnswer] = useState("");
   const text = [
     "Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la",
     "Vivir mi vida, la la la la",
@@ -23,35 +21,40 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     "Sueño cuando era pequeño,Sin preocupación en el _ _ _ _ _ _ _",
     "Sueño cuando era pequeño,Sin preocupación en el corazón",
     "Sigo viendo aquel momento Se desvaneció, _ _ _ _ _ _ _ _ _ _ _",
-    "Sigo viendo aquel momento Se desvaneció, desapareció"
+    "Sigo viendo aquel momento Se desvaneció, desapareció",
   ];
 
- 
+  async function playSound(num) {
+    console.log("Loading Sound");
 
+    if (num == 0) {
+      
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../../assets/sounds/VivirMiVida.mp3")
+      );
+      setSound(sound);
 
+      console.log("Playing Sound");
+      await sound.playAsync();
+      const time = 10000;
+      const songTimeout = setTimeout(async () => {
+        await sound.pauseAsync();
+      }, time);
+    }
 
-  async function playSound() {
-
-    
-
-
-    console.log('Loading Sound');
-  
-    //TO DO: scegliere il giusto sound con istruzioni condizionali
-    const {sound} = await Audio.Sound.createAsync( require("../../../assets/sounds/VivirMiVida.mp3"));
-    setSound(sound);
-
-    
-
-    console.log('Playing Sound');
-    await sound.playAsync();
-    const time = 10000;
-    const songTimeout = setTimeout(async ()=>{
-      await sound.pauseAsync();
-    },time)
-
-
-
+    if (num == 1) {
+      
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../../assets/sounds/Sofia.mp3")
+      );
+      setSound(sound);
+      console.log("Playing Sound");
+      await sound.playAsync();
+      const time = 18000;
+      const songTimeout = setTimeout(async () => {
+        await sound.pauseAsync();
+      }, time);
+    }
   }
 
   /*
@@ -64,22 +67,31 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
       : undefined;
   }, [sound]);*/
 
+  const restartSong = async (num) => {
+    if (num == 0) {
+      const audio = await sound.getStatusAsync();
+      console.log(audio.positionMillis);
+      const time = 10000;
+      const positionMillis = audio.positionMillis - time;
+      await sound.playFromPositionAsync(positionMillis);
 
-const restartSong = async ()=>{
-  
-  
-  const audio = await sound.getStatusAsync()
-  console.log(audio.positionMillis)
-  const time = 10000;
-  const positionMillis = audio.positionMillis - time
-  await sound.playFromPositionAsync(positionMillis)
-  
-  const songTimeout = setTimeout(async ()=>{
-    await sound.pauseAsync();
-  },time)
-} 
+      const songTimeout = setTimeout(async () => {
+        await sound.pauseAsync();
+      }, time);
+    }
+    if (num == 1) {
+      const audio = await sound.getStatusAsync();
+      console.log(audio.positionMillis);
+      const time = 18000;
+      const positionMillis = audio.positionMillis - time;
+      await sound.playFromPositionAsync(positionMillis);
 
-  
+      const songTimeout = setTimeout(async () => {
+        await sound.pauseAsync();
+      }, time);
+    }
+  };
+
   const onCancel = () => {
     setSongTextIndex(0);
     setAnswer("");
@@ -87,24 +99,75 @@ const restartSong = async ()=>{
     sound.unloadAsync();
   };
 
-  const verifyAnswer = async() =>{
+  const verifyAnswer = async () => {
     console.log(answer);
-    if (answer=="vida"){
-      //setAnswer("");
-      setSongTextIndex(songTextIndex+1);
-      setTimeout(async ()=>{
-        setSongTextIndex(songTextIndex+2);
-        setAnswer("");
-        await sound.playAsync();
-        const time = 10000;
-        const songTimeout = setTimeout(async ()=>{
-          await sound.pauseAsync();
-        },time)
+    if (songTextIndex == 0) {
+      if (answer == "vida") {
+        //setAnswer("");
+        setSongTextIndex(songTextIndex + 1);
+        setTimeout(async () => {
+          setSongTextIndex(songTextIndex + 2);
+          setAnswer("");
+          await sound.playAsync();
+          const time = 10000;
+          const songTimeout = setTimeout(async () => {
+            await sound.pauseAsync();
+          }, time);
+        }, 1000);
+      }
+    }
+    if (songTextIndex == 2) {
+      if (answer == "limpiar") {
+        //setAnswer("");
+        setSongTextIndex(songTextIndex + 1);
+        sound.unloadAsync();
 
-      },1000)
+        setTimeout(async () => {
+          setSongTextIndex(songTextIndex + 2);
+          setAnswer("");
+          //await sound.playAsync(1);
+          playSound(1);
+          /*const time = 40000;
+            const songTimeout = setTimeout(async ()=>{
+              await sound.pauseAsync();
+            },time)*/
+        }, 1000);
+      }
+    }
+
+      if (songTextIndex == 4) {
+        if (answer == "corazon") {
+          setSongTextIndex(songTextIndex + 1);
+          setTimeout(async () => {
+          setSongTextIndex(songTextIndex + 2);
+          setAnswer("");
+          await sound.playAsync();
+          const time = 8000;
+          const songTimeout = setTimeout(async () => {
+            await sound.pauseAsync();
+          }, time);
+        }, 1000);
+        }
+      }
+
+        if (songTextIndex == 6) {
+          if (answer == "desaparecio") {
+            setSongTextIndex(songTextIndex + 1);
+            setTimeout(async () => {
+            //setSongTextIndex(songTextIndex + 2);
+            setAnswer("");
+            /*await sound.playAsync();
+            const time = 8000;
+            const songTimeout = setTimeout(async () => {
+              await sound.pauseAsync();
+            }, time);*/
+          }, 2000);
+          }
+        }
       
-  }
-};
+    
+  };
+ 
 
   const handleBackButton = () => {
     //setCurrentWordIndex(0);
@@ -113,10 +176,9 @@ const restartSong = async ()=>{
     onCancel();
   };
 
-  const onChangeText = (value) =>{
+  const onChangeText = (value) => {
     setAnswer(value);
-  }
-
+  };
 
   return (
     <Modal
@@ -147,15 +209,16 @@ const restartSong = async ()=>{
 
                 <View style={styles.gameOptionsColumn}>
                   <Text>
-                    <FontistoIcon name="music-note" size={20} /> Vivir Mi Vida{" "}
+                    <FontistoIcon name="music-note" size={20} />
+                    {songTextIndex >= 0 && songTextIndex <= 3
+                      ? "Vivir Mi Vida"
+                      : "Sofia"}
                     <FontistoIcon name="music-note" size={20} />
                   </Text>
                 </View>
 
                 <View style={styles.gameOptionsColumn}>
-                  <Text>
-                  {text[songTextIndex]}
-                  </Text>
+                  <Text>{text[songTextIndex]}</Text>
                 </View>
 
                 <TextInput
@@ -164,21 +227,22 @@ const restartSong = async ()=>{
                   value={answer}
                   placeholder="Insert the correct word"
                 />
-                <Pressable onPress={() => {
-                  verifyAnswer(answer);
-                  
-                }
-                 }>
+                <Pressable
+                  onPress={() => {
+                    verifyAnswer(answer);
+                  }}
+                >
                   <Text style={styles.gameOptionTextButton}>Insert</Text>
                 </Pressable>
-                <Pressable onPress={() => {
-                restartSong();
-                
-              }
-               }>
-                <Text style={styles.gameOptionTextButton}>restart</Text>
-              </Pressable>
-
+                <Pressable
+                  onPress={() => {
+                    songTextIndex >= 0 && songTextIndex <= 3
+                      ? restartSong(0)
+                      : restartSong(1);
+                  }}
+                >
+                  <Text style={styles.gameOptionTextButton}>restart</Text>
+                </Pressable>
               </>
             ) : (
               <>
@@ -187,16 +251,15 @@ const restartSong = async ()=>{
                   correct missing word
                 </Text>
 
-                <Pressable onPress={() => {
-                  setPlayGame(true);
-                  playSound();
-                }
-                 }>
+                <Pressable
+                  onPress={() => {
+                    setPlayGame(true);
+                    playSound(0);
+                  }}
+                >
                   <Text style={styles.gameOptionTextButton}>play</Text>
                 </Pressable>
-              
-              
-            </>
+              </>
             )}
           </View>
           {/*
