@@ -8,6 +8,7 @@ import FontistoIcon from "react-native-vector-icons/Fontisto";
 import { COLOR } from "../../../constants";
 import { Audio } from "expo-av";
 
+//TO DO: fix UI 
 const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
   const [sound, setSound] = useState();
   const [playGame, setPlayGame] = useState(false);
@@ -28,7 +29,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     console.log("Loading Sound");
 
     if (num == 0) {
-      
       const { sound } = await Audio.Sound.createAsync(
         require("../../../assets/sounds/VivirMiVida.mp3")
       );
@@ -43,7 +43,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     }
 
     if (num == 1) {
-      
       const { sound } = await Audio.Sound.createAsync(
         require("../../../assets/sounds/Sofia.mp3")
       );
@@ -56,16 +55,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
       }, time);
     }
   }
-
-  /*
-  useEffect(() => {
-    return sound
-      ? () => {
-          console.log('Unloading Sound');
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);*/
 
   const restartSong = async (num) => {
     if (num == 0) {
@@ -103,7 +92,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     console.log(answer);
     if (songTextIndex == 0) {
       if (answer == "vida") {
-        //setAnswer("");
         setSongTextIndex(songTextIndex + 1);
         setTimeout(async () => {
           setSongTextIndex(songTextIndex + 2);
@@ -118,27 +106,22 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     }
     if (songTextIndex == 2) {
       if (answer == "limpiar") {
-        //setAnswer("");
         setSongTextIndex(songTextIndex + 1);
         sound.unloadAsync();
 
         setTimeout(async () => {
           setSongTextIndex(songTextIndex + 2);
           setAnswer("");
-          //await sound.playAsync(1);
+
           playSound(1);
-          /*const time = 40000;
-            const songTimeout = setTimeout(async ()=>{
-              await sound.pauseAsync();
-            },time)*/
         }, 1000);
       }
     }
 
-      if (songTextIndex == 4) {
-        if (answer == "corazon") {
-          setSongTextIndex(songTextIndex + 1);
-          setTimeout(async () => {
+    if (songTextIndex == 4) {
+      if (answer == "corazon") {
+        setSongTextIndex(songTextIndex + 1);
+        setTimeout(async () => {
           setSongTextIndex(songTextIndex + 2);
           setAnswer("");
           await sound.playAsync();
@@ -147,31 +130,21 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
             await sound.pauseAsync();
           }, time);
         }, 1000);
-        }
       }
+    }
 
-        if (songTextIndex == 6) {
-          if (answer == "desaparecio") {
-            setSongTextIndex(songTextIndex + 1);
-            setTimeout(async () => {
-            //setSongTextIndex(songTextIndex + 2);
-            setAnswer("");
-            /*await sound.playAsync();
-            const time = 8000;
-            const songTimeout = setTimeout(async () => {
-              await sound.pauseAsync();
-            }, time);*/
-          }, 2000);
-          }
-        }
-      
-    
+    if (songTextIndex == 6) {
+      if (answer == "desaparecio") {
+        setSongTextIndex(songTextIndex + 1);
+        setTimeout(async () => {
+          setAnswer("");
+          setModalVisible(false);
+        }, 2000);
+      }
+    }
   };
- 
 
   const handleBackButton = () => {
-    //setCurrentWordIndex(0);
-    //setCurrentIconIndex(0);
     setPlayGame(false);
     onCancel();
   };
@@ -262,72 +235,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
               </>
             )}
           </View>
-          {/*
-          <FontistoIcon
-            name={icons[currentIconIndex].icon}
-            color="black"
-            size={70}
-            style={styles.gameIcon}
-          />
-          <View style={styles.gameOptionsContainer}>
-            <View style={styles.gameOptionsColumn}>
-              {[0, 1].map((index) => (
-                <Pressable
-                  key={index}
-                  style={[
-                    styles.gameOptionButton,
-                    {
-                      backgroundColor:
-                        buttonStates[index] === true
-                          ? COLOR.green
-                          : buttonStates[index] === false
-                          ? COLOR.red
-                          : COLOR.lightWhite,
-                    },
-                  ]}
-                  onPress={() =>
-                    checkAnswer(
-                      words[currentWordIndex + index].correctAnswer,
-                      index
-                    )
-                  }
-                >
-                  <Text style={styles.gameOptionTextButton}>
-                    {words[currentWordIndex + index].word}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-            <View style={styles.gameOptionsColumn}>
-              {[2, 3].map((index) => (
-                <Pressable
-                  key={index}
-                  style={[
-                    styles.gameOptionButton,
-                    {
-                      backgroundColor:
-                        buttonStates[index] === true
-                          ? COLOR.green
-                          : buttonStates[index] === false
-                          ? COLOR.red
-                          : COLOR.lightWhite,
-                    },
-                  ]}
-                  onPress={() =>
-                    checkAnswer(
-                      words[currentWordIndex + index].correctAnswer,
-                      index
-                    )
-                  }
-                >
-                  <Text style={styles.gameOptionTextButton}>
-                    {words[currentWordIndex + index].word}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-        */}
         </View>
       </View>
     </Modal>
