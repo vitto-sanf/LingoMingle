@@ -33,6 +33,7 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
 
   const onCancel = () => {
     setModalVisible(!modalVisible);
+    setButtonStates(initialButtonStates);
   };
 
   const handleBackButton = () => {
@@ -45,10 +46,17 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
     const newButtonStates = initialButtonStates.slice();
     newButtonStates[index] = isCorrect;
     setButtonStates(newButtonStates);
+    setTimeout(() => {
+      setButtonStates(initialButtonStates);
+    }, 1500);
 
     if (isCorrect) {
+      setTimeout(() => {
+        setButtonStates(initialButtonStates);
       setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
       setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
+      }, 1500);
+      
     }
   };
 

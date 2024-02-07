@@ -10,6 +10,7 @@ import { Audio } from "expo-av";
 
 //TO DO: fix UI 
 const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
+  
   const [sound, setSound] = useState();
   const [playGame, setPlayGame] = useState(false);
   const [songTextIndex, setSongTextIndex] = useState(0);
@@ -24,6 +25,19 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     "Sigo viendo aquel momento Se desvaneció, _ _ _ _ _ _ _ _ _ _ _",
     "Sigo viendo aquel momento Se desvaneció, desapareció",
   ];
+  
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../../assets/sounds/VivirMiVida.mp3")
+      );
+      setSound(sound);
+    };
+
+    fetchData().catch(console.error);
+  }, []);
+
 
   async function playSound(num) {
     console.log("Loading Sound");
@@ -85,7 +99,10 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     setSongTextIndex(0);
     setAnswer("");
     setModalVisible(!modalVisible);
+    if (sound)
+    {
     sound.unloadAsync();
+    }
   };
 
   const verifyAnswer = async () => {
@@ -204,8 +221,9 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                   onPress={() => {
                     verifyAnswer(answer);
                   }}
+                  style={styles.playButton}
                 >
-                  <Text style={styles.gameOptionTextButton}>Insert</Text>
+                  <Text style={styles.playButtonText}>Insert Word</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => {
@@ -213,25 +231,27 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                       ? restartSong(0)
                       : restartSong(1);
                   }}
+                  style={styles.playButton}
                 >
-                  <Text style={styles.gameOptionTextButton}>restart</Text>
+                  <Text style={styles.playButtonText} >Restart Audio</Text>
                 </Pressable>
               </>
             ) : (
               <>
-                <Text>
-                  In this a song will be played and you have to insert the
-                  correct missing word
-                </Text>
-
-                <Pressable
-                  onPress={() => {
+                <View style={styles.gameOptionsColumn}>
+                  <Text style={styles.instructions}>
+                  In this game a song will be played and you have to insert the
+                  correct missing word.{" "}
+                  </Text>
+                </View>
+                <View style={styles.gameOptionsColumn}>
+                  <Pressable onPress={() => {
                     setPlayGame(true);
                     playSound(0);
-                  }}
-                >
-                  <Text style={styles.gameOptionTextButton}>play</Text>
-                </Pressable>
+                  }} style={styles.playButton}>
+                    <Text style={styles.playButtonText}>Play</Text>
+                  </Pressable>
+                </View>
               </>
             )}
           </View>

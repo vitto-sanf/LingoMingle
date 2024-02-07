@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: "80%",
-    height: "35%",
+    height: "60%",
   },
   modalHeader: {
     flexDirection: "row",
@@ -69,6 +69,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingHorizontal: 20,
   },
+  playButton:{
+    marginBottom: 10,
+    marginTop:5,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 10,
+    elevation: 3,
+    backgroundColor: COLOR.primary,
+   
+  },
+  playButtonText:{
+    fontFamily: FONT.bold,
+    color:COLOR.white
+  }
 });
 
 export default styles;
