@@ -30,6 +30,7 @@ import ChatView from "../../components/videocall/ChatView";
 import { AuthContext } from "../../contexts/AuthContext";
 import CustomCallControls from "../../components/videocall/CustomCallControls";
 import { SafeAreaView } from "react-native-safe-area-context";
+import api from "../../services/api";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -39,6 +40,8 @@ const Room = () => {
   const [advinaLaPalabraVisible, setAdivinaLaPalabraVisible] = useState(false);
   const [cantenJuntosVisible, setCantenJuntosVisible] = useState(false);
   const [nuevoTemaVisible, setNuevoTemaVisible] = useState(false);
+  const [gamesData,setGamesData]=useState(null);
+  const [dirty, setDirty] = useState(true);
   const { user, token } = useContext(AuthContext);
   const router = useRouter();
   const navigation = useNavigation();
@@ -46,6 +49,26 @@ const Room = () => {
   const [call, setCall] = useState(null);
   const client = useStreamVideoClient();
   const { id } = useLocalSearchParams();
+
+  
+
+ 
+/*
+  useEffect(() => {
+      if (dirty) {
+        api
+          .getGamesData
+          .then((data) => {
+            if (data) {
+              setGamesData(data);
+              setDirty(false);
+              console.log(gamesData);
+              //setLoading(false);
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+  }, [dirty]);*/
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -123,6 +146,26 @@ const Room = () => {
     toggleModal: toggleModal,
     onHangupCallHandler: goToHomeScreen,
   };
+
+  useEffect(() => {
+    if (dirty)
+    {
+    const fetchData = async () => {
+      const { gamesData } = await api.getGamesData();
+      if(gamesData)
+      {
+      console.log(gamesData);
+      setGamesData(gamesData);
+      }
+    };
+
+    fetchData().catch(console.error);
+
+  }
+
+   
+  }, [dirty,gamesData]);
+
 
   if (!call) return null;
 

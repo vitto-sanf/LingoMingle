@@ -13,6 +13,7 @@ import {
   query,
   where,
   setDoc,
+  onSnapshot
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 import moment from "moment";
@@ -448,6 +449,31 @@ const api = {
       return { message: "Error During edit invitation!" };
     }
   },
+
+  getGamesData: async()=>{
+    const ref = collection(database,'games')
+    try{
+      onSnapshot(ref,(snapshot)=>{
+        let data = []
+        snapshot.docs.forEach((doc)=>{
+          data.push({...doc.data(), id: doc.id})
+        })
+
+        console.log(data);
+        return data;
+      })
+
+    }
+    catch(err)
+    {
+      console.log(err);
+      return { message: "Error During retriving games data!" };
+    }
+  },
+
+  setGamesData : async ()=>{
+
+  }
 };
 
 export default api;
