@@ -31,7 +31,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 import CustomCallControls from "../../components/videocall/CustomCallControls";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api";
-
+import { onSnapshot,collection } from "firebase/firestore";
+import { database } from "../../config/firebase";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
@@ -40,7 +41,7 @@ const Room = () => {
   const [advinaLaPalabraVisible, setAdivinaLaPalabraVisible] = useState(false);
   const [cantenJuntosVisible, setCantenJuntosVisible] = useState(false);
   const [nuevoTemaVisible, setNuevoTemaVisible] = useState(false);
-  const [gamesData,setGamesData]=useState("");
+  const [gamesData,setGamesData]=useState({});
   const [dirty, setDirty] = useState(true);
   const { user, token } = useContext(AuthContext);
   const router = useRouter();
@@ -50,11 +51,41 @@ const Room = () => {
   const client = useStreamVideoClient();
   const { id } = useLocalSearchParams();
 
-  
+  useEffect(() => {
+
+    const listener = onSnapshot(collection(database, 'games'), (snapshot) => {
+      const data = [];
+      snapshot.forEach((doc) => {
+        data.push({ ...doc.data(), id: doc.id });
+      });
+      setGamesData(data);
+      //console.log("client useEffect", data);
+    });
+
+    
+  }, []);
 
 
-  const toggleModal = () => {
+  const toggleModal = async () => {
+    
+    
+    //console.log(modalVisible);
+    //setGamesData({ ...gamesData, ModalGameVisible: !modalVisible });
+    //console.log("client",gamesData);
+    const newData = gamesData.map(item => {
+      // Se l'ID dell'oggetto corrisponde, aggiorna il campo ModalGameVisible
+      if (item.id === "uEG3p396G7MhQnE8eaKs") {
+        return { ...item, ModalGameVisible: !modalVisible };
+      }
+      // Altrimenti, restituisci l'oggetto originale
+      return item;
+    });
+    // Aggiorna lo stato con il nuovo array
+    setGamesData(newData);
     setModalVisible(!modalVisible);
+    console.log("client data",gamesData);
+    await api.setGamesData(gamesData);
+
   };
   const toggleModalCantenJuntos = () => {
     setModalVisible(!modalVisible);
@@ -130,15 +161,16 @@ const Room = () => {
     onHangupCallHandler: goToHomeScreen,
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (dirty)
     {
     const fetchData = async () => {
       const gamesData1 = await api.getGamesData();
       if(gamesData1)
       {
-      console.log(gamesData1);
+      //console.log(gamesData1);
       setGamesData(gamesData1);
+      console.log("stato",gamesData);
       }
     };
 
@@ -147,12 +179,13 @@ const Room = () => {
   }
 
    
-  }, [dirty,gamesData]);
+  }, []);*/
 
 
   if (!call) return null;
 
   return (
+    
     <SafeAreaView style={{ flex: 1 }}>
       <Spinner visible={!call} />
 

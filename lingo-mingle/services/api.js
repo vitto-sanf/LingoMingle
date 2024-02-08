@@ -450,7 +450,7 @@ const api = {
     }
   },
 
-  getGamesData: async()=>{
+  /*getGamesData: async()=>{
     const ref = collection(database,'games')
     try{
       onSnapshot(ref,(snapshot)=>{
@@ -459,7 +459,7 @@ const api = {
           data.push({...doc.data(), id: doc.id})
         })
 
-        console.log(data);
+        console.log("server",data);
         return data;
       })
 
@@ -469,10 +469,23 @@ const api = {
       console.log(err);
       return { message: "Error During retriving games data!" };
     }
-  },
+  },*/
 
-  setGamesData : async ()=>{
-
+  setGamesData : async (formData) => {
+    try {
+      console.log("server Set",formData[0]);
+      const docRef = await setDoc(doc(database, "games", formData[0].id), {
+        ModalAdivinaVisible: formData[0].ModalAdivinaVisible,
+        ModalCantenJuntosVisible: formData[0].ModalCantenJuntosVisible,
+        ModalGameVisible: formData[0].ModalGameVisible,
+        player1Answer: formData[0].player1Answer,
+        player2Answer: formData[0].player2Answer,
+      });
+      return docRef;
+    } catch (err) {
+      console.log(err);
+      return { message: "Error During edit Games Data!" };
+    }
   }
 };
 
