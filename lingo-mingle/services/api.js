@@ -480,6 +480,7 @@ const api = {
         ModalCantenJuntosVisible: formData.ModalCantenJuntosVisible,
         ModalGameVisible: formData.ModalGameVisible,
         ModalNuevoTemaVisible: formData.ModalNuevoTemaVisible,
+        playGame: formData.playGame,
         player1Answer: formData.player1Answer,
         player2Answer: formData.player2Answer,
       });

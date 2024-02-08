@@ -84,6 +84,7 @@ const Room = () => {
     const newData = {
       ...gamesData,
       ModalCantenJuntosVisible: !gamesData.ModalCantenJuntosVisible,
+      playGame: false,
     };
 
     setGamesData(newData);

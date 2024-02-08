@@ -7,6 +7,9 @@ import styles from "./CantenJuntosModal.styles";
 import FontistoIcon from "react-native-vector-icons/Fontisto";
 import { COLOR } from "../../../constants";
 import { Audio } from "expo-av";
+import api from "../../../services/api";
+import { onSnapshot, collection } from "firebase/firestore";
+import { database } from "../../../config/firebase";
 
 //TO DO: fix UI 
 const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
@@ -15,6 +18,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
   const [playGame, setPlayGame] = useState(false);
   const [songTextIndex, setSongTextIndex] = useState(0);
   const [answer, setAnswer] = useState("");
+  const [gamesData, setGamesData] = useState({});
   const text = [
     "Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la",
     "Vivir mi vida, la la la la",
@@ -26,6 +30,29 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     "Sigo viendo aquel momento Se desvaneció, desapareció",
   ];
   
+  useEffect(() => {
+    const listener = onSnapshot(collection(database, "games"), (snapshot) => {
+      snapshot.forEach((doc) => {
+        setGamesData(doc.data());
+        setPlayGame((doc.data().playGame));
+      });
+    });
+  }, []);
+
+  const playgame = async () =>{
+    setPlayGame(!gamesData.playGame);
+
+    const newData = {
+      ...gamesData,
+      playGame: !gamesData.playGame,
+    };
+
+    setGamesData(newData);
+
+    //console.log("client data", newData);
+    await api.setGamesData(newData);
+    playSound(0);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -161,8 +188,18 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     }
   };
 
-  const handleBackButton = () => {
+  const handleBackButton = async () => {
     setPlayGame(false);
+
+    const newData = {
+      ...gamesData,
+      playGame: false,
+    };
+
+    setGamesData(newData);
+
+    //console.log("client data", newData);
+    await api.setGamesData(newData);
     onCancel();
   };
 
@@ -246,8 +283,9 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                 </View>
                 <View style={styles.gameOptionsColumn}>
                   <Pressable onPress={() => {
-                    setPlayGame(true);
-                    playSound(0);
+                    //setPlayGame(true);
+                    playgame();
+                    //playSound(0);
                   }} style={styles.playButton}>
                     <Text style={styles.playButtonText}>Play</Text>
                   </Pressable>
