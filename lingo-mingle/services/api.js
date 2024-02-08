@@ -473,13 +473,14 @@ const api = {
 
   setGamesData : async (formData) => {
     try {
-      console.log("server Set",formData[0]);
-      const docRef = await setDoc(doc(database, "games", formData[0].id), {
-        ModalAdivinaVisible: formData[0].ModalAdivinaVisible,
-        ModalCantenJuntosVisible: formData[0].ModalCantenJuntosVisible,
-        ModalGameVisible: formData[0].ModalGameVisible,
-        player1Answer: formData[0].player1Answer,
-        player2Answer: formData[0].player2Answer,
+      const id = "uEG3p396G7MhQnE8eaKs";
+      console.log("server Set",formData);
+      const docRef = await setDoc(doc(database, "games", id), {
+        ModalAdivinaVisible: formData.ModalAdivinaVisible,
+        ModalCantenJuntosVisible: formData.ModalCantenJuntosVisible,
+        ModalGameVisible: formData.ModalGameVisible,
+        player1Answer: formData.player1Answer,
+        player2Answer: formData.player2Answer,
       });
       return docRef;
     } catch (err) {

@@ -54,11 +54,18 @@ const Room = () => {
   useEffect(() => {
 
     const listener = onSnapshot(collection(database, 'games'), (snapshot) => {
-      const data = [];
+      //const data = [];
       snapshot.forEach((doc) => {
-        data.push({ ...doc.data(), id: doc.id });
+        //console.log(doc.data());
+        setGamesData(doc.data());
+        setModalVisible(doc.data().ModalGameVisible);
+        //data.push({ ...doc.data(), id: doc.id });
       });
-      setGamesData(data);
+      //setGamesData(data);
+      //console.log("setting data",data);
+      //console.log("Actual data",gamesData)
+      //setModalVisible(data.ModalGameVisible);
+      //setModalVisible(data.ModalGameVisible);
       //console.log("client useEffect", data);
     });
 
@@ -68,23 +75,32 @@ const Room = () => {
 
   const toggleModal = async () => {
     
-    
-    //console.log(modalVisible);
+    //console.log(gamesData);
+     //console.log("click1",!modalVisible);
+    setModalVisible(!gamesData.ModalGameVisible);
+
     //setGamesData({ ...gamesData, ModalGameVisible: !modalVisible });
     //console.log("client",gamesData);
-    const newData = gamesData.map(item => {
-      // Se l'ID dell'oggetto corrisponde, aggiorna il campo ModalGameVisible
+    const newData ={
+    ...gamesData,
+      ModalGameVisible: !gamesData.ModalGameVisible
+    }
+    
+    /*gamesData.map(item => {
+     
       if (item.id === "uEG3p396G7MhQnE8eaKs") {
-        return { ...item, ModalGameVisible: !modalVisible };
+        return { ...item, ModalGameVisible: !gamesData.ModalGameVisible };
       }
-      // Altrimenti, restituisci l'oggetto originale
+      
       return item;
-    });
-    // Aggiorna lo stato con il nuovo array
+    });*/
+    
     setGamesData(newData);
-    setModalVisible(!modalVisible);
-    console.log("client data",gamesData);
-    await api.setGamesData(gamesData);
+    //setModalVisible(!modalVisible);
+    //setModalVisible(newData.ModalGameVisible);
+    //console.log("actual state",newData.ModalGameVisible);
+    console.log("client data",newData);
+    await api.setGamesData(newData);
 
   };
   const toggleModalCantenJuntos = () => {
