@@ -40,7 +40,7 @@ const Room = () => {
   const [advinaLaPalabraVisible, setAdivinaLaPalabraVisible] = useState(false);
   const [cantenJuntosVisible, setCantenJuntosVisible] = useState(false);
   const [nuevoTemaVisible, setNuevoTemaVisible] = useState(false);
-  const [gamesData,setGamesData]=useState(null);
+  const [gamesData,setGamesData]=useState("");
   const [dirty, setDirty] = useState(true);
   const { user, token } = useContext(AuthContext);
   const router = useRouter();
@@ -52,23 +52,6 @@ const Room = () => {
 
   
 
- 
-/*
-  useEffect(() => {
-      if (dirty) {
-        api
-          .getGamesData
-          .then((data) => {
-            if (data) {
-              setGamesData(data);
-              setDirty(false);
-              console.log(gamesData);
-              //setLoading(false);
-            }
-          })
-          .catch((err) => console.log(err));
-      }
-  }, [dirty]);*/
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -151,11 +134,11 @@ const Room = () => {
     if (dirty)
     {
     const fetchData = async () => {
-      const { gamesData } = await api.getGamesData();
-      if(gamesData)
+      const gamesData1 = await api.getGamesData();
+      if(gamesData1)
       {
-      console.log(gamesData);
-      setGamesData(gamesData);
+      console.log(gamesData1);
+      setGamesData(gamesData1);
       }
     };
 
