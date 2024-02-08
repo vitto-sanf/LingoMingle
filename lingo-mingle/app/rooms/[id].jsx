@@ -31,7 +31,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import CustomCallControls from "../../components/videocall/CustomCallControls";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api";
-import { onSnapshot,collection } from "firebase/firestore";
+import { onSnapshot, collection } from "firebase/firestore";
 import { database } from "../../config/firebase";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -41,7 +41,7 @@ const Room = () => {
   const [advinaLaPalabraVisible, setAdivinaLaPalabraVisible] = useState(false);
   const [cantenJuntosVisible, setCantenJuntosVisible] = useState(false);
   const [nuevoTemaVisible, setNuevoTemaVisible] = useState(false);
-  const [gamesData,setGamesData]=useState({});
+  const [gamesData, setGamesData] = useState({});
   const [dirty, setDirty] = useState(true);
   const { user, token } = useContext(AuthContext);
   const router = useRouter();
@@ -52,71 +52,83 @@ const Room = () => {
   const { id } = useLocalSearchParams();
 
   useEffect(() => {
-
-    const listener = onSnapshot(collection(database, 'games'), (snapshot) => {
-      //const data = [];
+    const listener = onSnapshot(collection(database, "games"), (snapshot) => {
       snapshot.forEach((doc) => {
-        //console.log(doc.data());
         setGamesData(doc.data());
         setModalVisible(doc.data().ModalGameVisible);
-        //data.push({ ...doc.data(), id: doc.id });
+        setAdivinaLaPalabraVisible(doc.data().ModalAdivinaVisible);
+        setCantenJuntosVisible(doc.data().ModalCantenJuntosVisible);
+        setNuevoTemaVisible(doc.data().ModalNuevoTemaVisible);
       });
-      //setGamesData(data);
-      //console.log("setting data",data);
-      //console.log("Actual data",gamesData)
-      //setModalVisible(data.ModalGameVisible);
-      //setModalVisible(data.ModalGameVisible);
-      //console.log("client useEffect", data);
     });
-
-    
   }, []);
 
-
   const toggleModal = async () => {
-    
-    //console.log(gamesData);
-     //console.log("click1",!modalVisible);
     setModalVisible(!gamesData.ModalGameVisible);
 
-    //setGamesData({ ...gamesData, ModalGameVisible: !modalVisible });
-    //console.log("client",gamesData);
-    const newData ={
-    ...gamesData,
-      ModalGameVisible: !gamesData.ModalGameVisible
-    }
-    
-    /*gamesData.map(item => {
-     
-      if (item.id === "uEG3p396G7MhQnE8eaKs") {
-        return { ...item, ModalGameVisible: !gamesData.ModalGameVisible };
-      }
-      
-      return item;
-    });*/
-    
+    const newData = {
+      ...gamesData,
+      ModalGameVisible: !gamesData.ModalGameVisible,
+    };
+
     setGamesData(newData);
-    //setModalVisible(!modalVisible);
-    //setModalVisible(newData.ModalGameVisible);
-    //console.log("actual state",newData.ModalGameVisible);
-    console.log("client data",newData);
+
+    //console.log("client data", newData);
+    await api.setGamesData(newData);
+  };
+  const toggleModalCantenJuntos = async () => {
+
+    //setModalVisible(!gamesData.ModalGameVisible);
+    setCantenJuntosVisible(!gamesData.ModalCantenJuntosVisible)
+
+    const newData = {
+      ...gamesData,
+      ModalCantenJuntosVisible: !gamesData.ModalCantenJuntosVisible,
+    };
+
+    setGamesData(newData);
+
+    
     await api.setGamesData(newData);
 
-  };
-  const toggleModalCantenJuntos = () => {
+    /*
     setModalVisible(!modalVisible);
-    setCantenJuntosVisible(!cantenJuntosVisible);
+    setCantenJuntosVisible(!cantenJuntosVisible);*/
   };
 
-  const toggleModalAdivina = () => {
-    setModalVisible(!modalVisible);
-    setAdivinaLaPalabraVisible(!advinaLaPalabraVisible);
+  const toggleModalAdivina = async () => {
+    //setModalVisible(!gamesData.ModalGameVisible);
+    setAdivinaLaPalabraVisible(!gamesData.ModalAdivinaVisible)
+
+    const newData = {
+      ...gamesData,
+      ModalAdivinaVisible: !gamesData.ModalAdivinaVisible,
+    };
+
+    setGamesData(newData);
+
+    
+    await api.setGamesData(newData);
+    /*setModalVisible(!modalVisible);
+    setAdivinaLaPalabraVisible(!advinaLaPalabraVisible);*/
   };
 
-  const toggleModalNuevoTema = ()=>{
-    setModalVisible(!modalVisible)
-    setNuevoTemaVisible(!nuevoTemaVisible);
-  }
+  const toggleModalNuevoTema = async () => {
+    //setModalVisible(!gamesData.ModalGameVisible);
+    setNuevoTemaVisible(!gamesData.ModalNuevoTemaVisible)
+
+    const newData = {
+      ...gamesData,
+      ModalNuevoTemaVisible: !gamesData.ModalNuevoTemaVisible,
+    };
+
+    setGamesData(newData);
+
+    
+    await api.setGamesData(newData);
+    /*setModalVisible(!modalVisible);
+    setNuevoTemaVisible(!nuevoTemaVisible);*/
+  };
 
   // Join the call
   useEffect(() => {
@@ -177,31 +189,9 @@ const Room = () => {
     onHangupCallHandler: goToHomeScreen,
   };
 
-  /*useEffect(() => {
-    if (dirty)
-    {
-    const fetchData = async () => {
-      const gamesData1 = await api.getGamesData();
-      if(gamesData1)
-      {
-      //console.log(gamesData1);
-      setGamesData(gamesData1);
-      console.log("stato",gamesData);
-      }
-    };
-
-    fetchData().catch(console.error);
-
-  }
-
-   
-  }, []);*/
-
-
   if (!call) return null;
 
   return (
-    
     <SafeAreaView style={{ flex: 1 }}>
       <Spinner visible={!call} />
 
@@ -218,11 +208,9 @@ const Room = () => {
           modalVisible={modalVisible}
           setModalVisible={toggleModal}
           AdivinamodalVisible={advinaLaPalabraVisible}
-          
           setModalAdivinaVisible={toggleModalAdivina}
           setModalCantenJuntosVisible={toggleModalCantenJuntos}
-          setModalNuevoTemaVisible = {toggleModalNuevoTema}
-
+          setModalNuevoTemaVisible={toggleModalNuevoTema}
         />
         <AdivinaLaPalabraModal
           modalVisible={advinaLaPalabraVisible}
@@ -232,7 +220,7 @@ const Room = () => {
           modalVisible={cantenJuntosVisible}
           setModalVisible={toggleModalCantenJuntos}
         />
-         <NuevoTemaModal
+        <NuevoTemaModal
           modalVisible={nuevoTemaVisible}
           setModalVisible={toggleModalNuevoTema}
         />

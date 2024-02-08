@@ -479,6 +479,7 @@ const api = {
         ModalAdivinaVisible: formData.ModalAdivinaVisible,
         ModalCantenJuntosVisible: formData.ModalCantenJuntosVisible,
         ModalGameVisible: formData.ModalGameVisible,
+        ModalNuevoTemaVisible: formData.ModalNuevoTemaVisible,
         player1Answer: formData.player1Answer,
         player2Answer: formData.player2Answer,
       });
