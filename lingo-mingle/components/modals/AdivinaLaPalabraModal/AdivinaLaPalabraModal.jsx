@@ -6,6 +6,9 @@ import { Alert, Modal, Text, Pressable, View } from "react-native";
 import styles from "./AdivinaLaPalabraModal.styles";
 import FontistoIcon from "react-native-vector-icons/Fontisto";
 import { COLOR } from "../../../constants";
+import api from "../../../services/api";
+import { onSnapshot, collection } from "firebase/firestore";
+import { database } from "../../../config/firebase";
 
 const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
   const words = [

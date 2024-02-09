@@ -8,11 +8,16 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import FontistoIcon from "react-native-vector-icons/Fontisto";
 import { COLOR,FONT } from "../../../constants";
 import { Audio } from "expo-av";
+import api from "../../../services/api";
+import { onSnapshot, collection } from "firebase/firestore";
+import { database } from "../../../config/firebase";
+
 
 const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
   const [play, setPlay] = useState(false);
   const [suggestionVisible, setSuggestionVisible] = useState(false);
   const [questionNumber, setQuestionNumber] = useState(0);
+  const [gamesData, setGamesData] = useState({});
   const questions = [
     {
       question: "¿Cuál es su color favorito?",
@@ -97,13 +102,63 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
     },
   ];
 
-  const handleBackButton = () => {
+  useEffect(() => {
+    const listener = onSnapshot(collection(database, "games"), (snapshot) => {
+      snapshot.forEach((doc) => {
+        setGamesData(doc.data());
+        setPlay((doc.data().playGame));
+      });
+    });
+  }, []);
+
+  /*const playgame = async () =>{
+    setPlay(!gamesData.playGame);
+
+    const newData = {
+      ...gamesData,
+      playGame: !gamesData.playGame,
+    };
+
+    setGamesData(newData);
+
+    //console.log("client data", newData);
+    await api.setGamesData(newData);
+   
+  }*/
+
+
+  const handleBackButton = async () => {
     setModalVisible(!modalVisible);
     setPlay(false);
+
+    const newData = {
+      ...gamesData,
+      playGame: false,
+      ModalNuevoTemaVisible: false,
+    };
+
+    setGamesData(newData);
+
+    //console.log("client data", newData);
+    await api.setGamesData(newData);
+    //setPlay(false);
   };
 
-  const playGame = () => {
-    setPlay(true);
+  const playGame = async () => {
+    //setPlay(true);
+    setPlay(!gamesData.playGame);
+
+    const newData = {
+      ...gamesData,
+      playGame: !gamesData.playGame,
+      
+    };
+
+    setGamesData(newData);
+
+    //console.log("client data", newData);
+    await api.setGamesData(newData);
+
   };
   const setOption = () => {
     setSuggestionVisible(!suggestionVisible);
@@ -124,7 +179,7 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
       visible={modalVisible}
       onRequestClose={() => {
         Alert.alert("Modal has been closed.");
-        setModalVisible(!modalVisible);
+       // setModalVisible(!modalVisible);
       }}
     >
       <View style={styles.centeredView}>

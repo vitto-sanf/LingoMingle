@@ -117,7 +117,7 @@ const Room = () => {
   const toggleModalNuevoTema = async () => {
     //setModalVisible(!gamesData.ModalGameVisible);
     setNuevoTemaVisible(!gamesData.ModalNuevoTemaVisible)
-
+    
     const newData = {
       ...gamesData,
       ModalNuevoTemaVisible: !gamesData.ModalNuevoTemaVisible,
