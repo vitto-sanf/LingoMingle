@@ -1,5 +1,5 @@
 // Imports
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import { Alert, Modal, Text, Pressable, View } from "react-native";
 
 // Styles
@@ -30,18 +30,56 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
   );
 
   const [buttonStates, setButtonStates] = useState(initialButtonStates);
-
+  const [playGame, setPlayGame] = useState(false);
+  const [gamesData, setGamesData] = useState({});
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentIconIndex, setCurrentIconIndex] = useState(0);
+
+  useEffect(() => {
+    const listener = onSnapshot(collection(database, "games"), (snapshot) => {
+      snapshot.forEach((doc) => {
+        setGamesData(doc.data());
+        setPlayGame((doc.data().playGame));
+      });
+    });
+  }, []);
+
+  const playgame = async () =>{
+    setPlayGame(!gamesData.playGame);
+
+    const newData = {
+      ...gamesData,
+      playGame: !gamesData.playGame,
+    };
+
+    setGamesData(newData);
+
+    
+    await api.setGamesData(newData);
+    
+  }
+
 
   const onCancel = () => {
     setModalVisible(!modalVisible);
     setButtonStates(initialButtonStates);
+    
   };
 
-  const handleBackButton = () => {
+  const handleBackButton = async () => {
     setCurrentWordIndex(0);
     setCurrentIconIndex(0);
+    setPlayGame(false);
+
+    const newData = {
+      ...gamesData,
+      playGame: false,
+    };
+
+    setGamesData(newData);
+
+    //console.log("client data", newData);
+    await api.setGamesData(newData);
     onCancel();
   };
 
@@ -83,6 +121,8 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
               <Text style={styles.modalHeaderText}>Adivina La Palabra</Text>
             </View>
           </View>
+          {playGame ? (
+            <>
           <FontistoIcon
             name={icons[currentIconIndex].icon}
             color="black"
@@ -90,7 +130,9 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
             style={styles.gameIcon}
           />
           <View style={styles.gameOptionsContainer}>
+          
             <View style={styles.gameOptionsColumn}>
+            
               {[0, 1].map((index) => (
                 <Pressable
                   key={index}
@@ -147,6 +189,28 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
               ))}
             </View>
           </View>
+          </>
+          ):(
+
+            <>
+                <View style={styles.gameOptionsColumn}>
+                  <Text style={styles.instructions}>
+                  In this game a picture will be displayed and you have to guess the
+                  name of the object in the picture.{" "}
+                  </Text>
+                </View>
+                <View style={styles.gameOptionsColumn}>
+                  <Pressable onPress={() => {
+                    //setPlayGame(true);
+                    playgame();
+                    //playSound(0);
+                  }} style={styles.playButton}>
+                    <Text style={styles.playButtonText}>Play</Text>
+                  </Pressable>
+                </View>
+              </>
+          )
+          }
         </View>
       </View>
     </Modal>
