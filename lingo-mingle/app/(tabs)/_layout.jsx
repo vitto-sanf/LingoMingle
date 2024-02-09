@@ -18,12 +18,13 @@ const MainLayout = () => {
   const [comingCall, setComingCall] = useState(false);
 
   useEffect(() => {
+    
     const listener = onSnapshot(
       collection(database, "directCall"),
       (snapshot) => {
-        
         snapshot.forEach((doc) => {
-          
+          console.log("DOCDATA", user.uuid,doc.data().receiverId, doc.data().status)
+          console.log("prova",doc.data().receiverId == user.uuid , doc.data().status == "pending")
           if (
             doc.data().receiverId == user.uuid &&
             doc.data().status == "pending"
@@ -33,6 +34,7 @@ const MainLayout = () => {
             ref.id = doc.id;
             setCallData(ref);
             setComingCall(true)
+            return doc ;
           }
         });
       }
