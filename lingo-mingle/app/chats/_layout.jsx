@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 
 const ChatLayout = () => {
-  return <Stack></Stack>;
+  return <Stack ></Stack>;
 };
 
 export default ChatLayout;
