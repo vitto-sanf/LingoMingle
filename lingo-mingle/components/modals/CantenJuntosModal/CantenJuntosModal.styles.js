@@ -84,6 +84,10 @@ const styles = StyleSheet.create({
   playButtonText:{
     fontFamily: FONT.bold,
     color:COLOR.white
+  },
+  WinText:{
+    fontFamily: FONT.bold,
+    color:COLOR.red
   }
 });
 

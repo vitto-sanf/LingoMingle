@@ -19,6 +19,9 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
   const [songTextIndex, setSongTextIndex] = useState(0);
   const [answer, setAnswer] = useState("");
   const [gamesData, setGamesData] = useState({});
+  const [dirty, setDirty] = useState(true);
+  const [correctAnswer, setCorrectAnswer] = useState(false);
+  const [localCorrect, setLocalCorrect] = useState(false);
   const text = [
     "Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la",
     "Vivir mi vida, la la la la",
@@ -35,9 +38,43 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
       snapshot.forEach((doc) => {
         setGamesData(doc.data());
         setPlayGame((doc.data().playGame));
+        setCorrectAnswer(doc.data().player1Answer);
+        if (doc.data().player1Answer === false) {
+          setLocalCorrect(false);
+        }
       });
     });
   }, []);
+
+  useEffect(() => {
+    const update = async () => {
+      const newData = {
+        ...gamesData,
+        player1Answer: false,
+      };
+      setGamesData(newData);
+      await api.setGamesData(newData);
+      setDirty(false);
+    };
+
+    setTimeout(async () => {
+      if (correctAnswer) {
+        
+        update();
+       
+        setSongTextIndex(songTextIndex + 1);
+        //setTimeout(async () => {
+          setSongTextIndex(songTextIndex + 2);
+          setAnswer("");
+          await sound.playAsync();
+          const time = 10000;
+          const songTimeout = setTimeout(async () => {
+            await sound.pauseAsync();
+          }, time);
+        //}, 1000);
+      }
+    }, 1000);
+  }, [correctAnswer]);
 
   const playgame = async () =>{
     setPlayGame(!gamesData.playGame);
@@ -49,7 +86,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
 
     setGamesData(newData);
 
-    //console.log("client data", newData);
+   
     await api.setGamesData(newData);
     playSound(0);
   }
@@ -133,19 +170,22 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
   };
 
   const verifyAnswer = async () => {
-    console.log(answer);
+    
+   
     if (songTextIndex == 0) {
       if (answer == "vida") {
-        setSongTextIndex(songTextIndex + 1);
-        setTimeout(async () => {
-          setSongTextIndex(songTextIndex + 2);
-          setAnswer("");
-          await sound.playAsync();
-          const time = 10000;
-          const songTimeout = setTimeout(async () => {
-            await sound.pauseAsync();
-          }, time);
-        }, 1000);
+        setDirty(true);
+        const newData = {
+          ...gamesData,
+          player1Answer: true,
+        };
+        setGamesData(newData);
+        await api.setGamesData(newData);
+        setLocalCorrect(true);
+
+
+
+        
       }
     }
     if (songTextIndex == 2) {
@@ -198,7 +238,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
 
     setGamesData(newData);
 
-    //console.log("client data", newData);
+   
     await api.setGamesData(newData);
     onCancel();
   };
@@ -248,6 +288,16 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                   <Text>{text[songTextIndex]}</Text>
                 </View>
 
+                <View>
+              {correctAnswer !== localCorrect && dirty === false ? (
+                  <Text style={styles.WinText}>
+                  The other player answered correctly before you
+                  </Text>
+                ) : (
+                  ""
+                )}
+                </View>
+
                 <TextInput
                   style={styles.input}
                   onChangeText={onChangeText}
@@ -283,9 +333,9 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                 </View>
                 <View style={styles.gameOptionsColumn}>
                   <Pressable onPress={() => {
-                    //setPlayGame(true);
+                   
                     playgame();
-                    //playSound(0);
+                   
                   }} style={styles.playButton}>
                     <Text style={styles.playButtonText}>Play</Text>
                   </Pressable>
