@@ -31,18 +31,64 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
 
   const [buttonStates, setButtonStates] = useState(initialButtonStates);
   const [playGame, setPlayGame] = useState(false);
+  const [dirty, setDirty] = useState(true);
+
   const [gamesData, setGamesData] = useState({});
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentIconIndex, setCurrentIconIndex] = useState(0);
+  const [correctAnswer, setCorrectAnswer] = useState(false);
+  const [localCorrect, setLocalCorrect] = useState(false);
 
   useEffect(() => {
     const listener = onSnapshot(collection(database, "games"), (snapshot) => {
       snapshot.forEach((doc) => {
         setGamesData(doc.data());
         setPlayGame((doc.data().playGame));
+        setCorrectAnswer((doc.data().player1Answer));
+        if(doc.data().player1Answer===false)
+        {
+          setLocalCorrect(false)
+          setCorrectAnswer(false)
+        }
       });
     });
   }, []);
+
+  useEffect(()=>{
+
+     const update= async ()=>{
+      const newData = {
+        ...gamesData,
+        player1Answer: false,
+      };
+      setGamesData(newData);
+      await api.setGamesData(newData);
+      setDirty(false);
+     }
+     
+      setTimeout(async() => {
+        if (correctAnswer)
+    {
+      
+      //let prevWordIndex=currentWordIndex;
+      //let prevIconIndex=currentIconIndex;
+        setButtonStates(initialButtonStates);
+        //if(prevWordIndex!==currentWordIndex/*(prevWordIndex+4 % words.length)*/ && prevIconIndex!==currentIconIndex/*(prevIconIndex+1% icons.length)*/)
+        //{
+          //if(dirty)
+          //{
+          setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
+          setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
+          setButtonStates(initialButtonStates);
+          //setDirty(false);
+         //}
+       // }
+       update();
+       
+      }
+      }, 1500);
+    
+  },[correctAnswer])
 
   const playgame = async () =>{
     setPlayGame(!gamesData.playGame);
@@ -83,20 +129,45 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
     onCancel();
   };
 
-  const checkAnswer = (isCorrect, index) => {
+  const checkAnswer = async (isCorrect, index) => {
     const newButtonStates = initialButtonStates.slice();
     newButtonStates[index] = isCorrect;
     setButtonStates(newButtonStates);
-    setTimeout(() => {
+    /*setTimeout(() => {
       setButtonStates(initialButtonStates);
-    }, 1500);
+    }, 1500);*/
 
-    if (isCorrect) {
+   /* if (gamesData.player1Answer)
+    {
       setTimeout(() => {
         setButtonStates(initialButtonStates);
       setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
       setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
       }, 1500);
+    }*/
+
+    if (isCorrect) {
+      const newData = {
+        ...gamesData,
+        player1Answer: isCorrect,
+      };
+      setGamesData(newData);
+      await api.setGamesData(newData);
+      setLocalCorrect(true);
+      //setDirty(true);
+
+
+      //setTimeout(async () => {
+       // setButtonStates(initialButtonStates);
+     // setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
+      //setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
+     /* const newData = {
+        ...gamesData,
+        player1Answer: false,
+      };
+      setGamesData(newData);
+      await api.setGamesData(newData);*/
+      //}, 1500);
       
     }
   };
@@ -188,6 +259,11 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
                 </Pressable>
               ))}
             </View>
+            {/*correctAnswer!==localCorrect  && !dirty?
+              <Text>
+              L'altro giocatore ha risposto correttamente prima di te
+            </Text>:''*/}
+            
           </View>
           </>
           ):(
