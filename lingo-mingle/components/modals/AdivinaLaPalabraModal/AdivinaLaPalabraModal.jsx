@@ -1,5 +1,5 @@
 // Imports
-import React, { useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, Modal, Text, Pressable, View } from "react-native";
 
 // Styles
@@ -43,20 +43,17 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
     const listener = onSnapshot(collection(database, "games"), (snapshot) => {
       snapshot.forEach((doc) => {
         setGamesData(doc.data());
-        setPlayGame((doc.data().playGame));
-        setCorrectAnswer((doc.data().player1Answer));
-        if(doc.data().player1Answer===false)
-        {
-          setLocalCorrect(false)
-          setCorrectAnswer(false)
+        setPlayGame(doc.data().playGame);
+        setCorrectAnswer(doc.data().player1Answer);
+        if (doc.data().player1Answer === false) {
+          setLocalCorrect(false);
         }
       });
     });
   }, []);
 
-  useEffect(()=>{
-
-     const update= async ()=>{
+  useEffect(() => {
+    const update = async () => {
       const newData = {
         ...gamesData,
         player1Answer: false,
@@ -64,33 +61,20 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
       setGamesData(newData);
       await api.setGamesData(newData);
       setDirty(false);
-     }
-     
-      setTimeout(async() => {
-        if (correctAnswer)
-    {
-      
-      //let prevWordIndex=currentWordIndex;
-      //let prevIconIndex=currentIconIndex;
-        setButtonStates(initialButtonStates);
-        //if(prevWordIndex!==currentWordIndex/*(prevWordIndex+4 % words.length)*/ && prevIconIndex!==currentIconIndex/*(prevIconIndex+1% icons.length)*/)
-        //{
-          //if(dirty)
-          //{
-          setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
-          setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
-          setButtonStates(initialButtonStates);
-          //setDirty(false);
-         //}
-       // }
-       update();
-       
-      }
-      }, 1500);
-    
-  },[correctAnswer])
+    };
 
-  const playgame = async () =>{
+    setTimeout(async () => {
+      if (correctAnswer) {
+        setButtonStates(initialButtonStates);
+        update();
+        setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
+        setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
+        setButtonStates(initialButtonStates);
+      }
+    }, 1500);
+  }, [correctAnswer]);
+
+  const playgame = async () => {
     setPlayGame(!gamesData.playGame);
 
     const newData = {
@@ -100,16 +84,12 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
 
     setGamesData(newData);
 
-    
     await api.setGamesData(newData);
-    
-  }
-
+  };
 
   const onCancel = () => {
     setModalVisible(!modalVisible);
     setButtonStates(initialButtonStates);
-    
   };
 
   const handleBackButton = async () => {
@@ -124,7 +104,6 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
 
     setGamesData(newData);
 
-    //console.log("client data", newData);
     await api.setGamesData(newData);
     onCancel();
   };
@@ -133,18 +112,6 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
     const newButtonStates = initialButtonStates.slice();
     newButtonStates[index] = isCorrect;
     setButtonStates(newButtonStates);
-    /*setTimeout(() => {
-      setButtonStates(initialButtonStates);
-    }, 1500);*/
-
-   /* if (gamesData.player1Answer)
-    {
-      setTimeout(() => {
-        setButtonStates(initialButtonStates);
-      setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
-      setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
-      }, 1500);
-    }*/
 
     if (isCorrect) {
       const newData = {
@@ -154,21 +121,8 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
       setGamesData(newData);
       await api.setGamesData(newData);
       setLocalCorrect(true);
-      //setDirty(true);
-
-
-      //setTimeout(async () => {
-       // setButtonStates(initialButtonStates);
-     // setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
-      //setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
-     /* const newData = {
-        ...gamesData,
-        player1Answer: false,
-      };
-      setGamesData(newData);
-      await api.setGamesData(newData);*/
-      //}, 1500);
-      
+      console.log("local: ", localCorrect);
+      console.log("corr:", correctAnswer);
     }
   };
 
@@ -194,99 +148,108 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
           </View>
           {playGame ? (
             <>
-          <FontistoIcon
-            name={icons[currentIconIndex].icon}
-            color="black"
-            size={70}
-            style={styles.gameIcon}
-          />
-          <View style={styles.gameOptionsContainer}>
-          
-            <View style={styles.gameOptionsColumn}>
-            
-              {[0, 1].map((index) => (
-                <Pressable
-                  key={index}
-                  style={[
-                    styles.gameOptionButton,
-                    {
-                      backgroundColor:
-                        buttonStates[index] === true
-                          ? COLOR.green
-                          : buttonStates[index] === false
-                          ? COLOR.red
-                          : COLOR.lightWhite,
-                    },
-                  ]}
-                  onPress={() =>
-                    checkAnswer(
-                      words[currentWordIndex + index].correctAnswer,
-                      index
-                    )
-                  }
-                >
-                  <Text style={styles.gameOptionTextButton}>
-                    {words[currentWordIndex + index].word}
+              <FontistoIcon
+                name={icons[currentIconIndex].icon}
+                color="black"
+                size={70}
+                style={styles.gameIcon}
+              />
+              <View>
+              {correctAnswer !== localCorrect && dirty === false ? (
+                  <Text style={styles.WinText}>
+                  The other player answered correctly before you
                   </Text>
-                </Pressable>
-              ))}
-            </View>
-            <View style={styles.gameOptionsColumn}>
-              {[2, 3].map((index) => (
-                <Pressable
-                  key={index}
-                  style={[
-                    styles.gameOptionButton,
-                    {
-                      backgroundColor:
-                        buttonStates[index] === true
-                          ? COLOR.green
-                          : buttonStates[index] === false
-                          ? COLOR.red
-                          : COLOR.lightWhite,
-                    },
-                  ]}
-                  onPress={() =>
-                    checkAnswer(
-                      words[currentWordIndex + index].correctAnswer,
-                      index
-                    )
-                  }
-                >
-                  <Text style={styles.gameOptionTextButton}>
-                    {words[currentWordIndex + index].word}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-            {/*correctAnswer!==localCorrect  && !dirty?
-              <Text>
-              L'altro giocatore ha risposto correttamente prima di te
-            </Text>:''*/}
-            
-          </View>
-          </>
-          ):(
-
+                ) : (
+                  ""
+                )}
+                </View>
+              <View style={styles.gameOptionsContainer}>
+              
+                <View style={styles.gameOptionsColumn}>
+                
+                  {[0, 1].map((index) => (
+                    <Pressable
+                      key={index}
+                      style={[
+                        styles.gameOptionButton,
+                        {
+                          backgroundColor:
+                            buttonStates[index] === true
+                              ? COLOR.green
+                              : buttonStates[index] === false
+                              ? COLOR.red
+                              : COLOR.lightWhite,
+                        },
+                      ]}
+                      onPress={() => {
+                        checkAnswer(
+                          words[currentWordIndex + index].correctAnswer,
+                          index
+                        );
+                        setDirty(true);
+                        console.log("dirty true: ", dirty);
+                      }}
+                    >
+                      <Text style={styles.gameOptionTextButton}>
+                        {words[currentWordIndex + index].word}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+                <View style={styles.gameOptionsColumn}>
+                  {[2, 3].map((index) => (
+                    <Pressable
+                      key={index}
+                      style={[
+                        styles.gameOptionButton,
+                        {
+                          backgroundColor:
+                            buttonStates[index] === true
+                              ? COLOR.green
+                              : buttonStates[index] === false
+                              ? COLOR.red
+                              : COLOR.lightWhite,
+                        },
+                      ]}
+                      onPress={() =>
+                        checkAnswer(
+                          words[currentWordIndex + index].correctAnswer,
+                          index
+                        )
+                      }
+                    >
+                      <Text style={styles.gameOptionTextButton}>
+                        {words[currentWordIndex + index].word}
+                      </Text>
+                    </Pressable>
+                  ))}
+                  
+                </View>
+               
+                
+                
+              </View>
+            </>
+          ) : (
             <>
-                <View style={styles.gameOptionsColumn}>
-                  <Text style={styles.instructions}>
-                  In this game a picture will be displayed and you have to guess the
-                  name of the object in the picture.{" "}
-                  </Text>
-                </View>
-                <View style={styles.gameOptionsColumn}>
-                  <Pressable onPress={() => {
-                    //setPlayGame(true);
+              <View style={styles.gameOptionsColumn}>
+                <Text style={styles.instructions}>
+                  In this game a picture will be displayed and you have to guess
+                  the name of the object in the picture.{" "}
+                </Text>
+              </View>
+              <View style={styles.gameOptionsColumn}>
+                <Pressable
+                  onPress={() => {
                     playgame();
-                    //playSound(0);
-                  }} style={styles.playButton}>
-                    <Text style={styles.playButtonText}>Play</Text>
-                  </Pressable>
-                </View>
-              </>
-          )
-          }
+                  }}
+                  style={styles.playButton}
+                >
+                  <Text style={styles.playButtonText}>Play</Text>
+                </Pressable>
+              </View>
+            </>
+          )}
         </View>
       </View>
     </Modal>
