@@ -18,6 +18,8 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
   const [suggestionVisible, setSuggestionVisible] = useState(false);
   const [questionNumber, setQuestionNumber] = useState(0);
   const [gamesData, setGamesData] = useState({});
+  const [next, setNext] = useState(false);
+ 
   const questions = [
     {
       question: "¿Cuál es su color favorito?",
@@ -107,9 +109,32 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
       snapshot.forEach((doc) => {
         setGamesData(doc.data());
         setPlay((doc.data().playGame));
+        setNext((doc.data().player1Answer));
       });
     });
   }, []);
+
+  useEffect(() => {
+    const update = async () => {
+      const newData = {
+        ...gamesData,
+        player1Answer: false,
+      };
+      setGamesData(newData);
+      await api.setGamesData(newData);
+      setDirty(false);
+    };
+
+    //setTimeout(async () => {
+      if (next) {
+        //setButtonStates(initialButtonStates);
+        update();
+        //setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
+        //setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
+       // setButtonStates(initialButtonStates);
+      }
+   // }, 1500);
+  }, [next]);
 
   /*const playgame = async () =>{
     setPlay(!gamesData.playGame);

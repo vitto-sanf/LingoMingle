@@ -121,8 +121,8 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
       setGamesData(newData);
       await api.setGamesData(newData);
       setLocalCorrect(true);
-      console.log("local: ", localCorrect);
-      console.log("corr:", correctAnswer);
+      //console.log("local: ", localCorrect);
+      //console.log("corr:", correctAnswer);
     }
   };
 
