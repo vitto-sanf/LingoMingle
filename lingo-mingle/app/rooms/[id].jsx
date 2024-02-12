@@ -217,10 +217,12 @@ const Room = () => {
           modalVisible={advinaLaPalabraVisible}
           setModalVisible={toggleModalAdivina}
         />
+        {cantenJuntosVisible?
         <CantenJuntosModal
           modalVisible={cantenJuntosVisible}
           setModalVisible={toggleModalCantenJuntos}
         />
+        :''}
         <NuevoTemaModal
           modalVisible={nuevoTemaVisible}
           setModalVisible={toggleModalNuevoTema}

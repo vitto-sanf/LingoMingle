@@ -74,7 +74,7 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
     }, 1500);
   }, [correctAnswer]);
 
-  const playgame = async () => {
+  const playgameAdivina = async () => {
     setPlayGame(!gamesData.playGame);
 
     const newData = {
@@ -92,7 +92,7 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
     setButtonStates(initialButtonStates);
   };
 
-  const handleBackButton = async () => {
+  const handleBackButtonAdivina = async () => {
     setCurrentWordIndex(0);
     setCurrentIconIndex(0);
     setPlayGame(false);
@@ -139,7 +139,7 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={styles.modalHeader}>
-            <Pressable onPress={handleBackButton} style={styles.backButton}>
+            <Pressable onPress={handleBackButtonAdivina} style={styles.backButton}>
               <FontistoIcon name="arrow-left" size={20} />
             </Pressable>
             <View style={{ flex: 1, alignItems: "center" }}>
@@ -241,7 +241,7 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
               <View style={styles.gameOptionsColumn}>
                 <Pressable
                   onPress={() => {
-                    playgame();
+                    playgameAdivina();
                   }}
                   style={styles.playButton}
                 >

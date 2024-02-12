@@ -32,6 +32,10 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     "Sigo viendo aquel momento Se desvaneció, desapareció",
   ];
 
+
+   
+  
+
   useEffect(() => {
     const fetchData = async () => {
       const { sound } = await Audio.Sound.createAsync(
@@ -42,6 +46,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
 
     fetchData().catch(console.error);
   }, []);
+
 
   useEffect(() => {
     const listener = onSnapshot(collection(database, "games"), (snapshot) => {
@@ -68,6 +73,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     };
 
     setTimeout(async () => {
+      
       if (correctAnswer) {
         update();
 
