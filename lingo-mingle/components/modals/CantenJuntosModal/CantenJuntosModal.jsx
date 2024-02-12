@@ -21,6 +21,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
   const [dirty, setDirty] = useState(true);
   const [correctAnswer, setCorrectAnswer] = useState(false);
   const [localCorrect, setLocalCorrect] = useState(false);
+  const [AudioPos,SetPos]=useState(0);
   const text = [
     "Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la",
     "Vivir mi vida, la la la la",
@@ -32,9 +33,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     "Sigo viendo aquel momento Se desvaneció, desapareció",
   ];
 
-
-   
-  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,6 +60,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
   }, []);
 
   useEffect(() => {
+    
     const update = async () => {
       const newData = {
         ...gamesData,
@@ -75,14 +74,17 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     setTimeout(async () => {
       
       if (correctAnswer) {
-        update();
+        
 
         if (songTextIndex === 0) {
+          let pos=sound.positionMillis;
+          console.log(pos)
           setSongTextIndex(songTextIndex + 1);
           setTimeout(async () => {
             setSongTextIndex(songTextIndex + 2);
             setAnswer("");
-            await sound.playAsync();
+            //await sound.playAsync();
+            await sound.playFromPositionAsync(9995);
             const time = 10000;
             const songTimeout = setTimeout(async () => {
               await sound.pauseAsync();
@@ -91,12 +93,12 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
         }
         if (songTextIndex === 2) {
           setSongTextIndex(songTextIndex + 1);
-          sound.unloadAsync();
+          ;
 
           setTimeout(async () => {
             setSongTextIndex(songTextIndex + 2);
             setAnswer("");
-
+            sound.unloadAsync()
             playSound(1);
           }, 1000);
         }
@@ -108,7 +110,8 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
             console.log(songTextIndex);
 
             setAnswer("");
-            await sound.playAsync();
+            //await sound.playAsync();
+            await sound.playFromPositionAsync(18000);
             const time = 8000;
             const songTimeout = setTimeout(async () => {
               await sound.pauseAsync();
@@ -122,6 +125,8 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
             setModalVisible(false);
           }, 2000);
         }
+
+        update();
       }
     }, 1000);
   }, [correctAnswer]);
@@ -153,6 +158,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
       await sound.playAsync();
       const time = 10000;
       const songTimeout = setTimeout(async () => {
+        
         await sound.pauseAsync();
       }, time);
     }
