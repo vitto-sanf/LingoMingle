@@ -11,9 +11,8 @@ import api from "../../../services/api";
 import { onSnapshot, collection } from "firebase/firestore";
 import { database } from "../../../config/firebase";
 
-//TO DO: fix UI 
+//TO DO: fix UI
 const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
-  
   const [sound, setSound] = useState();
   const [playGame, setPlayGame] = useState(false);
   const [songTextIndex, setSongTextIndex] = useState(0);
@@ -32,12 +31,23 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     "Sigo viendo aquel momento Se desvaneció, _ _ _ _ _ _ _ _ _ _ _",
     "Sigo viendo aquel momento Se desvaneció, desapareció",
   ];
-  
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../../assets/sounds/VivirMiVida.mp3")
+      );
+      setSound(sound);
+    };
+
+    fetchData().catch(console.error);
+  }, []);
+
   useEffect(() => {
     const listener = onSnapshot(collection(database, "games"), (snapshot) => {
       snapshot.forEach((doc) => {
         setGamesData(doc.data());
-        setPlayGame((doc.data().playGame));
+        setPlayGame(doc.data().playGame);
         setCorrectAnswer(doc.data().player1Answer);
         if (doc.data().player1Answer === false) {
           setLocalCorrect(false);
@@ -59,24 +69,58 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
 
     setTimeout(async () => {
       if (correctAnswer) {
-        
         update();
-       
-        setSongTextIndex(songTextIndex + 1);
-        //setTimeout(async () => {
-          setSongTextIndex(songTextIndex + 2);
-          setAnswer("");
-          await sound.playAsync();
-          const time = 10000;
-          const songTimeout = setTimeout(async () => {
-            await sound.pauseAsync();
-          }, time);
-        //}, 1000);
+
+        if (songTextIndex === 0) {
+          setSongTextIndex(songTextIndex + 1);
+          setTimeout(async () => {
+            setSongTextIndex(songTextIndex + 2);
+            setAnswer("");
+            await sound.playAsync();
+            const time = 10000;
+            const songTimeout = setTimeout(async () => {
+              await sound.pauseAsync();
+            }, time);
+          }, 1000);
+        }
+        if (songTextIndex === 2) {
+          setSongTextIndex(songTextIndex + 1);
+          sound.unloadAsync();
+
+          setTimeout(async () => {
+            setSongTextIndex(songTextIndex + 2);
+            setAnswer("");
+
+            playSound(1);
+          }, 1000);
+        }
+        if (songTextIndex === 4) {
+          console.log(songTextIndex);
+          setSongTextIndex(songTextIndex + 1);
+          setTimeout(async () => {
+            setSongTextIndex(songTextIndex + 2);
+            console.log(songTextIndex);
+
+            setAnswer("");
+            await sound.playAsync();
+            const time = 8000;
+            const songTimeout = setTimeout(async () => {
+              await sound.pauseAsync();
+            }, time);
+          }, 1000);
+        }
+        if (songTextIndex === 6) {
+          setSongTextIndex(songTextIndex + 1);
+          setTimeout(async () => {
+            setAnswer("");
+            setModalVisible(false);
+          }, 2000);
+        }
       }
     }, 1000);
   }, [correctAnswer]);
 
-  const playgame = async () =>{
+  const playgame = async () => {
     setPlayGame(!gamesData.playGame);
 
     const newData = {
@@ -86,22 +130,9 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
 
     setGamesData(newData);
 
-   
     await api.setGamesData(newData);
     playSound(0);
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const { sound } = await Audio.Sound.createAsync(
-        require("../../../assets/sounds/VivirMiVida.mp3")
-      );
-      setSound(sound);
-    };
-
-    fetchData().catch(console.error);
-  }, []);
-
+  };
 
   async function playSound(num) {
     console.log("Loading Sound");
@@ -163,15 +194,15 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     setSongTextIndex(0);
     setAnswer("");
     setModalVisible(!modalVisible);
-    if (sound)
-    {
-    sound.unloadAsync();
+    if (sound) {
+      sound.unloadAsync();
     }
   };
 
   const verifyAnswer = async () => {
-    
-   
+    console.log(songTextIndex);
+    console.log(answer);
+
     if (songTextIndex == 0) {
       if (answer == "vida") {
         setDirty(true);
@@ -182,48 +213,45 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
         setGamesData(newData);
         await api.setGamesData(newData);
         setLocalCorrect(true);
-
-
-
-        
       }
     }
     if (songTextIndex == 2) {
       if (answer == "limpiar") {
-        setSongTextIndex(songTextIndex + 1);
-        sound.unloadAsync();
-
-        setTimeout(async () => {
-          setSongTextIndex(songTextIndex + 2);
-          setAnswer("");
-
-          playSound(1);
-        }, 1000);
+        setDirty(true);
+        const newData = {
+          ...gamesData,
+          player1Answer: true,
+        };
+        setGamesData(newData);
+        await api.setGamesData(newData);
+        setLocalCorrect(true);
       }
     }
 
     if (songTextIndex == 4) {
       if (answer == "corazon") {
-        setSongTextIndex(songTextIndex + 1);
-        setTimeout(async () => {
-          setSongTextIndex(songTextIndex + 2);
-          setAnswer("");
-          await sound.playAsync();
-          const time = 8000;
-          const songTimeout = setTimeout(async () => {
-            await sound.pauseAsync();
-          }, time);
-        }, 1000);
+        setDirty(true);
+        const newData = {
+          ...gamesData,
+          player1Answer: true,
+        };
+        setGamesData(newData);
+
+        await api.setGamesData(newData);
+        setLocalCorrect(true);
       }
     }
 
     if (songTextIndex == 6) {
       if (answer == "desaparecio") {
-        setSongTextIndex(songTextIndex + 1);
-        setTimeout(async () => {
-          setAnswer("");
-          setModalVisible(false);
-        }, 2000);
+        setDirty(true);
+        const newData = {
+          ...gamesData,
+          player1Answer: true,
+        };
+        setGamesData(newData);
+        await api.setGamesData(newData);
+        setLocalCorrect(true);
       }
     }
   };
@@ -238,7 +266,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
 
     setGamesData(newData);
 
-   
     await api.setGamesData(newData);
     onCancel();
   };
@@ -289,13 +316,13 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                 </View>
 
                 <View>
-              {correctAnswer !== localCorrect && dirty === false ? (
-                  <Text style={styles.WinText}>
-                  The other player answered correctly before you
-                  </Text>
-                ) : (
-                  ""
-                )}
+                  {correctAnswer !== localCorrect && dirty === false ? (
+                    <Text style={styles.WinText}>
+                      The other player answered correctly before you
+                    </Text>
+                  ) : (
+                    ""
+                  )}
                 </View>
 
                 <TextInput
@@ -320,23 +347,24 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                   }}
                   style={styles.playButton}
                 >
-                  <Text style={styles.playButtonText} >Restart Audio</Text>
+                  <Text style={styles.playButtonText}>Restart Audio</Text>
                 </Pressable>
               </>
             ) : (
               <>
                 <View style={styles.gameOptionsColumn}>
                   <Text style={styles.instructions}>
-                  In this game a song will be played and you have to insert the
-                  correct missing word.{" "}
+                    In this game a song will be played and you have to insert
+                    the correct missing word.{" "}
                   </Text>
                 </View>
                 <View style={styles.gameOptionsColumn}>
-                  <Pressable onPress={() => {
-                   
-                    playgame();
-                   
-                  }} style={styles.playButton}>
+                  <Pressable
+                    onPress={() => {
+                      playgame();
+                    }}
+                    style={styles.playButton}
+                  >
                     <Text style={styles.playButtonText}>Play</Text>
                   </Pressable>
                 </View>
