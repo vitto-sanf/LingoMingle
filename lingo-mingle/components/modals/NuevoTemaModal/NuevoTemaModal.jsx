@@ -122,13 +122,19 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
       };
       setGamesData(newData);
       await api.setGamesData(newData);
-      setDirty(false);
+      
     };
 
     //setTimeout(async () => {
       if (next) {
         //setButtonStates(initialButtonStates);
         update();
+        setSuggestionVisible(false)
+        if(questionNumber<2){
+          setQuestionNumber(questionNumber+1);
+        }else{
+          setQuestionNumber(0)
+        }
         //setCurrentWordIndex((prevIndex) => (prevIndex + 4) % words.length);
         //setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
        // setButtonStates(initialButtonStates);
@@ -188,13 +194,22 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
   const setOption = () => {
     setSuggestionVisible(!suggestionVisible);
   };
-  const changeQuestion =()=>{
+  const changeQuestion =async()=>{
+
+    const newData = {
+      ...gamesData,
+      player1Answer: true,
+    };
+    setGamesData(newData);
+    await api.setGamesData(newData);
+
+    /*
     setSuggestionVisible(false)
      if(questionNumber<2){
       setQuestionNumber(questionNumber+1);
      }else{
       setQuestionNumber(0)
-     }
+     }*/
   }
 
   return (
