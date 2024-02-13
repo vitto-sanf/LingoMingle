@@ -15,13 +15,14 @@ import api from "../../../services/api";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const LastUserCard = ({ item, myUUID }) => {
+const LastUserCard = ({ item, myUUID ,setCallRef,setIsCalling, setItem}) => {
  
 
   const notify = useNotification();
   const friendRequestUUID = item.uuid;
 
   const [friendRequestSent, setFriendRequestSent] = useState(false);
+
 
   
   const handleSendFriendRequest = () => {
@@ -46,10 +47,17 @@ const LastUserCard = ({ item, myUUID }) => {
   };
 
   const handleStartVideoCall = () => {
-    // TODO: Implement this functionality
+    const generatedUuid = Math.floor(Math.random() * (100000 - 2000)) + 2000;
+    console.log("ITEM",myUUID,item.uuid)
+    api.directCall(myUUID,item.uuid,generatedUuid).then((doc)=>{
+      setIsCalling(true);
+      setCallRef(doc.id)
+      setItem(item)
+    })
   };
 
   // TODO: Evaluate whether to make the card clickable!
+  
   return (
     
     <View style={styles.container}>

@@ -302,6 +302,49 @@ const api = {
     }
   },
 
+  directCall: async (callerId, receiverId, roomId) => {
+    try {
+      const docRef = await addDoc(collection(database, "directCall"), {
+        callerId: callerId,
+        receiverId: receiverId,
+        roomId: roomId,
+        status: "pending",
+      });
+      return docRef;
+    } catch (error) {
+      console.log(error);
+      return {
+        message: "Error Calling friend",
+      };
+    }
+  },
+  rejectCall: async (callId) => {
+    try {
+      const docRef = doc(database, "directCall", callId);
+      await updateDoc(docRef, {
+        status: "Rejected",
+      });
+    } catch (error) {
+      console.log(error);
+      return {
+        message: "Cannot reject the call",
+      };
+    }
+  },
+  acceptCall: async (callId) => {
+    try {
+      const docRef = doc(database, "directCall", callId);
+      await updateDoc(docRef, {
+        status: "Accepted",
+      });
+    } catch (error) {
+      console.log(error);
+      return {
+        message: "Cannot accept the call",
+      };
+    }
+  },
+
   getChatParticipant: async (chatId, userId) => {
     console.log("API", chatId);
     const chatRef = doc(database, "chats", chatId);
@@ -313,7 +356,8 @@ const api = {
       for (const key in chatSnap.data()) {
         if (chatSnap.data()[key] !== userId) {
           try {
-            const data = await api.getUser(chatSnap.data()[key]);
+            let data = await api.getUser(chatSnap.data()[key]);
+            data.uuid = chatSnap.data()[key];
             return data; // Restituisce direttamente l'oggetto ottenuto dall'API
           } catch (error) {
             return { message: "Participant Information not Found " };

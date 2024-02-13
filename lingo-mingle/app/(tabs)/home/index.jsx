@@ -22,6 +22,7 @@ import {
   FriendsContactedCard,
 } from "../../../components/cards";
 import { Loader } from "../../../components/common";
+import OutgoingCall from "../../../components/videocall/OutgoingCall";
 
 // Services
 import api from "../../../services/api";
@@ -146,6 +147,10 @@ const HomePage = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const[isCalling,setIsCalling]= useState(false)
+  const [callRef, setCallRef]= useState(undefined)
+  const [item,setItem]= useState(undefined)
+
   const { user } = useContext(AuthContext);
   const MY_UUID = user.uuid;
 
@@ -186,7 +191,7 @@ const HomePage = () => {
   }, [MY_UUID]);
 
   if (loading) return <Loader />;
-
+  if(isCalling && callRef &&item) return <OutgoingCall contactedUser={item}  setIsCalling={()=>setIsCalling(false)} setCallRef={()=>{setCallRef(undefined)}}  callRef= {callRef}/>
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>LingoMingle</Text>
@@ -208,7 +213,7 @@ const HomePage = () => {
               <FlatList
                 data={lastUsersContacted}
                 renderItem={({ item }) => (
-                  <LastUserCard item={item} myUUID={MY_UUID} />
+                  <LastUserCard item={item} myUUID={MY_UUID} setIsCalling={()=>setIsCalling(true)} setCallRef={(ref)=>setCallRef(ref)} setItem={(item)=>setItem(item)} />
                 )}
                 keyExtractor={(item) => item.uuid}
                 horizontal={true}
@@ -223,7 +228,7 @@ const HomePage = () => {
               <FlatList
                 data={lastFriendsContacted}
                 renderItem={({ item }) => (
-                  <LastFriendCard item={item} my_uuid={MY_UUID} />
+                  <LastFriendCard item={item} my_uuid={MY_UUID}  setIsCalling={()=>setIsCalling(true)} setCallRef={(ref)=>setCallRef(ref)} setItem={(item)=>setItem(item)} />
                 )}
                 keyExtractor={(item) => item.uuid}
                 horizontal={true}

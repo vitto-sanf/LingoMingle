@@ -24,6 +24,7 @@ import {
 } from "firebase/firestore";
 import { database } from "../../config/firebase";
 import useNotification from "../../hooks/useNotification";
+import OutgoingCall from "../../components/videocall/OutgoingCall";
 
 //styles
 import styles from "../../styles/Chat.styles";
@@ -184,6 +185,9 @@ const Chat = () => {
   const [targetMessage, setTargetMessage] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [viewEditMessage, setViewEditMessage] = useState("");
+  const [friendData, setFriendData] = useState(undefined);
+  const[isCalling,setIsCalling]= useState(false)
+  const [callRef, setCallRef]= useState(undefined)
   const notify = useNotification();
 
   const { user } = useContext(AuthContext);
@@ -196,6 +200,7 @@ const Chat = () => {
       .getChatParticipant(id.replace(',',''), MY_UUID)
       .then((data) => {
         setHeaderTitle(data.username);
+        setFriendData(data)
       })
       .catch((error) => {
         notify.error(error.message);
@@ -248,6 +253,14 @@ const Chat = () => {
         .catch((err) => notify.error(err));
     }
   };
+  const callFriend = ()=>{
+    const generatedUuid = Math.floor(Math.random() * (100000 - 2000)) + 2000;
+    api.directCall(user.uuid,friendData.uuid,generatedUuid).then((doc)=>{
+      setIsCalling(true);
+      setCallRef(doc.id)
+      
+    })
+  }
 
   const handleMessage = (text) => {
     if (isEditing) {
@@ -266,12 +279,14 @@ const Chat = () => {
   };
 
   if (loading) return <Loader />;
+  if(isCalling && callRef) return <OutgoingCall contactedUser={friendData} setIsCalling={()=>setIsCalling(false)} setCallRef={()=>{setCallRef(undefined)}}  callRef= {callRef}/>
 
  
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Stack.Screen
         options={{
+          headerShown: isCalling && callRef ? false : true , 
           headerTitle: loading ? "" : headerTitle,
           headerShadowVisible: false,
           headerTitleAlign: "center",
@@ -290,9 +305,7 @@ const Chat = () => {
                 />
               </Pressable>
               <Pressable
-                onPress={() => {
-                  // Azione da eseguire quando il secondo bottone viene premuto
-                }}
+                onPress={callFriend}
                 style={{ marginLeft: 15 }}
               >
                 <FAIcons
