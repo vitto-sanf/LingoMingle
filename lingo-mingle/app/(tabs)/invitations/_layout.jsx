@@ -2,8 +2,8 @@
 import React from "react";
 import { Slot } from "expo-router";
 
-const HomeLayout = () => {
+const InvitationsLayout = () => {
   return <Slot />;
 };
 
-export default HomeLayout;
+export default InvitationsLayout;

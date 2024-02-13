@@ -5,9 +5,16 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  addDoc,
+  setDoc,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
-
+import moment from "moment";
 const api = {
   getUser: async (userId) => {
     const docRef = doc(database, "user", userId);
@@ -18,7 +25,20 @@ const api = {
       console.log("User Not Found!");
     }
   },
-
+  getAllUsers: async () => {
+    const querySnapshot = await getDocs(collection(database, "user"));
+    let users = [];
+    console.log(querySnapshot.docs.map((doc) => doc.data()));
+    querySnapshot.forEach((doc) => {
+      let user = {
+        uuid: doc.id,
+        username: doc.data().username,
+      };
+      users.push(user);
+      console.log(doc.id, " => ", doc.data().username);
+    });
+    return users; //snapshot.docs.map(doc => doc.data());
+  },
   getLastUserContacted: async (lastUserContacted) => {
     const promises = lastUserContacted.map((doc) =>
       api.getUser(doc).then((data) => {
@@ -44,6 +64,21 @@ const api = {
     const lastFriendsContactedArray = await Promise.all(promises);
     const res =
       lastFriendsContactedArray.length > 0 ? lastFriendsContactedArray : [];
+    return res;
+  },
+
+  getFriends: async (friends) => {
+    let friendsId = friends.map((e) => e.id);
+    const promises = friendsId.map((doc) =>
+      api.getUser(doc).then((data) => {
+        data.uuid = doc;
+        return data;
+      })
+    );
+
+    const friendsArray = await Promise.all(promises);
+
+    const res = friendsArray.length > 0 ? friendsArray : [];
     return res;
   },
 
@@ -182,6 +217,115 @@ const api = {
       return {
         message: "Error while rejecting friend request",
       };
+    }
+  },
+
+  getInvitation: async (myUUID, type) => {
+    let q;
+
+    if (type === "pending") {
+      q = query(
+        collection(database, "invitation"),
+        where("receiver", "==", myUUID),
+        where("status", "==", "pending")
+      );
+    } else {
+      q = query(
+        collection(database, "invitation"),
+        where("receiver", "==", myUUID),
+        where("status", "==", "accepted")
+      );
+    }
+
+    let Invitations = [];
+    const querySnapshot = await getDocs(q);
+
+    const senderDocumentIds = querySnapshot.docs.map(
+      (doc) => doc.data().sender
+    );
+
+    const userDocsPromises = senderDocumentIds.map(async (senderId) => {
+      const userDocRef = doc(database, `user/${senderId}`);
+      const userDocSnapshot = await getDoc(userDocRef);
+      return { id: userDocSnapshot.id, data: userDocSnapshot.data() };
+    });
+
+    const userDocs = await Promise.all(userDocsPromises);
+
+    const userMap = {};
+
+    userDocs.forEach((userDoc) => {
+      if (userDoc.data) {
+        const username = userDoc.data.username;
+        const userId = userDoc.id;
+        userMap[userId] = username;
+      }
+    });
+
+    querySnapshot.forEach((doc) => {
+      const senderUserId = doc.data().sender;
+      let inv = {
+        uuid: doc.id,
+        timestamp: moment(doc.data().timestamp.toDate()).format(
+          "MMM DD YYYY hh:mm a"
+        ),
+        nonFormattedTimestamp: doc.data().timestamp.toDate(),
+        place: doc.data().place,
+        sender: senderUserId,
+        username: userMap[senderUserId],
+      };
+      Invitations = [...Invitations, inv];
+    });
+
+    return Invitations;
+  },
+  acceptInvitation: async (inviationUUID) => {
+    try {
+      const invitationRef = doc(database, "invitation", inviationUUID);
+
+      await updateDoc(invitationRef, {
+        status: "accepted",
+      });
+
+      return {
+        message: "Invitation accepted",
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        message: "Error accept invitation",
+      };
+    }
+  },
+  cancelInvitation: async (invitationUUID) => {
+    try {
+      await deleteDoc(doc(database, "invitation", invitationUUID));
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  addInvitation: async (formData) => {
+    try {
+      const docRef = addDoc(collection(database, "invitation"), formData);
+      return docRef;
+    } catch (err) {
+      console.log(err);
+      return { message: "Error During invitation sent!" };
+    }
+  },
+  editInvitation: async (formData) => {
+    try {
+      const docRef = await setDoc(doc(database, "invitation", formData.uuid), {
+        receiver: formData.receiver,
+        sender: formData.sender,
+        place: formData.place,
+        timestamp: formData.timestamp,
+        status: formData.status,
+      });
+      return docRef;
+    } catch (err) {
+      console.log(err);
+      return { message: "Error During edit invitation!" };
     }
   },
 };
