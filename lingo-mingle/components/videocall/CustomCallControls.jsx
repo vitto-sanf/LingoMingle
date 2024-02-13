@@ -13,6 +13,7 @@ import {
   ToggleCameraFaceButton,
   ReactionsButton,
   StreamReactionType,
+  ChatButton,
 } from "@stream-io/video-react-native-sdk";
 
 const CustomCallControls = (props) => {
@@ -30,6 +31,7 @@ const CustomCallControls = (props) => {
       <ToggleVideoPublishingButton
         onPressHandler={() => call?.camera.toggle()}
       />
+      <ChatButton onPressHandler={props.onChatOpenHandler} />
       <Pressable
         style={isPressed ? styles.gamesButtonPressed : styles.gamesButton}
         onPress={() => {

@@ -21,7 +21,6 @@ import {
 
 // Components
 import CustomBottomSheet from "../../components/videocall/CustomBottomSheet";
-import CustomCallControls from "../../components/videocall/CustomCallControl";
 
 // Context
 import { AuthContext } from "../../contexts/AuthContext";
@@ -175,6 +174,7 @@ const Room = () => {
             <CustomCallControls {...customCallControlsProps} />
           )}
           onHangupCallHandler={goToHomeScreen}
+          onChatOpenHandler={handleChat}
           toggleModal={toggleModal}
         />
 
@@ -201,6 +201,11 @@ const Room = () => {
         <NuevoTemaModal
           modalVisible={nuevoTemaVisible}
           setModalVisible={toggleModalNuevoTema}
+        />
+        <CustomBottomSheet
+          channelId={id}
+          setIsChatOpen={setIsChatOpen}
+          ref={BottomSheetModalRef}
         />
         {/* <View style={styles.container}>
           <CallContent onHangupCallHandler={goToHomeScreen} layout="grid" />
