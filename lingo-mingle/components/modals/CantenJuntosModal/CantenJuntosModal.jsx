@@ -53,6 +53,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
         setPlayGame(doc.data().playGame);
         setCorrectAnswer(doc.data().player1Answer);
         if (doc.data().player1Answer === false) {
+          
           setLocalCorrect(false);
         }
       });

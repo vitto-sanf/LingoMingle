@@ -44,7 +44,9 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
       snapshot.forEach((doc) => {
         setGamesData(doc.data());
         setPlayGame(doc.data().playGame);
-        setCorrectAnswer(doc.data().player1Answer);
+        if(doc.data().player1Answer)
+        {setCorrectAnswer(doc.data().player1Answer);}
+        
         if (doc.data().player1Answer === false) {
           setLocalCorrect(false);
         }
@@ -60,7 +62,13 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
       };
       setGamesData(newData);
       await api.setGamesData(newData);
-      setDirty(false);
+      
+      setTimeout(() => {
+        setDirty(false);
+        //setLocalCorrect(false);
+        setCorrectAnswer(false)
+      }, 800);
+     
     };
 
     setTimeout(async () => {
