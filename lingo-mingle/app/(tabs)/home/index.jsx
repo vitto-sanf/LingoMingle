@@ -1,6 +1,6 @@
 // Imports
 import { ScrollView, Text, FlatList, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Styles
@@ -16,6 +16,8 @@ import { Loader } from "../../../components/common";
 
 // Services
 import api from "../../../services/api";
+//Contexts
+import { AuthContext } from "../../../contexts/AuthContext";
 
 const HomePage = () => {
   const [loading, setLoading] = useState(true);
@@ -23,24 +25,25 @@ const HomePage = () => {
   const [lastFriendsContacted, setLastFriendsContacted] = useState([]);
   const [friendsRequests, setFriendsRequest] = useState([]);
 
-  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
-
+  const { user } = useContext(AuthContext);
+  const MY_UUID = user.uuid;
+ 
   useEffect(() => {
-    api
-      .getUser(MY_UUID)
-      .then(async (userInfo) => {
+    const getUserInfo = async () => {
+      try {
         const lastUserContacted = await api.getLastUserContacted(
-          userInfo?.last_user_contacted
+          user?.last_user_contacted
         );
 
         const lastFriendsContacted = await api.getLastFriendsContacted(
-          userInfo?.last_friends_contacted
+          user?.last_friends_contacted
         );
 
         const friendsRequest = await api.getFriendsRequest(
-          userInfo?.friends_request,
+          user?.friends_request,
           MY_UUID
         );
+        
 
         Promise.all([lastUserContacted, lastFriendsContacted, friendsRequest])
           .then(
@@ -48,15 +51,19 @@ const HomePage = () => {
               setLastUserContacted(UserContactedList);
               setLastFriendsContacted(FriendsContactedList);
               setFriendsRequest(FriendsRequestList);
+              setLoading(false)
             }
           )
           .catch((error) => {
             console.error("Error during api calling", error);
           });
-      })
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, []);
+      } catch (error) {
+        console.log(error)
+      }
+    };
+
+    getUserInfo();
+  }, [MY_UUID]);
 
   if (loading) return <Loader />;
 
@@ -95,7 +102,9 @@ const HomePage = () => {
               <Text style={styles.sectionTitle}>Last Friends Contacted</Text>
               <FlatList
                 data={lastFriendsContacted}
-                renderItem={({ item }) => <LastFriendCard item={item} />}
+                renderItem={({ item }) => (
+                  <LastFriendCard item={item} my_uuid={MY_UUID} />
+                )}
                 keyExtractor={(item) => item.uuid}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}

@@ -2,15 +2,16 @@
 import {
   doc,
   getDoc,
+  getDocs,
   updateDoc,
   arrayUnion,
   arrayRemove,
   collection,
+  addDoc,
+  deleteDoc,
+  serverTimestamp,
   query,
   where,
-  getDocs,
-  deleteDoc,
-  addDoc,
   setDoc,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
@@ -171,20 +172,38 @@ const api = {
       const senderRef = doc(database, "user", friendRequestUUID);
       const receiverRef = doc(database, "user", myUUID);
 
+      const chatRef = await addDoc(collection(database, "chats"), {
+        participant1: myUUID,
+        participant2: friendRequestUUID,
+      });
+
+      const chatId = chatRef.id;
+
+      const SenderData = {
+        id: myUUID,
+        chatId: chatId,
+      };
+
+      const ReceiverData = {
+        id: friendRequestUUID,
+        chatId: chatId,
+      };
+
       await updateDoc(senderRef, {
         friends_request: arrayRemove(data),
-        friends: arrayUnion(myUUID),
+        friends: arrayUnion(SenderData),
       });
 
       await updateDoc(receiverRef, {
         friends_request: arrayRemove(data),
-        friends: arrayUnion(friendRequestUUID),
+        friends: arrayUnion(ReceiverData),
       });
 
       return {
         message: "User added to your friend list",
       };
     } catch (error) {
+      console.log(error);
       return {
         message: "Error while adding friend request",
       };
@@ -216,6 +235,107 @@ const api = {
     } catch (error) {
       return {
         message: "Error while rejecting friend request",
+      };
+    }
+  },
+
+  cancelFriend: async (myUUID, friendUUID, chatId) => {
+    try {
+      const querySnapshot = await getDocs(
+        collection(database, `/chats/${chatId}/messages`)
+      );
+      querySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+
+      const firstData = {
+        chatId: chatId,
+        id: friendUUID,
+      };
+
+      const secondData = {
+        chatId: chatId,
+        id: myUUID,
+      };
+      const firstUserRef = doc(database, "user", myUUID);
+      const secondUserRef = doc(database, "user", friendUUID);
+
+      await deleteDoc(doc(database, "chats", chatId));
+
+      await updateDoc(firstUserRef, {
+        friends: arrayRemove(firstData),
+      });
+
+      await updateDoc(secondUserRef, {
+        friends: arrayRemove(secondData),
+      });
+
+      return {
+        message: "Friend cancelled from the list correctly",
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        message: "Error while Cancelling friend from the list",
+      };
+    }
+  },
+
+  sendMessage: async (chatId, msg, senderId) => {
+    try {
+      const messageRef = collection(database, `/chats/${chatId}/messages`);
+
+      data = {
+        sender: senderId,
+        message: msg,
+        createdAt: serverTimestamp(),
+      };
+
+      await addDoc(messageRef, data);
+    } catch (error) {
+      return {
+        message: "Error sending the message",
+      };
+    }
+  },
+
+  getChatParticipant: async (chatId, userId) => {
+    console.log("API", chatId);
+    const chatRef = doc(database, "chats", chatId);
+    const chatSnap = await getDoc(chatRef);
+    console.log("SNAP", chatSnap);
+
+    if (chatSnap.exists()) {
+      for (const key in chatSnap.data()) {
+        if (chatSnap.data()[key] !== userId) {
+          try {
+            const data = await api.getUser(chatSnap.data()[key]);
+            return data; // Restituisce direttamente l'oggetto ottenuto dall'API
+          } catch (error) {
+            return { message: "Participant Information not Found " };
+          }
+        }
+      }
+    } else {
+      console.log("Chat Not Found!");
+      return null; // o un valore di default in base alle tue esigenze
+    }
+  },
+  editMessage: async (message, chatId) => {
+    const messageId = message.id;
+
+    const data = {
+      createdAt: message.createdAt,
+      message: message.message,
+      sender: message.sender,
+      edited: true,
+    };
+    try {
+      const messageRef = doc(database, `/chats/${chatId}/messages`, messageId);
+      await updateDoc(messageRef, data);
+    } catch (error) {
+      return {
+        message: "Error editing the message",
       };
     }
   },

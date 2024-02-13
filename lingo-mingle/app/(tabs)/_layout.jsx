@@ -25,6 +25,17 @@ const MainLayout = () => {
         }}
       />
       <Tabs.Screen
+        name="friends"
+        options={{
+          tabBarLabel: "Friends",
+          title: "Friends",
+          headerShown: false,
+          tabBarIcon: ({ size, color }) => (
+            <FAIcons name="users" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="invitations"
         options={{
           tabBarLabel: "Invitations",
@@ -32,10 +43,10 @@ const MainLayout = () => {
           headerShown: false,
           tabBarIcon: ({ size, color }) => (
             <FAIcons name="calendar" size={size} color={color} />
-            ),
+          ),
         }}
-        />
-        <Tabs.Screen
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           tabBarLabel: "Profile",
@@ -46,8 +57,6 @@ const MainLayout = () => {
           ),
         }}
       />
-      
-     
     </Tabs>
   );
 };

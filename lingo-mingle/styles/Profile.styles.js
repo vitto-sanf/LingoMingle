@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     resizeMode: "cover",
     marginTop: 100,
+    backgroundColor:COLOR.white
   },
   username: {
     fontSize: 30,
