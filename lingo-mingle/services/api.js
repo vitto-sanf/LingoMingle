@@ -347,7 +347,6 @@ const api = {
       };
     }
   },
-
   getInvitation: async (myUUID, type) => {
     let q;
 

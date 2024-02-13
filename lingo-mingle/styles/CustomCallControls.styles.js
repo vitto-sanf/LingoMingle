@@ -1,6 +1,9 @@
 // Imports
 import { StyleSheet } from "react-native";
 
+// Styles
+import { FONT, COLOR } from "../constants";
+
 const styles = StyleSheet.create({
   customCallControlsContainer: {
     flexDirection: "row",
@@ -17,6 +20,26 @@ const styles = StyleSheet.create({
     borderColor: "#1d1e23",
     borderWidth: 1,
     zIndex: 5,
+  },
+
+  gamesButton: {
+    backgroundColor: COLOR.white,
+    borderRadius: 100,
+    width: 50,
+    height: 50,
+  },
+
+  gamesButtonPressed: {
+    backgroundColor: "#141414",
+    borderRadius: 100,
+    width: 50,
+    height: 50,
+  },
+
+  gamesButtonView: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

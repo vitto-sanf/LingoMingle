@@ -34,25 +34,24 @@ import { AuthContext } from "../../../contexts/AuthContext";
 //TODO change home icons: from user-times to user-minus and from user-check to user-plus
 const FriendsListItem = ({
   item,
+  lastItem,
   openModal,
   setUsername,
   setTargetId,
   myUuid,
-  setTargetChat
+  setTargetChat,
 }) => {
-
   const chatId = item.friends.find((e) => e.id === myUuid)?.chatId;
-
 
   const handleModal = () => {
     openModal();
     setUsername(item.username);
     setTargetId(item.uuid);
-    setTargetChat(chatId)
+    setTargetChat(chatId);
   };
 
   return (
-    <View style={styles.itemContainer}>
+    <View style={!lastItem ? styles.itemContainer : styles.lastItemContainer}>
       <Image
         source={item.gender === "M" ? maleAvatar : femaleAvatar}
         style={[styles.image, { width: 80, height: 80 }]}
@@ -195,16 +194,20 @@ const Friends = () => {
 
       <FlatList
         data={filteredFriends}
-        renderItem={({ item }) => (
-          <FriendsListItem
-            item={item}
-            openModal={() => setModalVisible(true)}
-            setUsername={(e) => setTargetUsername(e)}
-            setTargetId={(id) => setTargetId(id)}
-            myUuid={MY_UUID}
-            setTargetChat={(id)=>setTargetChat(id)}
-          />
-        )}
+        renderItem={({ item, index }) => {
+          const lastItem = index === filteredFriends.length - 1;
+          return (
+            <FriendsListItem
+              item={item}
+              lastItem={lastItem}
+              openModal={() => setModalVisible(true)}
+              setUsername={(e) => setTargetUsername(e)}
+              setTargetId={(id) => setTargetId(id)}
+              myUuid={MY_UUID}
+              setTargetChat={(id) => setTargetChat(id)}
+            />
+          );
+        }}
         keyExtractor={(item) => item.uuid}
       />
     </SafeAreaView>

@@ -10,6 +10,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.lightWhite,
     padding: 8,
   },
+  lastItemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+  },
   title: {
     fontFamily: FONT.bold,
     fontSize: 32,
@@ -38,7 +43,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
-    borderBottomWidth: 0.7,
+    borderBottomWidth: 1,
+    borderBottomColor: COLOR.gray,
   },
   textItem: {
     marginLeft: 10,
