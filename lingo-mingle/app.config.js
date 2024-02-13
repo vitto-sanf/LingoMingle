@@ -40,7 +40,24 @@ export default{
     },
 
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "@stream-io/video-react-native-sdk",
+      [
+        "@config-plugins/react-native-webrtc",
+        {
+          
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": ["$rootDir/../../../node_modules/@notifee/react-native/android/libs"]
+          }
+        }
+      ]
     ]
   }
 }

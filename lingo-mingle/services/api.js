@@ -283,7 +283,10 @@ const api = {
 
   sendMessage: async (chatId, msg, senderId) => {
     try {
-      const messageRef = collection(database, `/chats/${chatId}/messages`);
+      const messageRef = collection(
+        database,
+        `/chats/${chatId.replace(",", "")}/messages`
+      );
 
       data = {
         sender: senderId,
@@ -303,6 +306,7 @@ const api = {
     console.log("API", chatId);
     const chatRef = doc(database, "chats", chatId);
     const chatSnap = await getDoc(chatRef);
+    console.log(chatId);
     console.log("SNAP", chatSnap);
 
     if (chatSnap.exists()) {
@@ -331,7 +335,11 @@ const api = {
       edited: true,
     };
     try {
-      const messageRef = doc(database, `/chats/${chatId}/messages`, messageId);
+      const messageRef = doc(
+        database,
+        `/chats/${chatId.replace(",", "")}}/messages`,
+        messageId
+      );
       await updateDoc(messageRef, data);
     } catch (error) {
       return {

@@ -13,17 +13,18 @@ import femaleAvatar from "../../../assets/images/femaleAvatar.png";
 import { AuthContext } from "../../../contexts/AuthContext";
 
 const Profile = () => {
-  const { user, switchUser } = useContext(AuthContext);
+  const { user, switchUser,switchToken } = useContext(AuthContext);
 
   const [usersList, setUsersList] = useState([
-    { id: "YVBwXkN7cIk7WmZ8oUXG", username: "Alice" },
-    { id: "QNDv4UEwiaqCmJIjoblX", username: "Francesco" },
-    { id: "NW01c8S4tsrjZ66bR0Ll", username: "Giulia" },
+    { id: "YVBwXkN7cIk7WmZ8oUXG", username: "Alice" , token : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiWVZCd1hrTjdjSWs3V21aOG9VWEcifQ.yufN7vKkauON38gmMyvUwmITiqDjr05SstG1fKqp-6A"},
+    { id: "QNDv4UEwiaqCmJIjoblX", username: "Francesco", token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiUU5EdjRVRXdpYXFDbUpJam9ibFgifQ.Q7QH8cbqKs5zQ1nboQclLdFpH35YvmUsWp3sl3ObWtc" },
+    { id: "NW01c8S4tsrjZ66bR0Ll", username: "Giulia", token : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTlcwMWM4UzR0c3JqWjY2YlIwTGwifQ.bt-chAvUN5uIsxzx-pDU3ewHzO-W98OfFhmRN0W0x80" },
     // ... add more users as needed
   ]);
 
-  const handleUserSwitch = (newUserId) => {
-    switchUser(newUserId);
+  const handleUserSwitch = (newUser) => {
+    switchUser(newUser.id);
+    switchToken(newUser.token)
   };
 
   return (
@@ -56,7 +57,7 @@ const Profile = () => {
             data={usersList}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <Pressable onPress={() => handleUserSwitch(item.id)}>
+              <Pressable onPress={() => handleUserSwitch(item)}>
                 <Text style={styles.switchUserItem}>{item.username}</Text>
               </Pressable>
             )}
