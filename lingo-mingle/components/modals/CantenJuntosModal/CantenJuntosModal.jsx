@@ -7,14 +7,21 @@ import styles from "./CantenJuntosModal.styles";
 import FontistoIcon from "react-native-vector-icons/Fontisto";
 import { COLOR } from "../../../constants";
 import { Audio } from "expo-av";
+import api from "../../../services/api";
+import { onSnapshot, collection } from "firebase/firestore";
+import { database } from "../../../config/firebase";
 
-//TO DO: fix UI 
+//TO DO: fix UI
 const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
-  
   const [sound, setSound] = useState();
   const [playGame, setPlayGame] = useState(false);
   const [songTextIndex, setSongTextIndex] = useState(0);
   const [answer, setAnswer] = useState("");
+  const [gamesData, setGamesData] = useState({});
+  const [dirty, setDirty] = useState(true);
+  const [correctAnswer, setCorrectAnswer] = useState(false);
+  const [localCorrect, setLocalCorrect] = useState(false);
+  const [AudioPos,SetPos]=useState(0);
   const text = [
     "Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la",
     "Vivir mi vida, la la la la",
@@ -25,7 +32,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     "Sigo viendo aquel momento Se desvaneció, _ _ _ _ _ _ _ _ _ _ _",
     "Sigo viendo aquel momento Se desvaneció, desapareció",
   ];
-  
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,6 +45,106 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     fetchData().catch(console.error);
   }, []);
 
+
+  useEffect(() => {
+    const listener = onSnapshot(collection(database, "games"), (snapshot) => {
+      snapshot.forEach((doc) => {
+        setGamesData(doc.data());
+        setPlayGame(doc.data().playGame);
+        setCorrectAnswer(doc.data().player1Answer);
+        if (doc.data().player1Answer === false) {
+          
+          setLocalCorrect(false);
+        }
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    
+    const update = async () => {
+      const newData = {
+        ...gamesData,
+        player1Answer: false,
+      };
+      setGamesData(newData);
+      await api.setGamesData(newData);
+      setDirty(false);
+    };
+
+    setTimeout(async () => {
+      
+      if (correctAnswer) {
+        
+
+        if (songTextIndex === 0) {
+          let pos=sound.positionMillis;
+          console.log(pos)
+          setSongTextIndex(songTextIndex + 1);
+          setTimeout(async () => {
+            setSongTextIndex(songTextIndex + 2);
+            setAnswer("");
+            //await sound.playAsync();
+            await sound.playFromPositionAsync(9995);
+            const time = 10000;
+            const songTimeout = setTimeout(async () => {
+              await sound.pauseAsync();
+            }, time);
+          }, 1000);
+        }
+        if (songTextIndex === 2) {
+          setSongTextIndex(songTextIndex + 1);
+          ;
+
+          setTimeout(async () => {
+            setSongTextIndex(songTextIndex + 2);
+            setAnswer("");
+            sound.unloadAsync()
+            playSound(1);
+          }, 1000);
+        }
+        if (songTextIndex === 4) {
+          console.log(songTextIndex);
+          setSongTextIndex(songTextIndex + 1);
+          setTimeout(async () => {
+            setSongTextIndex(songTextIndex + 2);
+            console.log(songTextIndex);
+
+            setAnswer("");
+            //await sound.playAsync();
+            await sound.playFromPositionAsync(18000);
+            const time = 8000;
+            const songTimeout = setTimeout(async () => {
+              await sound.pauseAsync();
+            }, time);
+          }, 1000);
+        }
+        if (songTextIndex === 6) {
+          setSongTextIndex(songTextIndex + 1);
+          setTimeout(async () => {
+            setAnswer("");
+            setModalVisible(false);
+          }, 2000);
+        }
+
+        update();
+      }
+    }, 1000);
+  }, [correctAnswer]);
+
+  const playgame = async () => {
+    setPlayGame(!gamesData.playGame);
+
+    const newData = {
+      ...gamesData,
+      playGame: !gamesData.playGame,
+    };
+
+    setGamesData(newData);
+
+    await api.setGamesData(newData);
+    playSound(0);
+  };
 
   async function playSound(num) {
     console.log("Loading Sound");
@@ -52,6 +159,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
       await sound.playAsync();
       const time = 10000;
       const songTimeout = setTimeout(async () => {
+        
         await sound.pauseAsync();
       }, time);
     }
@@ -99,70 +207,79 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     setSongTextIndex(0);
     setAnswer("");
     setModalVisible(!modalVisible);
-    if (sound)
-    {
-    sound.unloadAsync();
+    if (sound) {
+      sound.unloadAsync();
     }
   };
 
   const verifyAnswer = async () => {
+    console.log(songTextIndex);
     console.log(answer);
+
     if (songTextIndex == 0) {
       if (answer == "vida") {
-        setSongTextIndex(songTextIndex + 1);
-        setTimeout(async () => {
-          setSongTextIndex(songTextIndex + 2);
-          setAnswer("");
-          await sound.playAsync();
-          const time = 10000;
-          const songTimeout = setTimeout(async () => {
-            await sound.pauseAsync();
-          }, time);
-        }, 1000);
+        setDirty(true);
+        const newData = {
+          ...gamesData,
+          player1Answer: true,
+        };
+        setGamesData(newData);
+        await api.setGamesData(newData);
+        setLocalCorrect(true);
       }
     }
     if (songTextIndex == 2) {
       if (answer == "limpiar") {
-        setSongTextIndex(songTextIndex + 1);
-        sound.unloadAsync();
-
-        setTimeout(async () => {
-          setSongTextIndex(songTextIndex + 2);
-          setAnswer("");
-
-          playSound(1);
-        }, 1000);
+        setDirty(true);
+        const newData = {
+          ...gamesData,
+          player1Answer: true,
+        };
+        setGamesData(newData);
+        await api.setGamesData(newData);
+        setLocalCorrect(true);
       }
     }
 
     if (songTextIndex == 4) {
       if (answer == "corazon") {
-        setSongTextIndex(songTextIndex + 1);
-        setTimeout(async () => {
-          setSongTextIndex(songTextIndex + 2);
-          setAnswer("");
-          await sound.playAsync();
-          const time = 8000;
-          const songTimeout = setTimeout(async () => {
-            await sound.pauseAsync();
-          }, time);
-        }, 1000);
+        setDirty(true);
+        const newData = {
+          ...gamesData,
+          player1Answer: true,
+        };
+        setGamesData(newData);
+
+        await api.setGamesData(newData);
+        setLocalCorrect(true);
       }
     }
 
     if (songTextIndex == 6) {
       if (answer == "desaparecio") {
-        setSongTextIndex(songTextIndex + 1);
-        setTimeout(async () => {
-          setAnswer("");
-          setModalVisible(false);
-        }, 2000);
+        setDirty(true);
+        const newData = {
+          ...gamesData,
+          player1Answer: true,
+        };
+        setGamesData(newData);
+        await api.setGamesData(newData);
+        setLocalCorrect(true);
       }
     }
   };
 
-  const handleBackButton = () => {
+  const handleBackButton = async () => {
     setPlayGame(false);
+
+    const newData = {
+      ...gamesData,
+      playGame: false,
+    };
+
+    setGamesData(newData);
+
+    await api.setGamesData(newData);
     onCancel();
   };
 
@@ -211,6 +328,16 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                   <Text>{text[songTextIndex]}</Text>
                 </View>
 
+                <View>
+                  {correctAnswer !== localCorrect && dirty === false ? (
+                    <Text style={styles.WinText}>
+                      The other player answered correctly before you
+                    </Text>
+                  ) : (
+                    ""
+                  )}
+                </View>
+
                 <TextInput
                   style={styles.input}
                   onChangeText={onChangeText}
@@ -233,22 +360,24 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                   }}
                   style={styles.playButton}
                 >
-                  <Text style={styles.playButtonText} >Restart Audio</Text>
+                  <Text style={styles.playButtonText}>Restart Audio</Text>
                 </Pressable>
               </>
             ) : (
               <>
                 <View style={styles.gameOptionsColumn}>
                   <Text style={styles.instructions}>
-                  In this game a song will be played and you have to insert the
-                  correct missing word.{" "}
+                    In this game a song will be played and you have to insert
+                    the correct missing word.{" "}
                   </Text>
                 </View>
                 <View style={styles.gameOptionsColumn}>
-                  <Pressable onPress={() => {
-                    setPlayGame(true);
-                    playSound(0);
-                  }} style={styles.playButton}>
+                  <Pressable
+                    onPress={() => {
+                      playgame();
+                    }}
+                    style={styles.playButton}
+                  >
                     <Text style={styles.playButtonText}>Play</Text>
                   </Pressable>
                 </View>

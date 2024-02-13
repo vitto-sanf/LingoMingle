@@ -27,7 +27,9 @@ import CustomCallControls from "../../components/videocall/CustomCallControl";
 import { AuthContext } from "../../contexts/AuthContext";
 import CustomCallControls from "../../components/videocall/CustomCallControls";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import api from "../../services/api";
+import { onSnapshot, collection } from "firebase/firestore";
+import { database } from "../../config/firebase";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
@@ -36,6 +38,8 @@ const Room = () => {
   const [advinaLaPalabraVisible, setAdivinaLaPalabraVisible] = useState(false);
   const [cantenJuntosVisible, setCantenJuntosVisible] = useState(false);
   const [nuevoTemaVisible, setNuevoTemaVisible] = useState(false);
+  const [gamesData, setGamesData] = useState({});
+  const [dirty, setDirty] = useState(true);
   const { user, token } = useContext(AuthContext);
   const router = useRouter();
 
@@ -51,23 +55,81 @@ const Room = () => {
     console.log(BottomSheetModalRef.current);
   }, []);
 
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
+  useEffect(() => {
+    const listener = onSnapshot(collection(database, "games"), (snapshot) => {
+      snapshot.forEach((doc) => {
+        setGamesData(doc.data());
+        setModalVisible(doc.data().ModalGameVisible);
+        setAdivinaLaPalabraVisible(doc.data().ModalAdivinaVisible);
+        setCantenJuntosVisible(doc.data().ModalCantenJuntosVisible);
+        setNuevoTemaVisible(doc.data().ModalNuevoTemaVisible);
+      });
+    });
+  }, []);
+
+  const toggleModal = async () => {
+    setModalVisible(!gamesData.ModalGameVisible);
+
+    const newData = {
+      ...gamesData,
+      ModalGameVisible: !gamesData.ModalGameVisible,
+    };
+
+    setGamesData(newData);
+
+    //console.log("client data", newData);
+    await api.setGamesData(newData);
   };
-  const toggleModalCantenJuntos = () => {
+  const toggleModalCantenJuntos = async () => {
+    //setModalVisible(!gamesData.ModalGameVisible);
+    setCantenJuntosVisible(!gamesData.ModalCantenJuntosVisible);
+
+    const newData = {
+      ...gamesData,
+      ModalCantenJuntosVisible: !gamesData.ModalCantenJuntosVisible,
+      playGame: false,
+    };
+
+    setGamesData(newData);
+
+    await api.setGamesData(newData);
+
+    /*
     setModalVisible(!modalVisible);
-    setCantenJuntosVisible(!cantenJuntosVisible);
+    setCantenJuntosVisible(!cantenJuntosVisible);*/
   };
 
-  const toggleModalAdivina = () => {
-    setModalVisible(!modalVisible);
-    setAdivinaLaPalabraVisible(!advinaLaPalabraVisible);
+  const toggleModalAdivina = async () => {
+    //setModalVisible(!gamesData.ModalGameVisible);
+    setAdivinaLaPalabraVisible(!gamesData.ModalAdivinaVisible);
+
+    const newData = {
+      ...gamesData,
+      ModalAdivinaVisible: !gamesData.ModalAdivinaVisible,
+    };
+
+    setGamesData(newData);
+
+    await api.setGamesData(newData);
+    /*setModalVisible(!modalVisible);
+    setAdivinaLaPalabraVisible(!advinaLaPalabraVisible);*/
   };
 
-  const toggleModalNuevoTema = ()=>{
-    setModalVisible(!modalVisible)
-    setNuevoTemaVisible(!nuevoTemaVisible);
-  }
+  const toggleModalNuevoTema = async () => {
+    //setModalVisible(!gamesData.ModalGameVisible);
+    setNuevoTemaVisible(!gamesData.ModalNuevoTemaVisible);
+
+    const newData = {
+      ...gamesData,
+      ModalNuevoTemaVisible: !gamesData.ModalNuevoTemaVisible,
+    };
+
+    setGamesData(newData);
+
+    await api.setGamesData(newData);
+    /*setModalVisible(!modalVisible);
+    setNuevoTemaVisible(!nuevoTemaVisible);*/
+  };
 
   // Join the call
   useEffect(() => {
@@ -101,7 +163,6 @@ const Room = () => {
     onHangupCallHandler: goToHomeScreen,
   };
 
-
   if (!call) return null;
 
   return (
@@ -121,21 +182,23 @@ const Room = () => {
           modalVisible={modalVisible}
           setModalVisible={toggleModal}
           AdivinamodalVisible={advinaLaPalabraVisible}
-          
           setModalAdivinaVisible={toggleModalAdivina}
           setModalCantenJuntosVisible={toggleModalCantenJuntos}
-          setModalNuevoTemaVisible = {toggleModalNuevoTema}
-
+          setModalNuevoTemaVisible={toggleModalNuevoTema}
         />
         <AdivinaLaPalabraModal
           modalVisible={advinaLaPalabraVisible}
           setModalVisible={toggleModalAdivina}
         />
-        <CantenJuntosModal
-          modalVisible={cantenJuntosVisible}
-          setModalVisible={toggleModalCantenJuntos}
-        />
-         <NuevoTemaModal
+        {cantenJuntosVisible ? (
+          <CantenJuntosModal
+            modalVisible={cantenJuntosVisible}
+            setModalVisible={toggleModalCantenJuntos}
+          />
+        ) : (
+          ""
+        )}
+        <NuevoTemaModal
           modalVisible={nuevoTemaVisible}
           setModalVisible={toggleModalNuevoTema}
         />

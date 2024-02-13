@@ -13,6 +13,7 @@ import {
   query,
   where,
   setDoc,
+  onSnapshot
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 import moment from "moment";
@@ -499,6 +500,47 @@ const api = {
       return { message: "Error During edit invitation!" };
     }
   },
+
+  /*getGamesData: async()=>{
+    const ref = collection(database,'games')
+    try{
+      onSnapshot(ref,(snapshot)=>{
+        let data = []
+        snapshot.docs.forEach((doc)=>{
+          data.push({...doc.data(), id: doc.id})
+        })
+
+        console.log("server",data);
+        return data;
+      })
+
+    }
+    catch(err)
+    {
+      console.log(err);
+      return { message: "Error During retriving games data!" };
+    }
+  },*/
+
+  setGamesData : async (formData) => {
+    try {
+      const id = "uEG3p396G7MhQnE8eaKs";
+      console.log("server Set",formData);
+      const docRef = await setDoc(doc(database, "games", id), {
+        ModalAdivinaVisible: formData.ModalAdivinaVisible,
+        ModalCantenJuntosVisible: formData.ModalCantenJuntosVisible,
+        ModalGameVisible: formData.ModalGameVisible,
+        ModalNuevoTemaVisible: formData.ModalNuevoTemaVisible,
+        playGame: formData.playGame,
+        player1Answer: formData.player1Answer,
+        answer: formData.answer
+      });
+      return docRef;
+    } catch (err) {
+      console.log(err);
+      return { message: "Error During edit Games Data!" };
+    }
+  }
 };
 
 export default api;
