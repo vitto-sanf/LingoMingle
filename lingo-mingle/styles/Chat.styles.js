@@ -8,13 +8,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLOR.white,
-    padding: 8,
+    paddingBottom: 5,
   },
   inputContainer: {
     flexDirection: "row",
     padding: 10,
     gap: 10,
-    backgroundColor: COLOR.white,
+    borderTopWidth: 1,
+    borderColor: COLOR.gray,
     alignItems: "center",
   },
   messageRow: {
@@ -39,6 +40,7 @@ const styles = StyleSheet.create({
   userMessageContainer: {
     backgroundColor: "#3498DB",
     alignSelf: "flex-end",
+    maxWidth: "60%",
   },
   otherMessageContainer: {
     backgroundColor: "#F1EFEF",
@@ -56,21 +58,22 @@ const styles = StyleSheet.create({
   imageUser: {
     width: 53,
     height: 53,
+    marginRight: 5,
   },
   imageOther: {
     width: 53,
     height: 53,
+    marginLeft: 5,
   },
   sendButton: {
     borderRadius: 100,
     padding: 10,
-   /*  backgroundColor: COLOR.primary, */
   },
-  editButton :{
-    flexDirection:'row',
-     borderWidth: 1 , 
-     padding: 5, 
-     borderRadius: 15 
+  editButton: {
+    flexDirection: "row",
+    borderWidth: 1,
+    padding: 5,
+    borderRadius: 15,
   },
   dateSeparatorContainer: {
     alignSelf: "center",
@@ -82,6 +85,9 @@ const styles = StyleSheet.create({
   dateSeparatorText: {
     color: COLOR.white,
     fontFamily: FONT.regular,
+  },
+  icon: {
+    marginRight: 5,
   },
 });
 export default styles;

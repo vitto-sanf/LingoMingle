@@ -8,7 +8,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
 } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
@@ -33,7 +33,7 @@ import useNotification from "../../hooks/useNotification";
 import styles from "../../styles/Chat.styles";
 import maleAvatar from "../../assets/images/maleAvatar.png";
 import femaleAvatar from "../../assets/images/femaleAvatar.png";
-import FAIcons from "react-native-vector-icons/FontAwesome";
+import FAIcon from "react-native-vector-icons/FontAwesome";
 import { COLOR, FONT } from "../../constants";
 
 const DateSeparator = ({ date }) => (
@@ -49,6 +49,7 @@ const RenderMessage = ({
   setTargetMessage,
   setIsEditing,
   setViewEditMessage,
+  isLastItem,
 }) => {
   const myMessage = item.sender === myId;
   const [editVisible, setEditVisible] = useState(false);
@@ -79,7 +80,7 @@ const RenderMessage = ({
   // };
 
   return (
-    <View>
+    <View style={{ marginBottom: isLastItem ? 10 : 0 }}>
       {item.showDateSeparator && (
         <DateSeparator date={item.createdAt?.toDate().toLocaleDateString()} />
       )}
@@ -115,7 +116,7 @@ const RenderMessage = ({
             {editVisible ? (
               <View>
                 <Pressable onPress={editMessage} style={styles.editButton}>
-                  <FAIcons
+                  <FAIcon
                     name="edit"
                     style={{ marginRight: 5 }}
                     color={COLOR.black}
@@ -186,6 +187,8 @@ const Chat = () => {
   const { user } = useContext(AuthContext);
   const MY_UUID = user.uuid;
 
+  const flatListRef = useRef(null);
+
   useEffect(() => {
     api
       .getChatParticipant(id.replace(",", ""), MY_UUID)
@@ -243,10 +246,14 @@ const Chat = () => {
     } else {
       api
         .sendMessage(id, msg, MY_UUID)
-        .then(setMessage(""))
+        .then(() => {
+          setMessage("");
+          flatListRef.current.scrollToEnd({ animated: true }); // Usa il ref per spostare la FlatList
+        })
         .catch((err) => notify.error(err));
     }
   };
+
   const callFriend = () => {
     const generatedUuid = Math.floor(Math.random() * (100000 - 2000)) + 2000;
     api.directCall(user.uuid, friendData.uuid, generatedUuid).then((doc) => {
@@ -300,7 +307,7 @@ const Chat = () => {
                   // TODO: Da implementare
                 }}
               >
-                <FAIcons
+                <FAIcon
                   name="calendar-plus-o"
                   color={COLOR.black}
                   solid
@@ -308,7 +315,7 @@ const Chat = () => {
                 />
               </Pressable>
               <Pressable onPress={callFriend} style={{ marginLeft: 15 }}>
-                <FAIcons
+                <FAIcon
                   name="video-camera"
                   color={COLOR.black}
                   solid
@@ -322,7 +329,7 @@ const Chat = () => {
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <RenderMessage
             item={item}
             myId={MY_UUID}
@@ -330,8 +337,17 @@ const Chat = () => {
             setTargetMessage={(message) => setTargetMessage(message)}
             setIsEditing={() => setIsEditing(true)}
             setViewEditMessage={(text) => setViewEditMessage(text)}
+            isLastItem={index === messages.length - 1}
           />
         )}
+        showsVerticalScrollIndicator={false}
+        onLayout={() => {
+          flatListRef.current.scrollToEnd({ animated: true });
+        }}
+        onContentSizeChange={() => {
+          flatListRef.current.scrollToEnd({ animated: true });
+        }}
+        ref={flatListRef}
       />
       <View style={{ flexDirection: "row" }}>
         {isEditing && viewEditMessage ? (
@@ -342,7 +358,7 @@ const Chat = () => {
               Edit Message : {viewEditMessage}
             </Text>
             <Pressable style={{ marginLeft: 20 }} onPress={handleEdit}>
-              <FAIcons name="close" color={COLOR.black} solid size={20} />
+              <FAIcon name="close" color={COLOR.black} solid size={20} />
             </Pressable>
           </>
         ) : null}
@@ -361,18 +377,13 @@ const Chat = () => {
           disabled={
             message === "" && (!targetMessage || !targetMessage.message)
           }
-          style={({ disabled }) => [
-            styles.sendButton,
-            {
-              backgroundColor:
-                disabled ||
-                (message === "" && (!targetMessage || !targetMessage.message))
-                  ? COLOR.gray2
-                  : COLOR.primary,
-            },
-          ]}
         >
-          <FAIcons name="send" color={COLOR.white} solid size={24} />
+          <FAIcon
+            name="send"
+            size={24}
+            color={message.length !== 0 ? COLOR.primary : COLOR.gray}
+            style={styles.icon}
+          />
         </Pressable>
       </View>
     </KeyboardAvoidingView>
