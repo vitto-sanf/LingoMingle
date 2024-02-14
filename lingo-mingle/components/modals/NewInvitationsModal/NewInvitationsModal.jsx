@@ -234,13 +234,15 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                     style={{ height: 50, width: 250 }}
                     mode="dropdown"
                     selectedValue={selectedFriend}
+                    placeholder="-- Seleziona Amico --"
                     onValueChange={(itemValue, itemIndex) => {
                       setSelectedFriend(itemValue);
                       onChange(itemValue);
                     }}
                   >
+                    <Picker.Item label="-- Seleziona Amico --" value={0} key={0} />
                     {users.map((item) => {
-                      // console.log(item.uuid);
+                      
                       return (
                         <Picker.Item
                           label={item.username}
@@ -336,6 +338,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   setDate(null);
                   setTime(null);
                   setPlace(null);
+                  setSelectedFriend(0);
                 }}
               >
                 <Text style={styles.cancelTextStyle}>Reset</Text>
