@@ -159,10 +159,11 @@ const InvitationsPage = () => {
         >
           <Text style={styles.topNavLinkText}>Scheduled</Text>
         </Pressable>
-        <NewInvitationModal
+        {modalVisible? <NewInvitationModal
           modalVisible={modalVisible}
           setModalVisible={toggleModal}
-        />
+        />: ''}
+        
         {editModalVisible && (
           <EditInvitationModal
             modalVisible={editModalVisible}

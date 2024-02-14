@@ -84,6 +84,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
         })
         .catch((err) => console.log(err))
         .finally(() => {
+          console.log(users);
           let newArr = users.map((friend) => friend.username);
           setNamesArray(newArr);
           setDirty(false);
@@ -239,17 +240,27 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
 
               <Picker
+              style={{ height: 50, width: 250 }}
                 //style={{width: '98%', height: 40}}
                 //ref={pickerRef}
-                //mode="dropdown"
+                mode='dropdown'
                 selectedValue={selectedFriend}
                 onValueChange={(itemValue, itemIndex) =>
                   setSelectedFriend(itemValue)
                 }>
+                {users.map((item)=>{
+                  console.log(item.uuid);
+                  return  (<Picker.Item  label={item.username} value={item.uuid} key={item.uuid}/>)
+                })}
+
+
+                {/*
                 <Picker.Item label="Java" value="java" />
                 <Picker.Item label="JavaScript" value="js" />
-              </Picker>
+                */}
                 
+              </Picker>
+
             </View>
             
 
