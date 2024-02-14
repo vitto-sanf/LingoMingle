@@ -41,6 +41,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [namesArray, setNamesArray] = useState([]);
+  const [dirty, setDirty] = useState(true);
 
   //Form Validation Schema
   const schema = yup.object().shape({
@@ -59,24 +60,25 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   });
 
   useEffect(() => {
-    api
-      .getUser(MY_UUID)
-      .then((data) => {
-        api
-          .getFriends(data.friends)
-          .then((friendsInfo) => {
-            setUsers(friendsInfo);
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err))
-      .finally(() => {
-        let newArr = users.map((item) => {
-          return item.username;
+    if (dirty) {
+      api
+        .getUser(MY_UUID)
+        .then((data) => {
+          api
+            .getFriends(data.friends)
+            .then((friendsInfo) => {
+              setUsers(friendsInfo);
+            })
+            .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {
+          let newArr = users.map((friend) => friend.username);
+          setNamesArray(newArr);
+          setDirty(false);
         });
-        setNamesArray(namesArray, ...newArr);
-      });
-  }, []);
+    }
+  }, [friend, namesArray]);
 
   //Form Validation control
   const {
@@ -116,6 +118,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       place: place,
       status: "pending",
     };
+    console.log(ModformData);
 
     api
       .addInvitation(ModformData)
@@ -231,6 +234,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                     onChangeText={(text) => {
                       onChange(text);
                       onChangeFriend(text);
+                      //console.log("aa");
                     }}
                     value={friend ? friend.username : friend}
                     placeholder="Friend username"
@@ -273,6 +277,8 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                               username: item.username,
                             });
                             onChange(item.username);
+                            setDirty(true);
+                            console.log("namesArray", namesArray);
                             setDropdownOpen(false);
                           }}
                           style={styles.dropdownRow}
