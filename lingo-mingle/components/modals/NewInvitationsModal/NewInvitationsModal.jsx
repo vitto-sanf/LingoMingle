@@ -7,6 +7,7 @@ import {
   View,
   TextInput,
   FlatList,
+  TouchableOpacity
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -33,6 +34,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
   const [selectedFriend, setSelectedFriend] = useState("");
+  const [pickerOpen,setPickerOpen]=useState(false);
   const [friend, setFriend] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [users, setUsers] = useState([]);
@@ -224,31 +226,42 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
             </View>
 
             <View style={styles.formview}>
-              <View style={styles.namePicker}>
+           
+              <View style={styles.namePicker}
+              
+              
+              >
+              
                 <Controller
                   control={control}
                   rules={{
                     required: true,
                   }}
                   render={({ field: { onChange, value } }) => (
+                    
                     <Picker
                       style={{ width: "100%", height: 40 }}
-                      mode="dropdown"
+                      mode="dialog"
                       selectedValue={selectedFriend}
+                      onFocus={()=>setPickerOpen(true)}
                       onValueChange={(itemValue, itemIndex) => {
                         setSelectedFriend(itemValue);
                         onChange(itemValue);
+                        setPickerOpen(true);
                       }}
+                      onPress={()=>setPickerOpen(true)}
                     >
-                      <Picker.Item
+                    {(!pickerOpen) && <Picker.Item
                         style={{ color: "#C7C7CD" }}
                         label="Select friend"
                         value={0}
                         key={0}
-                      />
+                      />}
+                      
                       {users.map((item) => {
                         return (
                           <Picker.Item
+                            style={{color:COLOR.black}}
                             label={item.username}
                             value={item.uuid}
                             key={item.uuid}
@@ -256,10 +269,12 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                         );
                       })}
                     </Picker>
+                    
                   )}
                   name="friend"
                 />
               </View>
+            
 
               <View style={styles.dateTimeInputContainer}>
                 <Pressable
@@ -318,6 +333,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               render={({ field: { onChange, value } }) => (
                 <TextInput
                   style={styles.input}
+                  
                   onChangeText={(text) => {
                     onChange(text);
                     setPlace(text);
@@ -342,6 +358,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   setTime(null);
                   setPlace(null);
                   setSelectedFriend(0);
+                  setPickerOpen(false);
                 }}
               >
                 <Text style={styles.cancelTextStyle}>Reset</Text>
