@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: "80%",
+   
   },
   headerContainer: {
     flexDirection: "row",
@@ -115,11 +116,13 @@ const styles = StyleSheet.create({
     borderColor: COLOR.lightGrey,
     width: "100%",
     height: "100%",
+    
   },
   dropdownEmpty: {
     backgroundColor: COLOR.white,
     flex: 1,
     flexDirection: "column",
+   
   },
   dropdownRow: {
     textAlign: "center",

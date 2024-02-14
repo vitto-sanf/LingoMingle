@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import {
   Alert,
   Modal,
@@ -8,6 +8,7 @@ import {
   TextInput,
   FlatList,
 } from "react-native";
+import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
@@ -31,17 +32,27 @@ import { COLOR } from "../../../constants";
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
-
-  const [friend, setFriend] = useState(null);
+  const [selectedFriend, setSelectedFriend] = useState("");
+  const [friend, setFriend] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [users, setUsers] = useState([]);
-  const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
-  const [place, setPlace] = useState(null);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [place, setPlace] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [namesArray, setNamesArray] = useState([]);
   const [dirty, setDirty] = useState(true);
+  
+  const pickerRef = useRef();
+
+    function open() {
+      pickerRef.current.focus();
+    }
+
+    function close() {
+      pickerRef.current.blur();
+    }
 
   //Form Validation Schema
   const schema = yup.object().shape({
@@ -145,6 +156,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
   return (
     <View style={styles.centeredView}>
+    
       {showPicker ? (
         <View>
           <Controller
@@ -209,6 +221,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+          
             <View style={styles.headerContainer}>
               <Text style={styles.modalText}>New invitation</Text>
               <Pressable
@@ -221,8 +234,29 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 <FA5Icon name="times" size={20} color={COLOR.black} />
               </Pressable>
             </View>
+              
+            <View>
 
-            <View style={styles.searchContainer}>
+
+              <Picker
+                //style={{width: '98%', height: 40}}
+                //ref={pickerRef}
+                //mode="dropdown"
+                selectedValue={selectedFriend}
+                onValueChange={(itemValue, itemIndex) =>
+                  setSelectedFriend(itemValue)
+                }>
+                <Picker.Item label="Java" value="java" />
+                <Picker.Item label="JavaScript" value="js" />
+              </Picker>
+                
+            </View>
+            
+
+                {/*
+               <View style={styles.searchContainer}>
+           
+             
               <Controller
                 control={control}
                 rules={{
@@ -299,6 +333,15 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
             ) : (
               ""
             )}
+              
+              
+              
+            </View>*/}
+
+
+
+              
+              
             <View style={styles.formview}>
               <View style={styles.dateTimeInputContainer}>
                 <Pressable
