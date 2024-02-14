@@ -7,7 +7,7 @@ import {
   View,
   TextInput,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -33,8 +33,8 @@ import { COLOR } from "../../../constants";
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
-  const [selectedFriend, setSelectedFriend] = useState("");
-  const [pickerOpen,setPickerOpen]=useState(false);
+  const [selectedFriend, setSelectedFriend] = useState(0);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [friend, setFriend] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [users, setUsers] = useState([]);
@@ -226,42 +226,50 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
             </View>
 
             <View style={styles.formview}>
-           
-              <View style={styles.namePicker}
-              
-              
-              >
-              
+              <View style={styles.namePicker}>
                 <Controller
                   control={control}
                   rules={{
                     required: true,
                   }}
                   render={({ field: { onChange, value } }) => (
-                    
                     <Picker
                       style={{ width: "100%", height: 40 }}
-                      mode="dialog"
+                      mode="dropdown"
                       selectedValue={selectedFriend}
-                      onFocus={()=>setPickerOpen(true)}
+                      onFocus={() => {
+                        setPickerOpen(true);
+                      }}
+                      onBlur={() => {
+                        setPickerOpen(false);
+                      }}
                       onValueChange={(itemValue, itemIndex) => {
                         setSelectedFriend(itemValue);
                         onChange(itemValue);
                         setPickerOpen(true);
                       }}
-                      onPress={()=>setPickerOpen(true)}
                     >
-                    {(!pickerOpen) && <Picker.Item
-                        style={{ color: "#C7C7CD" }}
-                        label="Select friend"
-                        value={0}
-                        key={0}
-                      />}
-                      
+                      {!pickerOpen ? (
+                        <Picker.Item
+                          style={{ color: "#C7C7CD" }}
+                          label="Select Friend:"
+                          value={0}
+                          key={0}
+                        />
+                      ) : (
+                        <Picker.Item
+                          style={{ color: "#C7C7CD" }}
+                          label="Friends List:"
+                          value={0}
+                          key={0}
+                          enabled={false}
+                        />
+                      )}
+
                       {users.map((item) => {
                         return (
                           <Picker.Item
-                            style={{color:COLOR.black}}
+                            style={{ color: COLOR.black }}
                             label={item.username}
                             value={item.uuid}
                             key={item.uuid}
@@ -269,12 +277,10 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                         );
                       })}
                     </Picker>
-                    
                   )}
                   name="friend"
                 />
               </View>
-            
 
               <View style={styles.dateTimeInputContainer}>
                 <Pressable
@@ -333,7 +339,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               render={({ field: { onChange, value } }) => (
                 <TextInput
                   style={styles.input}
-                  
                   onChangeText={(text) => {
                     onChange(text);
                     setPlace(text);
