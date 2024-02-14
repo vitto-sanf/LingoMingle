@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: "80%",
+    
    
   },
   headerContainer: {
@@ -67,6 +68,18 @@ const styles = StyleSheet.create({
     borderColor: COLOR.lightGrey,
     padding: 10,
   },
+  namePicker:{
+    width: "100%",
+    height: 40,
+    borderColor: COLOR.lightGrey,
+    borderWidth: 1,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    
+
+  },
   userNameInput: {
     height: 40,
     width: "100%",
@@ -92,9 +105,10 @@ const styles = StyleSheet.create({
     color: COLOR.black,
   },
   formview: {
+    width: "100%",
     alignItems: "center",
     justifyContent: "space-between",
-    flexDirection: "row",
+    flexDirection: "column",
   },
   searchContainer: {
     height: 40,

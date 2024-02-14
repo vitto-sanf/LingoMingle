@@ -223,41 +223,44 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               </Pressable>
             </View>
 
-            <View>
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                }}
-                render={({ field: { onChange, value } }) => (
-                  <Picker
-                    style={{ height: 50, width: 250 }}
-                    mode="dropdown"
-                    selectedValue={selectedFriend}
-                    placeholder="-- Seleziona Amico --"
-                    onValueChange={(itemValue, itemIndex) => {
-                      setSelectedFriend(itemValue);
-                      onChange(itemValue);
-                    }}
-                  >
-                    <Picker.Item label="-- Seleziona Amico --" value={0} key={0} />
-                    {users.map((item) => {
-                      
-                      return (
-                        <Picker.Item
-                          label={item.username}
-                          value={item.uuid}
-                          key={item.uuid}
-                        />
-                      );
-                    })}
-                  </Picker>
-                )}
-                name="friend"
-              />
-            </View>
-
             <View style={styles.formview}>
+              <View style={styles.namePicker}>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Picker
+                      style={{ width: "100%", height: 40 }}
+                      mode="dropdown"
+                      selectedValue={selectedFriend}
+                      onValueChange={(itemValue, itemIndex) => {
+                        setSelectedFriend(itemValue);
+                        onChange(itemValue);
+                      }}
+                    >
+                      <Picker.Item
+                        style={{ color: "#C7C7CD" }}
+                        label="Select friend"
+                        value={0}
+                        key={0}
+                      />
+                      {users.map((item) => {
+                        return (
+                          <Picker.Item
+                            label={item.username}
+                            value={item.uuid}
+                            key={item.uuid}
+                          />
+                        );
+                      })}
+                    </Picker>
+                  )}
+                  name="friend"
+                />
+              </View>
+
               <View style={styles.dateTimeInputContainer}>
                 <Pressable
                   style={[styles.dateTimeInput, { marginRight: 10 }]}
