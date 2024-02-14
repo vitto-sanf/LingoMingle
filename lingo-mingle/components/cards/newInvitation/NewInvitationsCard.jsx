@@ -3,7 +3,7 @@ import { View, Text, Pressable } from "react-native";
 import React from "react";
 
 // Styles
-import styles from "./NewInvitationCard.styles";
+import styles from "./NewInvitationsCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 
 import { COLOR } from "../../../constants";

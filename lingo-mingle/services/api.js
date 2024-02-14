@@ -13,10 +13,11 @@ import {
   query,
   where,
   setDoc,
-  onSnapshot
+  onSnapshot,
 } from "firebase/firestore";
 import { database } from "../config/firebase";
 import moment from "moment";
+
 const api = {
   getUser: async (userId) => {
     const docRef = doc(database, "user", userId);
@@ -522,10 +523,10 @@ const api = {
     }
   },*/
 
-  setGamesData : async (formData) => {
+  setGamesData: async (formData) => {
     try {
       const id = "uEG3p396G7MhQnE8eaKs";
-      console.log("server Set",formData);
+      console.log("server Set", formData);
       const docRef = await setDoc(doc(database, "games", id), {
         ModalAdivinaVisible: formData.ModalAdivinaVisible,
         ModalCantenJuntosVisible: formData.ModalCantenJuntosVisible,
@@ -533,14 +534,14 @@ const api = {
         ModalNuevoTemaVisible: formData.ModalNuevoTemaVisible,
         playGame: formData.playGame,
         player1Answer: formData.player1Answer,
-        answer: formData.answer
+        answer: formData.answer,
       });
       return docRef;
     } catch (err) {
       console.log(err);
       return { message: "Error During edit Games Data!" };
     }
-  }
+  },
 };
 
 export default api;

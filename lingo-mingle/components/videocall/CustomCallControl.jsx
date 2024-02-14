@@ -1,7 +1,6 @@
 // Imports
 import { View } from "react-native";
 import React from "react";
-import styles from "../../styles/CustomCallControls.styles";
 import {
   useCall,
   HangUpCallButton,
@@ -10,6 +9,9 @@ import {
   ToggleCameraFaceButton,
   ChatButton,
 } from "@stream-io/video-react-native-sdk";
+
+// Styles
+import styles from "../../styles/CustomCallControls.styles";
 
 const CustomCallControls = (props) => {
   const call = useCall();

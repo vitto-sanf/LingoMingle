@@ -1,15 +1,16 @@
 // Imports
 import React, { useState, useEffect } from "react";
 import { Alert, Modal, Text, Pressable, View, TextInput } from "react-native";
+import { onSnapshot, collection } from "firebase/firestore";
+import { database } from "../../../config/firebase";
+import { Audio } from "expo-av";
+
+// Services
+import api from "../../../services/api";
 
 // Styles
 import styles from "./CantenJuntosModal.styles";
 import FontistoIcon from "react-native-vector-icons/Fontisto";
-import { COLOR } from "../../../constants";
-import { Audio } from "expo-av";
-import api from "../../../services/api";
-import { onSnapshot, collection } from "firebase/firestore";
-import { database } from "../../../config/firebase";
 
 //TO DO: fix UI
 const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
@@ -21,7 +22,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
   const [dirty, setDirty] = useState(true);
   const [correctAnswer, setCorrectAnswer] = useState(false);
   const [localCorrect, setLocalCorrect] = useState(false);
-  const [AudioPos,SetPos]=useState(0);
+  const [AudioPos, SetPos] = useState(0);
   const text = [
     "Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la",
     "Vivir mi vida, la la la la",
@@ -32,7 +33,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     "Sigo viendo aquel momento Se desvaneció, _ _ _ _ _ _ _ _ _ _ _",
     "Sigo viendo aquel momento Se desvaneció, desapareció",
   ];
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +45,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     fetchData().catch(console.error);
   }, []);
 
-
   useEffect(() => {
     const listener = onSnapshot(collection(database, "games"), (snapshot) => {
       snapshot.forEach((doc) => {
@@ -53,7 +52,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
         setPlayGame(doc.data().playGame);
         setCorrectAnswer(doc.data().player1Answer);
         if (doc.data().player1Answer === false) {
-          
           setLocalCorrect(false);
         }
       });
@@ -61,7 +59,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
   }, []);
 
   useEffect(() => {
-    
     const update = async () => {
       const newData = {
         ...gamesData,
@@ -73,13 +70,10 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     };
 
     setTimeout(async () => {
-      
       if (correctAnswer) {
-        
-
         if (songTextIndex === 0) {
-          let pos=sound.positionMillis;
-          console.log(pos)
+          let pos = sound.positionMillis;
+          console.log(pos);
           setSongTextIndex(songTextIndex + 1);
           setTimeout(async () => {
             setSongTextIndex(songTextIndex + 2);
@@ -94,12 +88,10 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
         }
         if (songTextIndex === 2) {
           setSongTextIndex(songTextIndex + 1);
-          ;
-
           setTimeout(async () => {
             setSongTextIndex(songTextIndex + 2);
             setAnswer("");
-            sound.unloadAsync()
+            sound.unloadAsync();
             playSound(1);
           }, 1000);
         }
@@ -159,7 +151,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
       await sound.playAsync();
       const time = 10000;
       const songTimeout = setTimeout(async () => {
-        
         await sound.pauseAsync();
       }, time);
     }
@@ -293,7 +284,6 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-        Alert.alert("Modal has been closed.");
         setModalVisible(!modalVisible);
       }}
     >

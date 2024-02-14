@@ -24,7 +24,6 @@ const GamesModal = ({
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-        Alert.alert("Modal has been closed.");
         setModalVisible(!modalVisible);
       }}
     >
@@ -61,10 +60,7 @@ const GamesModal = ({
             <Text style={styles.buttonText}>Canten Juntos</Text>
           </Pressable>
           {/* Game 3 - Nuevo Tema */}
-          <Pressable
-            style={styles.button}
-            onPress={setModalNuevoTemaVisible}
-          >
+          <Pressable style={styles.button} onPress={setModalNuevoTemaVisible}>
             <FA5Icon
               name="stack-exchange"
               color={COLOR.white}

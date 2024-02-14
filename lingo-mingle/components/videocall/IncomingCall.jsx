@@ -1,23 +1,23 @@
-import { StyleSheet, View, Pressable, Text,Image } from "react-native";
-
-import React, { useCallback, useState, useEffect } from "react";
-import { onSnapshot, collection, doc } from "firebase/firestore";
-import { database } from "../../config/firebase";
-import useNotification from "../../hooks/useNotification";
+// Imports
+import { StyleSheet, View, Pressable, Text, Image } from "react-native";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
+import { onSnapshot, doc } from "firebase/firestore";
+import { database } from "../../config/firebase";
 
-//images
-import femaleAvatar from "../../assets/images/femaleAvatar.png";
-import maleAvatar from "../../assets/images/maleAvatar.png";
-//style
-
-import styles from "../../styles/IncomingCalls.styles";
-
-//api
+// Services
 import api from "../../services/api";
 
-const UserInfoComponent = ({caller}) => {
-    console.log("CALLER",caller)
+// Hooks
+import useNotification from "../../hooks/useNotification";
+
+// Styles
+import styles from "../../styles/IncomingCalls.styles";
+import femaleAvatar from "../../assets/images/femaleAvatar.png";
+import maleAvatar from "../../assets/images/maleAvatar.png";
+
+const UserInfoComponent = ({ caller }) => {
+  console.log("CALLER", caller);
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
@@ -31,14 +31,19 @@ const UserInfoComponent = ({caller}) => {
   );
 };
 
-const IncomingCallButtonGroup = ({ setComingCall, setCallData, callRef ,callData}) => {
-    const router = useRouter();
-  const acceptCallHandler = ()=>{
-    api.acceptCall(callRef).then(()=>{
+const IncomingCallButtonGroup = ({
+  setComingCall,
+  setCallData,
+  callRef,
+  callData,
+}) => {
+  const router = useRouter();
+  const acceptCallHandler = () => {
+    api.acceptCall(callRef).then(() => {
       setComingCall();
       setCallData();
       router.push(`/rooms/${callData.roomId}`);
-    })
+    });
   };
 
   const rejectCallHandler = () => {
@@ -58,7 +63,7 @@ const IncomingCallButtonGroup = ({ setComingCall, setCallData, callRef ,callData
       </Pressable>
       <Pressable
         style={[styles.button, styles.acceptButton]}
-         onPress={acceptCallHandler}
+        onPress={acceptCallHandler}
       >
         <Text style={styles.callButtonText}>Accept</Text>
       </Pressable>
@@ -94,22 +99,19 @@ const IncomingCall = ({ callData, setCallData, setComingCall }) => {
       })
       .catch((error) => {
         notify.error(error.message);
-      })
-     
+      });
   }, []);
-  
-    return (
-        <View style={[StyleSheet.absoluteFill, styles.container]}>
-          <UserInfoComponent caller={caller}/>
-          <IncomingCallButtonGroup
-            setCallData={setCallData}
-            setComingCall={setComingCall}
-            callRef={callData.id}
-            callData={callData}
-          />
-        </View>
-      );
-  
-  
+
+  return (
+    <View style={[StyleSheet.absoluteFill, styles.container]}>
+      <UserInfoComponent caller={caller} />
+      <IncomingCallButtonGroup
+        setCallData={setCallData}
+        setComingCall={setComingCall}
+        callRef={callData.id}
+        callData={callData}
+      />
+    </View>
+  );
 };
 export default IncomingCall;

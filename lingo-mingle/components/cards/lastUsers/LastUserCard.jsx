@@ -15,51 +15,44 @@ import api from "../../../services/api";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const LastUserCard = ({ item, myUUID ,setCallRef,setIsCalling, setItem}) => {
- 
-
+const LastUserCard = ({ item, myUUID, setCallRef, setIsCalling, setItem }) => {
   const notify = useNotification();
   const friendRequestUUID = item.uuid;
 
   const [friendRequestSent, setFriendRequestSent] = useState(false);
 
-
-  
   const handleSendFriendRequest = () => {
-     api
-       .sendFriendRequest(myUUID, friendRequestUUID)
+    api
+      .sendFriendRequest(myUUID, friendRequestUUID)
       .then((res) => {
-         setFriendRequestSent(true);
+        setFriendRequestSent(true);
         notify.success(res.message);
       })
-       .catch((err) => notify.error(err.message));
+      .catch((err) => notify.error(err.message));
   };
 
-  
   const handleCancelFriendRequest = () => {
-     api
+    api
       .cancelFriendRequest(myUUID, friendRequestUUID)
-       .then((res) => {
-          setFriendRequestSent(false);
-          notify.success(res.message);
+      .then((res) => {
+        setFriendRequestSent(false);
+        notify.success(res.message);
       })
-       .catch((err) => notify.error(err.message));
+      .catch((err) => notify.error(err.message));
   };
 
   const handleStartVideoCall = () => {
     const generatedUuid = Math.floor(Math.random() * (100000 - 2000)) + 2000;
-    console.log("ITEM",myUUID,item.uuid)
-    api.directCall(myUUID,item.uuid,generatedUuid).then((doc)=>{
+    console.log("ITEM", myUUID, item.uuid);
+    api.directCall(myUUID, item.uuid, generatedUuid).then((doc) => {
       setIsCalling(true);
-      setCallRef(doc.id)
-      setItem(item)
-    })
+      setCallRef(doc.id);
+      setItem(item);
+    });
   };
 
   // TODO: Evaluate whether to make the card clickable!
-  
   return (
-    
     <View style={styles.container}>
       <Image
         source={item.gender === "M" ? maleAvatar : femaleAvatar}
@@ -69,14 +62,19 @@ const LastUserCard = ({ item, myUUID ,setCallRef,setIsCalling, setItem}) => {
       <View style={styles.actions}>
         <Pressable
           onPress={
-            !friendRequestSent && !item.friends_request.some((request)=>{ return request.sender === myUUID})
+            !friendRequestSent &&
+            !item.friends_request.some((request) => {
+              return request.sender === myUUID;
+            })
               ? handleSendFriendRequest
               : handleCancelFriendRequest
           }
           style={styles.sendFriendRequestBtn}
         >
-          
-          {!friendRequestSent && !item.friends_request.some((request)=>{ return request.sender === myUUID}) ? (
+          {!friendRequestSent &&
+          !item.friends_request.some((request) => {
+            return request.sender === myUUID;
+          }) ? (
             <FA5Icon name="user-plus" size={20} />
           ) : (
             <FA5Icon name="user-times" size={20} color={COLOR.red} />

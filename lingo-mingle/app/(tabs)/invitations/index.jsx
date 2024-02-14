@@ -1,6 +1,6 @@
 // Imports
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, FlatList, Pressable, View } from "react-native";
+import { Text, FlatList, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
 
@@ -10,9 +10,11 @@ import {
   NewInvitationCard,
   ScheduledInvitationCard,
 } from "../../../components/cards";
-import NewInvitationModal from "../../../components/modals/NewInvitationsModal/NewInvitationsModal";
-import EditInvitationModal from "../../../components/modals/EditInvitationsModal/EditInvitationsModal";
-import AcceptDeclineInvitationsModal from "../../../components/modals/AcceptDeclineInvitation/AcceptDeclineInvitation";
+import {
+  NewInvitationModal,
+  EditInvitationModal,
+  AcceptDeclineInvitationsModal,
+} from "../../../components/modals";
 
 //Hooks
 import useNotification from "../../../hooks/useNotification";
@@ -24,7 +26,6 @@ import AntIcon from "react-native-vector-icons/AntDesign";
 // Services
 import api from "../../../services/api";
 
-// TODO: Implementare lo swipe che permette di passare fra le tab
 const InvitationsPage = () => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();

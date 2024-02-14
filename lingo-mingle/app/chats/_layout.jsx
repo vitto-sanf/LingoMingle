@@ -1,10 +1,8 @@
+// Imports
 import { Stack } from "expo-router";
-import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import api from "../../services/api";
 
 const ChatLayout = () => {
-  return <Stack ></Stack>;
+  return <Stack screenOptions={{ headerShown: false }} />;
 };
 
 export default ChatLayout;

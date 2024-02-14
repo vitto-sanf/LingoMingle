@@ -1,20 +1,19 @@
-import { View, Text, Pressable } from "react-native";
-import React, { useState, useEffect } from "react";
-import { StyleSheet } from "react-native";
-import FA5Icon from "react-native-vector-icons/FontAwesome5";
-import { COLOR } from "../../constants";
-import styles from "../../styles/CustomCallControls.styles";
+// Imports
+import { View, Pressable } from "react-native";
+import React, { useState } from "react";
 import {
-  CallControlProps,
   useCall,
   HangUpCallButton,
   ToggleAudioPublishingButton,
   ToggleVideoPublishingButton,
   ToggleCameraFaceButton,
-  ReactionsButton,
-  StreamReactionType,
   ChatButton,
 } from "@stream-io/video-react-native-sdk";
+
+// Styles
+import styles from "../../styles/CustomCallControls.styles";
+import FA5Icon from "react-native-vector-icons/FontAwesome5";
+import { COLOR } from "../../constants";
 
 const CustomCallControls = (props) => {
   const call = useCall();

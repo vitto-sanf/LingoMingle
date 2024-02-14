@@ -2,39 +2,50 @@
 import { Tabs } from "expo-router";
 import { useEffect, useContext, useState } from "react";
 import { onSnapshot, collection } from "firebase/firestore";
-import IncomingCall from "../../components/videocall/IncomingCall";
 import { database } from "../../config/firebase";
+
+// Components
+import { IncomingCall } from "../../components/videocall";
+
+// Context
+import { AuthContext } from "../../contexts/AuthContext";
 
 // Styles
 import FAIcons from "react-native-vector-icons/FontAwesome";
 import { COLOR } from "../../constants";
 
-//context
-import { AuthContext } from "../../contexts/AuthContext";
-
 const MainLayout = () => {
   const { user } = useContext(AuthContext);
+
   const [callData, setCallData] = useState(undefined);
   const [comingCall, setComingCall] = useState(false);
 
   useEffect(() => {
-    
     const listener = onSnapshot(
       collection(database, "directCall"),
       (snapshot) => {
         snapshot.forEach((doc) => {
-          console.log("DOCDATA", user.uuid,doc.data().receiverId, doc.data().status)
-          console.log("prova",doc.data().receiverId == user.uuid , doc.data().status == "pending")
+          console.log(
+            "DOCDATA",
+            user.uuid,
+            doc.data().receiverId,
+            doc.data().status
+          );
+          console.log(
+            "prova",
+            doc.data().receiverId == user.uuid,
+            doc.data().status == "pending"
+          );
           if (
             doc.data().receiverId == user.uuid &&
             doc.data().status == "pending"
           ) {
-            console.log("INCOMING",doc)
+            console.log("INCOMING", doc);
             let ref = doc.data();
             ref.id = doc.id;
             setCallData(ref);
-            setComingCall(true)
-            return doc ;
+            setComingCall(true);
+            return doc;
           }
         });
       }
@@ -43,7 +54,15 @@ const MainLayout = () => {
     return listener;
   }, []);
 
-  if (callData && comingCall) return <IncomingCall callData={callData} setComingCall={()=>setComingCall(false)} setCallData={()=>setCallData(undefined)}/>;
+  if (callData && comingCall)
+    return (
+      <IncomingCall
+        callData={callData}
+        setComingCall={() => setComingCall(false)}
+        setCallData={() => setCallData(undefined)}
+      />
+    );
+
   return (
     <Tabs
       initialRouteName="home"

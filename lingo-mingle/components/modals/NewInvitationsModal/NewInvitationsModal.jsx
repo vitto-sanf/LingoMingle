@@ -23,12 +23,16 @@ import api from "../../../services/api";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
+// Utils
+import formatDate from "../../../utils/formatDate";
+import { COLOR } from "../../../constants";
+
 //TODO: fix the styling, fix bugs on DatePicker
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
 
-  const [friend, SetFriend] = useState(null);
+  const [friend, setFriend] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [users, setUsers] = useState([]);
   const [date, setDate] = useState(null);
@@ -78,7 +82,9 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
+    reset,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -92,7 +98,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const onCancel = (formData) => {
     setModalVisible(!modalVisible);
     setDropdownOpen(false);
-    SetFriend(null);
+    setFriend(null);
     setDate(null);
     setTime(null);
     setPlace(null);
@@ -129,21 +135,9 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
     setShowTimePicker(!showTimePicker);
   };
 
-  const formatDate = (rawDate) => {
-    let date = new Date(rawDate);
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-
-    month = month < 10 ? `0${month}` : month;
-    day = day < 10 ? `0${day}` : day;
-    return `${day}/${month}/${year}`;
-  };
-
   const onChangeFriend = (value) => {
     setDropdownOpen(true);
-
-    SetFriend(value);
+    setFriend(value);
   };
 
   return (
@@ -156,13 +150,12 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               <DateTimePicker
                 style={{ zIndex: "auto" }}
                 mode="date"
-                display="spinner"
                 value={value || new Date()}
                 onChange={({ type }, selectedDate) => {
                   onChange(selectedDate);
-                  if (type == "set") {
-                    setDate(selectedDate);
+                  if (type === "set") {
                     toggleDatepicker();
+                    setDate(selectedDate);
                   } else {
                     toggleDatepicker();
                   }
@@ -184,13 +177,12 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               <DateTimePicker
                 style={{ zIndex: "auto" }}
                 mode="time"
-                display="spinner"
                 value={value || new Date()}
                 onChange={({ type }, selectedTime) => {
                   onChange(selectedTime);
-                  if (type == "set") {
-                    setTime(selectedTime);
+                  if (type === "set") {
                     toggleTimepicker();
+                    setTime(selectedTime);
                   } else {
                     toggleTimepicker();
                   }
@@ -209,13 +201,24 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>New invitation</Text>
+            <View style={styles.headerContainer}>
+              <Text style={styles.modalText}>New invitation</Text>
+              <Pressable
+                onPress={() => setModalVisible(!modalVisible)}
+                style={{
+                  flex: 1,
+                  alignItems: "flex-end",
+                }}
+              >
+                <FA5Icon name="times" size={20} color={COLOR.black} />
+              </Pressable>
+            </View>
+
             <View style={styles.searchContainer}>
               <Controller
                 control={control}
@@ -224,13 +227,13 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                 }}
                 render={({ field: { onChange, value } }) => (
                   <TextInput
-                    style={styles.userNameInput}
+                    style={[styles.userNameInput, { borderBottomWidth: 0 }]}
                     onChangeText={(text) => {
                       onChange(text);
                       onChangeFriend(text);
                     }}
                     value={friend ? friend.username : friend}
-                    placeholder="Friend Username"
+                    placeholder="Friend username"
                   />
                 )}
                 name="friend"
@@ -238,7 +241,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               <FA5Icon name="search" size={20} />
             </View>
             {errors.friend && (
-              <Text style={styles.errros}>{errors.friend.message}</Text>
+              <Text style={styles.errors}>{errors.friend.message}</Text>
             )}
             {dropdownOpen ? (
               <View
@@ -265,7 +268,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                       render={({ field: { onChange, value } }) => (
                         <Pressable
                           onPress={() => {
-                            SetFriend({
+                            setFriend({
                               uuid: item.uuid,
                               username: item.username,
                             });
@@ -312,9 +315,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                     name="date"
                   />
                   {errors.date && (
-                    <Text style={styles.dateTimeErrors}>
-                      {errors.date.message}
-                    </Text>
+                    <Text style={styles.errors}>{errors.date.message}</Text>
                   )}
                 </Pressable>
                 <Pressable
@@ -337,9 +338,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                     name="time"
                   />
                   {errors.time && (
-                    <Text style={styles.dateTimeErrors}>
-                      {errors.time.message}
-                    </Text>
+                    <Text style={styles.errors}>{errors.time.message}</Text>
                   )}
                 </Pressable>
               </View>
@@ -363,20 +362,30 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               name="place"
             />
             {errors.place && (
-              <Text style={styles.errros}>{errors.place.message}</Text>
+              <Text style={styles.errors}>{errors.place.message}</Text>
             )}
             <View style={styles.buttonContainer}>
               <Pressable
                 style={[styles.button, styles.buttonCancel]}
                 onPress={() => {
-                  onCancel();
+                  clearErrors();
+                  reset();
+                  setFriend("");
+                  setDate(null);
+                  setTime(null);
+                  setPlace(null);
                 }}
               >
-                <Text style={styles.cancelTextStyle}>Cancel</Text>
+                <Text style={styles.cancelTextStyle}>Reset</Text>
               </Pressable>
               <Pressable
-                style={[styles.button, styles.buttonSend]}
+                style={
+                  isValid
+                    ? [styles.button, styles.buttonSend]
+                    : [styles.button, { backgroundColor: COLOR.gray }]
+                }
                 onPress={handleSubmit(onSubmit)}
+                disabled={!isValid}
               >
                 <Text style={styles.textStyle}>Send</Text>
               </Pressable>

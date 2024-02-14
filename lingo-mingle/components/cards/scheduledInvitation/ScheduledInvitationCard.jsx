@@ -7,9 +7,6 @@ import styles from "./ScheduledInvitationCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import MIICon from "react-native-vector-icons/MaterialIcons";
 
-// Hooks
-import useNotification from "../../../hooks/useNotification";
-
 const ScheduledInvitationCard = ({
   item,
   lastItem,

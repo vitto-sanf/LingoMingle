@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
     backgroundColor: "white",
@@ -23,20 +24,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: "70%",
-  },
-  buttons: {
-    flexDirection: "row",
-    width: "100%",
-    paddingVertical: 10,
-    justifyContent: "space-around",
-    alignItems: "center",
+    width: "80%",
+    height: "22%",
   },
   modalText: {
-    marginBottom: 15,
-    textAlign: "center",
+    fontSize: 18,
     fontFamily: FONT.bold,
-    fontSize: 20,
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginTop: 10,
+  },
+  button: {
+    borderRadius: 100,
+    width: "40%",
+    overflow: "hidden",
+  },
+  buttonText: {
+    textAlign: "center",
+    fontFamily: FONT.medium,
+    fontSize: 16,
+    padding: 10,
   },
 });
 

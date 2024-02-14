@@ -1,4 +1,4 @@
-//imports
+// Imports
 import {
   View,
   Text,
@@ -6,42 +6,35 @@ import {
   Image,
   FlatList,
   TextInput,
-  Modal,
-  Button,
   KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import React from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useLayoutEffect, useEffect, useContext} from "react";
-import {
-  DocumentData,
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
+import { useState, useLayoutEffect, useEffect, useContext } from "react";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { database } from "../../config/firebase";
-import useNotification from "../../hooks/useNotification";
-import OutgoingCall from "../../components/videocall/OutgoingCall";
 
-//styles
-import styles from "../../styles/Chat.styles";
-import maleAvatar from "../../assets/images/maleAvatar.png";
-import femaleAvatar from "../../assets/images/femaleAvatar.png";
-import FAIcons from "react-native-vector-icons/FontAwesome";
-import { COLOR, FONT } from "../../constants";
+// Components
+import { OutgoingCall } from "../../components/videocall";
 
-//services
+// Services
 import api from "../../services/api";
 
 // Components
 import { Loader } from "../../components/common";
 
-
-//Contexts
+// Contexts
 import { AuthContext } from "../../contexts/AuthContext";
+
+// Hooks
+import useNotification from "../../hooks/useNotification";
+
+// Styles
+import styles from "../../styles/Chat.styles";
+import maleAvatar from "../../assets/images/maleAvatar.png";
+import femaleAvatar from "../../assets/images/femaleAvatar.png";
+import FAIcons from "react-native-vector-icons/FontAwesome";
+import { COLOR, FONT } from "../../constants";
 
 const DateSeparator = ({ date }) => (
   <View style={styles.dateSeparatorContainer}>
@@ -60,7 +53,6 @@ const RenderMessage = ({
   const myMessage = item.sender === myId;
   const [editVisible, setEditVisible] = useState(false);
 
-
   const editMessage = () => {
     setTargetMessage(item);
     setIsEditing();
@@ -75,15 +67,16 @@ const RenderMessage = ({
     });
   };
 
+  // TODO: Valutare una eventuale rimozione
   // Funzione per formattare la data
-  const formatDate = (date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+  // const formatDate = (date) => {
+  //   return date.toLocaleDateString("en-US", {
+  //     weekday: "long",
+  //     year: "numeric",
+  //     month: "long",
+  //     day: "numeric",
+  //   });
+  // };
 
   return (
     <View>
@@ -186,21 +179,19 @@ const Chat = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [viewEditMessage, setViewEditMessage] = useState("");
   const [friendData, setFriendData] = useState(undefined);
-  const[isCalling,setIsCalling]= useState(false)
-  const [callRef, setCallRef]= useState(undefined)
+  const [isCalling, setIsCalling] = useState(false);
+  const [callRef, setCallRef] = useState(undefined);
   const notify = useNotification();
 
   const { user } = useContext(AuthContext);
   const MY_UUID = user.uuid;
 
-
-
   useEffect(() => {
     api
-      .getChatParticipant(id.replace(',',''), MY_UUID)
+      .getChatParticipant(id.replace(",", ""), MY_UUID)
       .then((data) => {
         setHeaderTitle(data.username);
-        setFriendData(data)
+        setFriendData(data);
       })
       .catch((error) => {
         notify.error(error.message);
@@ -209,7 +200,10 @@ const Chat = () => {
   }, [user]);
 
   useLayoutEffect(() => {
-    const msgCollectionRef = collection(database, `/chats/${id.replace(',','')}/messages`);
+    const msgCollectionRef = collection(
+      database,
+      `/chats/${id.replace(",", "")}/messages`
+    );
     const q = query(msgCollectionRef, orderBy("createdAt", "asc"));
     let displayedDate = null;
     const unsubscribe = onSnapshot(q, (chats) => {
@@ -253,14 +247,13 @@ const Chat = () => {
         .catch((err) => notify.error(err));
     }
   };
-  const callFriend = ()=>{
+  const callFriend = () => {
     const generatedUuid = Math.floor(Math.random() * (100000 - 2000)) + 2000;
-    api.directCall(user.uuid,friendData.uuid,generatedUuid).then((doc)=>{
+    api.directCall(user.uuid, friendData.uuid, generatedUuid).then((doc) => {
       setIsCalling(true);
-      setCallRef(doc.id)
-      
-    })
-  }
+      setCallRef(doc.id);
+    });
+  };
 
   const handleMessage = (text) => {
     if (isEditing) {
@@ -279,14 +272,24 @@ const Chat = () => {
   };
 
   if (loading) return <Loader />;
-  if(isCalling && callRef) return <OutgoingCall contactedUser={friendData} setIsCalling={()=>setIsCalling(false)} setCallRef={()=>{setCallRef(undefined)}}  callRef= {callRef}/>
 
- 
+  if (isCalling && callRef)
+    return (
+      <OutgoingCall
+        contactedUser={friendData}
+        setIsCalling={() => setIsCalling(false)}
+        setCallRef={() => {
+          setCallRef(undefined);
+        }}
+        callRef={callRef}
+      />
+    );
+
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Stack.Screen
         options={{
-          headerShown: isCalling && callRef ? false : true , 
+          headerShown: isCalling && callRef ? false : true,
           headerTitle: loading ? "" : headerTitle,
           headerShadowVisible: false,
           headerTitleAlign: "center",
@@ -294,7 +297,7 @@ const Chat = () => {
             <View style={{ flexDirection: "row", marginRight: 10 }}>
               <Pressable
                 onPress={() => {
-                  // Azione da eseguire quando il primo bottone viene premuto
+                  // TODO: Da implementare
                 }}
               >
                 <FAIcons
@@ -304,10 +307,7 @@ const Chat = () => {
                   size={26}
                 />
               </Pressable>
-              <Pressable
-                onPress={callFriend}
-                style={{ marginLeft: 15 }}
-              >
+              <Pressable onPress={callFriend} style={{ marginLeft: 15 }}>
                 <FAIcons
                   name="video-camera"
                   color={COLOR.black}
@@ -315,7 +315,6 @@ const Chat = () => {
                   size={26}
                 />
               </Pressable>
-              {/* Aggiungi altri bottoni se necessario */}
             </View>
           ),
         }}
@@ -327,14 +326,12 @@ const Chat = () => {
           <RenderMessage
             item={item}
             myId={MY_UUID}
-            gender = {user.gender}
+            gender={user.gender}
             setTargetMessage={(message) => setTargetMessage(message)}
             setIsEditing={() => setIsEditing(true)}
             setViewEditMessage={(text) => setViewEditMessage(text)}
           />
         )}
-        
-       
       />
       <View style={{ flexDirection: "row" }}>
         {isEditing && viewEditMessage ? (

@@ -1,14 +1,16 @@
 // Imports
 import React, { useState, useEffect } from "react";
 import { Alert, Modal, Text, Pressable, View } from "react-native";
+import { onSnapshot, collection } from "firebase/firestore";
+import { database } from "../../../config/firebase";
+
+// Services
+import api from "../../../services/api";
 
 // Styles
 import styles from "./AdivinaLaPalabraModal.styles";
 import FontistoIcon from "react-native-vector-icons/Fontisto";
 import { COLOR } from "../../../constants";
-import api from "../../../services/api";
-import { onSnapshot, collection } from "firebase/firestore";
-import { database } from "../../../config/firebase";
 
 const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
   const words = [
@@ -44,9 +46,10 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
       snapshot.forEach((doc) => {
         setGamesData(doc.data());
         setPlayGame(doc.data().playGame);
-        if(doc.data().player1Answer)
-        {setCorrectAnswer(doc.data().player1Answer);}
-        
+        if (doc.data().player1Answer) {
+          setCorrectAnswer(doc.data().player1Answer);
+        }
+
         if (doc.data().player1Answer === false) {
           setLocalCorrect(false);
         }
@@ -62,13 +65,12 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
       };
       setGamesData(newData);
       await api.setGamesData(newData);
-      
+
       setTimeout(() => {
         setDirty(false);
         //setLocalCorrect(false);
-        setCorrectAnswer(false)
+        setCorrectAnswer(false);
       }, 800);
-     
     };
 
     setTimeout(async () => {
@@ -140,14 +142,16 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-        Alert.alert("Modal has been closed.");
         setModalVisible(!modalVisible);
       }}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={styles.modalHeader}>
-            <Pressable onPress={handleBackButtonAdivina} style={styles.backButton}>
+            <Pressable
+              onPress={handleBackButtonAdivina}
+              style={styles.backButton}
+            >
               <FontistoIcon name="arrow-left" size={20} />
             </Pressable>
             <View style={{ flex: 1, alignItems: "center" }}>
@@ -163,18 +167,16 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
                 style={styles.gameIcon}
               />
               <View>
-              {correctAnswer !== localCorrect && dirty === false ? (
+                {correctAnswer !== localCorrect && dirty === false ? (
                   <Text style={styles.WinText}>
-                  The other player answered correctly before you
+                    The other player answered correctly before you
                   </Text>
                 ) : (
                   ""
                 )}
-                </View>
+              </View>
               <View style={styles.gameOptionsContainer}>
-              
                 <View style={styles.gameOptionsColumn}>
-                
                   {[0, 1].map((index) => (
                     <Pressable
                       key={index}
@@ -231,11 +233,7 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
                       </Text>
                     </Pressable>
                   ))}
-                  
                 </View>
-               
-                
-                
               </View>
             </>
           ) : (

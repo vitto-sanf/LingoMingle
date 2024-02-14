@@ -1,4 +1,4 @@
-//imports
+// Imports
 import {
   View,
   Text,
@@ -15,21 +15,21 @@ import { Link } from "expo-router";
 // Components
 import { Loader } from "../../../components/common";
 
+// Services
+import api from "../../../services/api";
+
+//Contexts
+import { AuthContext } from "../../../contexts/AuthContext";
+
+// Hooks
+import useNotification from "../../../hooks/useNotification";
+
 //Styles
 import styles from "../../../styles/Friends.styles";
 import maleAvatar from "../../../assets/images/maleAvatar.png";
 import femaleAvatar from "../../../assets/images/femaleAvatar.png";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import { COLOR } from "../../../constants";
-
-// Services
-import api from "../../../services/api";
-
-// Hooks
-import useNotification from "../../../hooks/useNotification";
-
-//Contexts
-import { AuthContext } from "../../../contexts/AuthContext";
 
 //TODO change home icons: from user-times to user-minus and from user-check to user-plus
 const FriendsListItem = ({

@@ -1,16 +1,18 @@
+// Imports
 import { StyleSheet, View, Pressable, Image, Text } from "react-native";
-import React, { useCallback, useContext, useEffect } from "react";
-import { onSnapshot, collection, doc } from "firebase/firestore";
+import React, { useEffect } from "react";
+import { onSnapshot, doc } from "firebase/firestore";
 import { database } from "../../config/firebase";
 import { useRouter } from "expo-router";
 
-//images
+// Services
+import api from "../../services/api";
+
+// Styles
+import styles from "../../styles/OutgoingCalls.styles";
 import femaleAvatar from "../../assets/images/femaleAvatar.png";
 import maleAvatar from "../../assets/images/maleAvatar.png";
-//styles
-import styles from "../../styles/OutgoingCalls.styles";
-//api
-import api from "../../services/api";
+
 const UserInfoComponent = ({ contactedUser }) => {
   return (
     <View style={styles.container}>
@@ -25,7 +27,7 @@ const UserInfoComponent = ({ contactedUser }) => {
   );
 };
 
-const OutgoingCallButtonGroup = ({ setIsCalling, callRef,setCallRef }) => {
+const OutgoingCallButtonGroup = ({ setIsCalling, callRef, setCallRef }) => {
   const hangupCallHandler = () => {
     api.rejectCall(callRef).then(() => {
       setIsCalling();
@@ -45,17 +47,17 @@ const OutgoingCallButtonGroup = ({ setIsCalling, callRef,setCallRef }) => {
   );
 };
 
-const OutgoingCall = ({ contactedUser, setIsCalling, callRef,setCallRef }) => {
-    const router = useRouter();
+const OutgoingCall = ({ contactedUser, setIsCalling, callRef, setCallRef }) => {
+  const router = useRouter();
 
   useEffect(() => {
     const listener = onSnapshot(doc(database, "directCall", callRef), (doc) => {
-      console.log("Outgoing Current Data: ", callRef,doc.data());
+      console.log("Outgoing Current Data: ", callRef, doc.data());
 
       if (doc.data().status == "Rejected") {
         setIsCalling();
         setCallRef();
-      }else if (doc.data().status == "Accepted"){
+      } else if (doc.data().status == "Accepted") {
         setIsCalling();
         setCallRef();
         router.push(`/rooms/${doc.data().roomId}`);
@@ -68,7 +70,11 @@ const OutgoingCall = ({ contactedUser, setIsCalling, callRef,setCallRef }) => {
   return (
     <View style={[StyleSheet.absoluteFill, styles.container]}>
       <UserInfoComponent contactedUser={contactedUser} />
-      <OutgoingCallButtonGroup setIsCalling={setIsCalling} callRef={callRef} setCallRef={setCallRef} />
+      <OutgoingCallButtonGroup
+        setIsCalling={setIsCalling}
+        callRef={callRef}
+        setCallRef={setCallRef}
+      />
     </View>
   );
 };

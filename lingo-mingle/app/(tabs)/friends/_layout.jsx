@@ -1,3 +1,4 @@
+// Imports
 import { Slot } from "expo-router";
 
 const FriendsLayout = () => {

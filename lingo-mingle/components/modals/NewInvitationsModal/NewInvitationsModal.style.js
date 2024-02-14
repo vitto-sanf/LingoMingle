@@ -10,12 +10,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    // marginTop: 0,
-    // maxHeight: "100%",
-    // maxWidth: "100%",
   },
   modalView: {
-    // margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
     paddingVertical: 20,
@@ -30,22 +26,27 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: "80%",
-    // height: "82%",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 15,
+  },
+  modalText: {
+    fontFamily: FONT.bold,
+    fontSize: 20,
   },
   button: {
     borderRadius: 10,
     paddingHorizontal: 40,
     paddingVertical: 10,
-    // elevation: 2,
-    // margin: 5,
   },
   buttonSend: {
     backgroundColor: COLOR.primary,
   },
   buttonCancel: {
     backgroundColor: COLOR.lightGrey,
-    // borderColor: "#D9D9D9",
-    // borderWidth: 1,
   },
   textStyle: {
     color: "white",
@@ -57,16 +58,9 @@ const styles = StyleSheet.create({
     fontFamily: FONT.bold,
     textAlign: "center",
   },
-  modalText: {
-    marginBottom: 15,
-    // textAlign: "center",
-    fontFamily: FONT.bold,
-    fontSize: 20,
-  },
   input: {
-    height: 40,
     width: "100%",
-    // margin: 12,
+    height: 40,
     borderWidth: 1,
     borderRadius: 10,
     borderColor: COLOR.lightGrey,
@@ -75,11 +69,8 @@ const styles = StyleSheet.create({
   userNameInput: {
     height: 40,
     width: "100%",
-    // margin: 12,
-    // borderWidth: 0,
     borderRadius: 10,
     borderColor: COLOR.lightGrey,
-    // padding: 8,
   },
   dateTimeInputContainer: {
     flexDirection: "row",
@@ -93,8 +84,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     borderColor: COLOR.lightGrey,
-    // alignItems: "flex-start",
-    // justifyContent: "flex-start",
     paddingLeft: 10,
     paddingTop: 5,
   },
@@ -102,7 +91,6 @@ const styles = StyleSheet.create({
     color: COLOR.black,
   },
   formview: {
-    // flex: 1,
     alignItems: "center",
     justifyContent: "space-between",
     flexDirection: "row",
@@ -110,16 +98,12 @@ const styles = StyleSheet.create({
   searchContainer: {
     height: 40,
     flexDirection: "row",
-    // alignSelf: "center",
     alignItems: "center",
     borderColor: COLOR.lightGrey,
     borderWidth: 1,
     borderRadius: 10,
-    // width: "100%",
     marginHorizontal: 10,
     paddingHorizontal: 10,
-    // margin: 12,
-    // padding: 8,
   },
   dropdown: {
     alignItems: "left",
@@ -144,14 +128,12 @@ const styles = StyleSheet.create({
   friendStyle: {
     color: COLOR.black,
   },
-  errros: {
+  errors: {
+    width: "100%",
     color: COLOR.red,
-    fontFamily: FONT.bold,
-  },
-  dateTimeErrors: {
-    color: COLOR.red,
-    fontFamily: FONT.bold,
-    marginTop: 7,
+    fontFamily: FONT.regular,
+    textAlign: "left",
+    marginVertical: 5,
   },
   buttonContainer: {
     width: "100%",

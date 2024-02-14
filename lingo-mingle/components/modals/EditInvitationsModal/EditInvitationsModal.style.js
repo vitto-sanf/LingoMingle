@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 
 // Styles
 import { FONT, COLOR } from "../../../constants";
-import { isEmpty } from "@firebase/util";
 
 const styles = StyleSheet.create({
   centeredView: {

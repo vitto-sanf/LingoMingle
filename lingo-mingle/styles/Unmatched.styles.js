@@ -1,7 +1,7 @@
 // Imports
 import { StyleSheet } from "react-native";
 
-// Constants
+// Styles
 import { FONT, COLOR } from "../constants";
 
 const styles = StyleSheet.create({

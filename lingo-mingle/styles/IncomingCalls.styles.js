@@ -1,5 +1,7 @@
 // Imports
 import { StyleSheet } from "react-native";
+
+// Styles
 import { COLOR } from "../constants";
 
 const styles = StyleSheet.create({
@@ -11,7 +13,7 @@ const styles = StyleSheet.create({
   userInfo: {
     flexDirection: "column",
     justifyContent: "space-evenly",
-    alignItems:'center'
+    alignItems: "center",
   },
   title: {
     fontSize: 20,
@@ -22,7 +24,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginBottom:50,
+    marginBottom: 50,
   },
   button: {
     height: 80,
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
     height: 100,
     width: 100,
     borderRadius: 50,
-    backgroundColor:COLOR.white
+    backgroundColor: COLOR.white,
   },
 });
 export default styles;

@@ -9,7 +9,6 @@ import { Stack } from "expo-router";
 import {
   StreamVideo,
   StreamVideoClient,
-  User,
 } from "@stream-io/video-react-native-sdk";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { OverlayProvider } from "stream-chat-expo";
