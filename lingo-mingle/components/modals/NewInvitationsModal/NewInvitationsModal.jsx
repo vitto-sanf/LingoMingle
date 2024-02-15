@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Alert,
   Modal,
@@ -7,7 +7,9 @@ import {
   View,
   TextInput,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
@@ -31,52 +33,55 @@ import { COLOR } from "../../../constants";
 const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
-
-  const [friend, setFriend] = useState(null);
+  const [selectedFriend, setSelectedFriend] = useState(0);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [friend, setFriend] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [users, setUsers] = useState([]);
-  const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
-  const [place, setPlace] = useState(null);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [place, setPlace] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [namesArray, setNamesArray] = useState([]);
+  const [dirty, setDirty] = useState(true);
+
+  const pickerRef = useRef();
+
+  function open() {
+    pickerRef.current.focus();
+  }
+
+  function close() {
+    pickerRef.current.blur();
+  }
 
   //Form Validation Schema
   const schema = yup.object().shape({
-    friend: yup
-      .string()
-      .test({
-        message: () => "Select the name from your friends!",
-        test(value) {
-          return namesArray.includes(value);
-        },
-      })
-      .required("Friend is required"),
+    friend: yup.string().required("Friend is required"),
     date: yup.date().required("Date is required"),
     time: yup.date().required("Time is required"),
     place: yup.string().required("Place is required"),
   });
 
   useEffect(() => {
-    api
-      .getUser(MY_UUID)
-      .then((data) => {
-        api
-          .getFriends(data.friends)
-          .then((friendsInfo) => {
-            setUsers(friendsInfo);
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err))
-      .finally(() => {
-        let newArr = users.map((item) => {
-          return item.username;
+    if (dirty) {
+      api
+        .getUser(MY_UUID)
+        .then((data) => {
+          api
+            .getFriends(data.friends)
+            .then((friendsInfo) => {
+              setUsers(friendsInfo);
+            })
+            .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {
+          setDirty(false);
         });
-        setNamesArray(namesArray, ...newArr);
-      });
-  }, []);
+    }
+  }, [friend]);
 
   //Form Validation control
   const {
@@ -88,7 +93,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      friend: null,
+      friend: "",
       date: null,
       time: null,
       place: null,
@@ -107,7 +112,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
 
   const onSubmit = (formData) => {
     const ModformData = {
-      receiver: friend.uuid,
+      receiver: selectedFriend,
       sender: MY_UUID,
       timestamp: new Date(
         `${date.toISOString().split("T")[0]}` +
@@ -116,6 +121,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
       place: place,
       status: "pending",
     };
+    console.log(ModformData);
 
     api
       .addInvitation(ModformData)
@@ -219,81 +225,63 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
               </Pressable>
             </View>
 
-            <View style={styles.searchContainer}>
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                }}
-                render={({ field: { onChange, value } }) => (
-                  <TextInput
-                    style={[styles.userNameInput, { borderBottomWidth: 0 }]}
-                    onChangeText={(text) => {
-                      onChange(text);
-                      onChangeFriend(text);
-                    }}
-                    value={friend ? friend.username : friend}
-                    placeholder="Friend username"
-                  />
-                )}
-                name="friend"
-              />
-              <FA5Icon name="search" size={20} />
-            </View>
-            {errors.friend && (
-              <Text style={styles.errors}>{errors.friend.message}</Text>
-            )}
-            {dropdownOpen ? (
-              <View
-                style={dropdownOpen ? styles.dropdown : styles.dropdownEmpty}
-              >
-                <FlatList
-                  data={users
-                    .filter((item) => {
-                      const searchTerm = friend.toLowerCase();
-                      const nameuser = item.username.toLowerCase();
-                      return (
-                        searchTerm &&
-                        nameuser.startsWith(searchTerm) &&
-                        searchTerm !== nameuser
-                      );
-                    })
-                    .slice(0, 10)}
-                  renderItem={({ item }) => (
-                    <Controller
-                      control={control}
-                      rules={{
-                        required: true,
+            <View style={styles.formview}>
+              <View style={styles.namePicker}>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Picker
+                      style={{ width: "100%", height: 40 }}
+                      mode="dropdown"
+                      selectedValue={selectedFriend}
+                      onFocus={() => {
+                        setPickerOpen(true);
                       }}
-                      render={({ field: { onChange, value } }) => (
-                        <Pressable
-                          onPress={() => {
-                            setFriend({
-                              uuid: item.uuid,
-                              username: item.username,
-                            });
-                            onChange(item.username);
-                            setDropdownOpen(false);
-                          }}
-                          style={styles.dropdownRow}
-                          key={item.uuid}
-                        >
-                          <Text style={styles.friendStyle}>
-                            {item.username}
-                          </Text>
-                        </Pressable>
+                      onBlur={() => {
+                        setPickerOpen(false);
+                      }}
+                      onValueChange={(itemValue, itemIndex) => {
+                        setSelectedFriend(itemValue);
+                        onChange(itemValue);
+                        setPickerOpen(true);
+                      }}
+                    >
+                      {!pickerOpen ? (
+                        <Picker.Item
+                          style={{ color: "#C7C7CD" }}
+                          label="Select Friend:"
+                          value={0}
+                          key={0}
+                        />
+                      ) : (
+                        <Picker.Item
+                          style={{ color: "#C7C7CD" }}
+                          label="Friends List:"
+                          value={0}
+                          key={0}
+                          enabled={false}
+                        />
                       )}
-                      name="friend"
-                    />
+
+                      {users.map((item) => {
+                        return (
+                          <Picker.Item
+                            style={{ color: COLOR.black }}
+                            label={item.username}
+                            value={item.uuid}
+                            key={item.uuid}
+                          />
+                        );
+                      })}
+                    </Picker>
                   )}
-                  keyExtractor={(item) => item.uuid}
-                  showsHorizontalScrollIndicator={true}
+                  name="friend"
                 />
               </View>
-            ) : (
-              ""
-            )}
-            <View style={styles.formview}>
+
               <View style={styles.dateTimeInputContainer}>
                 <Pressable
                   style={[styles.dateTimeInput, { marginRight: 10 }]}
@@ -374,6 +362,8 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   setDate(null);
                   setTime(null);
                   setPlace(null);
+                  setSelectedFriend(0);
+                  setPickerOpen(false);
                 }}
               >
                 <Text style={styles.cancelTextStyle}>Reset</Text>
