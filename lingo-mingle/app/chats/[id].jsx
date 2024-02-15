@@ -13,6 +13,7 @@ import { useLocalSearchParams, Stack } from "expo-router";
 import { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { database } from "../../config/firebase";
+import { NewInvitationModal } from "../../components/modals";
 
 // Components
 import { OutgoingCall } from "../../components/videocall";
@@ -183,6 +184,11 @@ const Chat = () => {
   const [isCalling, setIsCalling] = useState(false);
   const [callRef, setCallRef] = useState(undefined);
   const notify = useNotification();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
 
   const { user } = useContext(AuthContext);
   const MY_UUID = user.uuid;
@@ -304,7 +310,8 @@ const Chat = () => {
             <View style={{ flexDirection: "row", marginRight: 10 }}>
               <Pressable
                 onPress={() => {
-                  // TODO: Da implementare
+                  toggleModal();
+                  //console.log("DATA FRIEND;",friendData);
                 }}
               >
                 <FAIcon
@@ -326,6 +333,12 @@ const Chat = () => {
           ),
         }}
       />
+      {modalVisible?  <NewInvitationModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        friendData={friendData}
+
+      /> :''}
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}

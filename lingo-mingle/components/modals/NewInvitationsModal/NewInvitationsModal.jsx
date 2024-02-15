@@ -30,10 +30,12 @@ import formatDate from "../../../utils/formatDate";
 import { COLOR } from "../../../constants";
 
 //TODO: fix the styling, fix bugs on DatePicker
-const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
+const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
-  const [selectedFriend, setSelectedFriend] = useState(0);
+  const [selectedFriend, setSelectedFriend] = useState(
+    !friendData ? 0 : friendData.uuid
+  );
   const [pickerOpen, setPickerOpen] = useState(false);
   const [friend, setFriend] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -57,14 +59,21 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
   }
 
   //Form Validation Schema
-  const schema = yup.object().shape({
-    friend: yup.string().required("Friend is required"),
-    date: yup.date().required("Date is required"),
-    time: yup.date().required("Time is required"),
-    place: yup.string().required("Place is required"),
-  });
+  const schema = !friendData
+    ? yup.object().shape({
+        friend: yup.string().required("Friend is required"),
+        date: yup.date().required("Date is required"),
+        time: yup.date().required("Time is required"),
+        place: yup.string().required("Place is required"),
+      })
+    : yup.object().shape({
+        date: yup.date().required("Date is required"),
+        time: yup.date().required("Time is required"),
+        place: yup.string().required("Place is required"),
+      });
 
   useEffect(() => {
+    
     if (dirty) {
       api
         .getUser(MY_UUID)
@@ -226,61 +235,92 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
             </View>
 
             <View style={styles.formview}>
-              <View style={styles.namePicker}>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <Picker
-                      style={{ width: "100%", height: 40 }}
-                      mode="dropdown"
-                      selectedValue={selectedFriend}
-                      onFocus={() => {
-                        setPickerOpen(true);
-                      }}
-                      onBlur={() => {
-                        setPickerOpen(false);
-                      }}
-                      onValueChange={(itemValue, itemIndex) => {
-                        setSelectedFriend(itemValue);
-                        onChange(itemValue);
-                        setPickerOpen(true);
-                      }}
-                    >
-                      {!pickerOpen ? (
-                        <Picker.Item
-                          style={{ color: "#C7C7CD" }}
-                          label="Select Friend:"
-                          value={0}
-                          key={0}
-                        />
-                      ) : (
-                        <Picker.Item
-                          style={{ color: "#C7C7CD" }}
-                          label="Friends List:"
-                          value={0}
-                          key={0}
-                          enabled={false}
-                        />
-                      )}
-
-                      {users.map((item) => {
-                        return (
+              {!friendData ? (
+                <View style={styles.namePicker}>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <Picker
+                        style={{ width: "100%", height: 40 }}
+                        mode="dropdown"
+                        selectedValue={selectedFriend}
+                        onFocus={() => {
+                          setPickerOpen(true);
+                        }}
+                        onBlur={() => {
+                          setPickerOpen(false);
+                        }}
+                        onValueChange={(itemValue, itemIndex) => {
+                          setSelectedFriend(itemValue);
+                          onChange(itemValue);
+                          setPickerOpen(true);
+                        }}
+                      >
+                        {!pickerOpen ? (
                           <Picker.Item
-                            style={{ color: COLOR.black }}
-                            label={item.username}
-                            value={item.uuid}
-                            key={item.uuid}
+                            style={{ color: "#C7C7CD" }}
+                            label="Select Friend"
+                            value={0}
+                            key={0}
                           />
-                        );
-                      })}
-                    </Picker>
-                  )}
-                  name="friend"
-                />
-              </View>
+                        ) : (
+                          <Picker.Item
+                            style={{ color: "#C7C7CD" }}
+                            label="Friends List"
+                            value={0}
+                            key={0}
+                            enabled={false}
+                          />
+                        )}
+
+                        {users.map((item) => {
+                          return (
+                            <Picker.Item
+                              style={{ color: COLOR.black }}
+                              label={item.username}
+                              value={item.uuid}
+                              key={item.uuid}
+                            />
+                          );
+                        })}
+                      </Picker>
+                    )}
+                    name="friend"
+                  />
+                </View>
+              ) : (
+                <View style={styles.namePicker}>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <Picker
+                        style={{ width: "100%", height: 40 }}
+                        mode="dropdown"
+                        enabled={false}
+                        selectedValue={selectedFriend}
+                        onValueChange={(itemValue, itemIndex) => {
+                          setSelectedFriend(itemValue);
+                          onChange(itemValue);
+                        }}
+                      >
+                        <Picker.Item
+                          style={{ color: COLOR.black }}
+                          label={friendData.username}
+                          value={friendData.uuid}
+                          key={friendData.uuid}
+                        />
+                      </Picker>
+                    )}
+                    name="friend"
+                  />
+                </View>
+              )}
 
               <View style={styles.dateTimeInputContainer}>
                 <Pressable
@@ -362,7 +402,9 @@ const NewInvitationModal = ({ modalVisible, setModalVisible }) => {
                   setDate(null);
                   setTime(null);
                   setPlace(null);
-                  setSelectedFriend(0);
+                  {
+                    !friendData ? setSelectedFriend(0) : "";
+                  }
                   setPickerOpen(false);
                 }}
               >
