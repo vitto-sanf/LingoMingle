@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: "75%",
-    height: "35%",
+    height: "50%",
   },
   modalHeader: {
     flexDirection: "row",

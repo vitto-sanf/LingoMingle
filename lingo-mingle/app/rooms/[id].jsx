@@ -164,6 +164,8 @@ const Room = () => {
           toggleModal={toggleModal}
         />
 
+        {!advinaLaPalabraVisible && !cantenJuntosVisible
+        && !nuevoTemaVisible &&
         <GamesModal
           modalVisible={modalVisible}
           setModalVisible={toggleModal}
@@ -172,6 +174,8 @@ const Room = () => {
           setModalCantenJuntosVisible={toggleModalCantenJuntos}
           setModalNuevoTemaVisible={toggleModalNuevoTema}
         />
+        }
+        
         <AdivinaLaPalabraModal
           modalVisible={advinaLaPalabraVisible}
           setModalVisible={toggleModalAdivina}
