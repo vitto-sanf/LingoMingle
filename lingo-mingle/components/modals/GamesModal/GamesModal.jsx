@@ -1,6 +1,6 @@
 // Imports
 import React from "react";
-import { Alert, Modal, Text, Pressable, View } from "react-native";
+import { Modal, Text, Pressable, View } from "react-native";
 
 // Styles
 import styles from "./GamesModal.style";
@@ -33,7 +33,7 @@ const GamesModal = ({
             <Text style={styles.modalText}>Choose a game</Text>
             <View style={{ flex: 1 }} />
             <Pressable onPress={onCancel}>
-              <Text style={styles.closeButtonText}>X</Text>
+              <FA5Icon name="times" size={20} color={COLOR.black} />
             </Pressable>
           </View>
           {/* Game 1 - Adivina la palabra */}

@@ -11,6 +11,7 @@ import api from "../../../services/api";
 // Styles
 import styles from "./CantenJuntosModal.styles";
 import FontistoIcon from "react-native-vector-icons/Fontisto";
+import { COLOR } from "../../../constants";
 
 //TO DO: fix UI
 const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
@@ -300,22 +301,18 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
           <View style={styles.gameOptionsContainer}>
             {playGame ? (
               <>
-                <Text>
-                  <FontistoIcon name="volume-up" size={20} />
-                </Text>
-
                 <View style={styles.gameOptionsColumn}>
-                  <Text>
-                    <FontistoIcon name="music-note" size={20} />
+                  <Text style={styles.songName}>
+                    {/* <FontistoIcon name="music-note" size={20} /> */}
                     {songTextIndex >= 0 && songTextIndex <= 3
                       ? "Vivir Mi Vida"
                       : "Sofia"}
-                    <FontistoIcon name="music-note" size={20} />
+                    {/* <FontistoIcon name="music-note" size={20} /> */}
                   </Text>
                 </View>
 
                 <View style={styles.gameOptionsColumn}>
-                  <Text>{text[songTextIndex]}</Text>
+                  <Text style={styles.songText}>{text[songTextIndex]}</Text>
                 </View>
 
                 <View>
@@ -334,44 +331,50 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                   value={answer}
                   placeholder="Insert the correct word"
                 />
-                <Pressable
-                  onPress={() => {
-                    verifyAnswer(answer);
-                  }}
-                  style={styles.playButton}
-                >
-                  <Text style={styles.playButtonText}>Insert Word</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => {
-                    songTextIndex >= 0 && songTextIndex <= 3
-                      ? restartSong(0)
-                      : restartSong(1);
-                  }}
-                  style={styles.playButton}
-                >
-                  <Text style={styles.playButtonText}>Restart Audio</Text>
-                </Pressable>
-              </>
-            ) : (
-              <>
-                <View style={styles.gameOptionsColumn}>
-                  <Text style={styles.instructions}>
-                    In this game a song will be played and you have to insert
-                    the correct missing word.{" "}
-                  </Text>
-                </View>
-                <View style={styles.gameOptionsColumn}>
+                <View style={styles.buttonContainer}>
                   <Pressable
                     onPress={() => {
-                      playgame();
+                      songTextIndex >= 0 && songTextIndex <= 3
+                        ? restartSong(0)
+                        : restartSong(1);
                     }}
-                    style={styles.playButton}
+                    style={[
+                      styles.playButton,
+                      {
+                        backgroundColor: COLOR.gray,
+                        marginRight: 5,
+                        width: "48%",
+                      },
+                    ]}
                   >
-                    <Text style={styles.playButtonText}>Play</Text>
+                    <Text style={styles.playButtonText}>Restart</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      verifyAnswer(answer);
+                    }}
+                    style={[styles.playButton, { width: "48%" }]}
+                  >
+                    <Text style={styles.playButtonText}>Submit</Text>
                   </Pressable>
                 </View>
               </>
+            ) : (
+              <View>
+                <Text style={styles.instructions}>
+                  In this game you will see a song lyric and have to enter the
+                  correct word to complete the song lyrics.
+                </Text>
+                <Text style={styles.haveFunText}>Have fun!</Text>
+                <Pressable
+                  onPress={() => {
+                    playgame();
+                  }}
+                  style={styles.playButton}
+                >
+                  <Text style={styles.playButtonText}>Start game</Text>
+                </Pressable>
+              </View>
             )}
           </View>
         </View>

@@ -23,8 +23,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: "80%",
-    height: "45%",
+    width: "75%",
+    height: "35%",
   },
   modalHeader: {
     flexDirection: "row",
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     alignSelf: "flex-start",
-    marginTop: 4,
+    marginTop: 2,
   },
   modalHeaderText: {
     fontFamily: FONT.bold,
@@ -63,9 +63,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingHorizontal: 20,
   },
-  playButton:{
-    marginBottom: 10,
-    marginTop:5,
+  playButton: {
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 12,
@@ -73,16 +71,27 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 3,
     backgroundColor: COLOR.primary,
-   
   },
-  playButtonText:{
+  playButtonText: {
     fontFamily: FONT.bold,
-    color:COLOR.white
+    color: COLOR.white,
+    fontSize: 15,
   },
-  WinText:{
+  WinText: {
     fontFamily: FONT.bold,
-    color:COLOR.red
-  }
+    color: COLOR.red,
+  },
+  instructions: {
+    fontFamily: FONT.regular,
+    fontSize: 17,
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  haveFunText: {
+    fontFamily: FONT.bold,
+    marginBottom: 30,
+    fontSize: 18,
+  },
 });
 
 export default styles;

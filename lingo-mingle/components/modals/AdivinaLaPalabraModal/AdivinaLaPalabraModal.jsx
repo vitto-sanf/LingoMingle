@@ -10,7 +10,7 @@ import api from "../../../services/api";
 // Styles
 import styles from "./AdivinaLaPalabraModal.styles";
 import FontistoIcon from "react-native-vector-icons/Fontisto";
-import { COLOR } from "../../../constants";
+import { COLOR, FONT } from "../../../constants";
 
 const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
   const words = [
@@ -237,24 +237,21 @@ const AdivinaLaPalabraModal = ({ modalVisible, setModalVisible }) => {
               </View>
             </>
           ) : (
-            <>
-              <View style={styles.gameOptionsColumn}>
-                <Text style={styles.instructions}>
-                  In this game a picture will be displayed and you have to guess
-                  the name of the object in the picture.{" "}
-                </Text>
-              </View>
-              <View style={styles.gameOptionsColumn}>
-                <Pressable
-                  onPress={() => {
-                    playgameAdivina();
-                  }}
-                  style={styles.playButton}
-                >
-                  <Text style={styles.playButtonText}>Play</Text>
-                </Pressable>
-              </View>
-            </>
+            <View>
+              <Text style={styles.instructions}>
+                In this game you will see a picture and you must associate the
+                picture you see with one of four options.
+              </Text>
+              <Text style={styles.haveFunText}>Have fun!</Text>
+              <Pressable
+                onPress={() => {
+                  playgameAdivina();
+                }}
+                style={styles.playButton}
+              >
+                <Text style={styles.playButtonText}>Start game</Text>
+              </Pressable>
+            </View>
           )}
         </View>
       </View>

@@ -11,7 +11,6 @@ import api from "../../../services/api";
 import styles from "./NuevoTemaModal.style";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import FontistoIcon from "react-native-vector-icons/Fontisto";
-import { FONT } from "../../../constants";
 
 const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
   const [play, setPlay] = useState(false);
@@ -31,10 +30,6 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
           </Text>
           <Text>
             Red <Icon name="arrows-alt-h" solid size={15} /> Rojo
-            {"\n"}
-          </Text>
-          <Text>
-            Light Blue <Icon name="arrows-alt-h" solid size={15} /> Azul
             {"\n"}
           </Text>
           <Text>
@@ -65,10 +60,6 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
             {"\n"}
           </Text>
           <Text>
-            Flavor <Icon name="arrows-alt-h" solid size={15} /> Sabor
-            {"\n"}
-          </Text>
-          <Text>
             Preparation <Icon name="arrows-alt-h" solid size={15} /> Preparación
             {"\n"}
           </Text>
@@ -85,10 +76,6 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
           </Text>
           <Text>
             Training <Icon name="arrows-alt-h" solid size={15} /> Formación
-            {"\n"}
-          </Text>
-          <Text>
-            Read <Icon name="arrows-alt-h" solid size={15} /> Leer
             {"\n"}
           </Text>
           <Text>
@@ -223,25 +210,22 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
               <FontistoIcon name="arrow-left" size={20} />
             </Pressable>
             <View style={{ flex: 1, alignItems: "center" }}>
-              <Text style={styles.modalHeaderText}>Nuevo Tema </Text>
+              <Text style={styles.modalHeaderText}>Nuevo Tema</Text>
             </View>
           </View>
           <View style={styles.gameOptionsContainer}>
             {!play ? (
-              <>
-                <View style={styles.gameOptionsColumn}>
-                  <Text style={styles.instructions}>
-                    This game will give you new talking points . For each topic
-                    you will find key words that will help you move the
-                    conversation forward.{" "}
-                  </Text>
-                </View>
-                <View style={styles.gameOptionsColumn}>
-                  <Pressable onPress={playGame} style={styles.playButton}>
-                    <Text style={styles.playButtonText}>Play</Text>
-                  </Pressable>
-                </View>
-              </>
+              <View>
+                <Text style={styles.instructions}>
+                  This game will give you new talking points. For each topic you
+                  will find key words that will help you move the conversation
+                  forward.
+                </Text>
+                <Text style={styles.haveFunText}>Have fun!</Text>
+                <Pressable onPress={playGame} style={styles.playButton}>
+                  <Text style={styles.playButtonText}>Start game</Text>
+                </Pressable>
+              </View>
             ) : (
               <>
                 <View style={styles.gameQuestion}>
@@ -249,37 +233,19 @@ const NuevoTemaModal = ({ modalVisible, setModalVisible }) => {
                     {questions[questionNumber].question}
                   </Text>
                   <Pressable onPress={setOption} style={{ marginLeft: 10 }}>
-                    {suggestionVisible ? (
-                      <Icon name="long-arrow-alt-up" solid size={20} />
-                    ) : (
-                      <Icon name="long-arrow-alt-down" solid size={20} />
-                    )}
+                    <Icon name="info-circle" solid size={24} />
                   </Pressable>
                 </View>
                 {suggestionVisible ? (
                   <View style={styles.gameOptionsColumn}>
-                    <Text style={styles.instructions}>
+                    <Text style={styles.gameQuestionText}>
                       {questions[questionNumber].suggestion}
                     </Text>
                   </View>
                 ) : null}
-                <View style={styles.next}>
-                  <Pressable
-                    onPress={changeQuestion}
-                    style={{ flexDirection: "row" }}
-                  >
-                    <Text style={{ fontFamily: FONT.bold, fontSize: 15 }}>
-                      {" "}
-                      Next{" "}
-                    </Text>
-                    <Icon
-                      style={{ marginLeft: 5 }}
-                      name="exchange-alt"
-                      solid
-                      size={14}
-                    />
-                  </Pressable>
-                </View>
+                <Pressable onPress={changeQuestion} style={styles.nextButton}>
+                  <Text style={styles.nextButtonText}>Next topic</Text>
+                </Pressable>
               </>
             )}
           </View>

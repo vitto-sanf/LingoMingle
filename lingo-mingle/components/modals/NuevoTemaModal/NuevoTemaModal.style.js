@@ -5,12 +5,6 @@ import { StyleSheet } from "react-native";
 import { FONT, COLOR } from "../../../constants";
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -29,62 +23,64 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: "80%",
+    width: "75%",
     height: "35%",
   },
   modalHeader: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 10,
   },
   backButton: {
     alignSelf: "flex-start",
-    marginTop: 4,
+    marginTop: 2,
   },
   modalHeaderText: {
     fontFamily: FONT.bold,
     fontSize: 20,
   },
-  gameIcon: {
-    marginVertical: 25,
-  },
   gameOptionsContainer: {
     flex: 1,
     flexDirection: "column",
+    justifyContent: "space-between",
   },
-  gameQuestion :{
-    marginTop:10,
+  gameQuestion: {
+    marginTop: 10,
     alignItems: "center",
     flexDirection: "row",
   },
+  gameQuestionText: {
+    fontFamily: FONT.regular,
+    fontSize: 16,
+  },
   gameOptionsColumn: {
-    marginTop:10,
-    alignItems: "center",
+    marginTop: 15,
   },
-  instructions:{
-    textAlign:"center",
-    fontFamily:FONT.regular,
-    fontSize:17
-  },
-  playButton:{
-    marginBottom: 0,
+  playButton: {
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 12,
-    paddingHorizontal: 32,
     borderRadius: 10,
     elevation: 3,
     backgroundColor: COLOR.primary,
-   
   },
-  playButtonText:{
+  playButtonText: {
     fontFamily: FONT.bold,
-    color:COLOR.white
+    color: COLOR.white,
   },
-  next:{
-    marginTop:5,
-    position:"fixed",
-    alignItems: "flex-end",
-    
+  nextButton: {
+    flexDirection: "row",
+    backgroundColor: COLOR.orange,
+    padding: 10,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nextButtonText: {
+    fontFamily: FONT.bold,
+    fontSize: 16,
+    textAlign: "center",
+    marginLeft: 5,
   },
   gameOptionButton: {
     borderRadius: 10,
@@ -100,6 +96,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     paddingHorizontal: 20,
+  },
+  instructions: {
+    fontFamily: FONT.regular,
+    fontSize: 16,
+  },
+  haveFunText: {
+    fontFamily: FONT.bold,
+    marginTop: 10,
+    marginBottom: 20,
+    fontSize: 18,
   },
 });
 
