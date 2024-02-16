@@ -13,9 +13,8 @@ import { useLocalSearchParams, Stack } from "expo-router";
 import { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { database } from "../../config/firebase";
+import { useRouter } from "expo-router";
 
-// Components
-import { OutgoingCall } from "../../components/videocall";
 
 // Services
 import api from "../../services/api";
@@ -25,6 +24,7 @@ import { Loader } from "../../components/common";
 
 // Contexts
 import { AuthContext } from "../../contexts/AuthContext";
+import { DirectCallContext } from "../../contexts/directCallContext";
 
 // Hooks
 import useNotification from "../../hooks/useNotification";
@@ -180,11 +180,11 @@ const Chat = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [viewEditMessage, setViewEditMessage] = useState("");
   const [friendData, setFriendData] = useState(undefined);
-  const [isCalling, setIsCalling] = useState(false);
-  const [callRef, setCallRef] = useState(undefined);
   const notify = useNotification();
+  const router = useRouter();
 
   const { user } = useContext(AuthContext);
+  const {setCallInfo,setContactedUser}= useContext(DirectCallContext)
   const MY_UUID = user.uuid;
 
   const flatListRef = useRef(null);
@@ -257,8 +257,9 @@ const Chat = () => {
   const callFriend = () => {
     const generatedUuid = Math.floor(Math.random() * (100000 - 2000)) + 2000;
     api.directCall(user.uuid, friendData.uuid, generatedUuid).then((doc) => {
-      setIsCalling(true);
-      setCallRef(doc.id);
+      setCallInfo(doc.id)
+      setContactedUser(friendData)
+      router.push('/outgoingCall')
     });
   };
 
@@ -280,23 +281,13 @@ const Chat = () => {
 
   if (loading) return <Loader />;
 
-  if (isCalling && callRef)
-    return (
-      <OutgoingCall
-        contactedUser={friendData}
-        setIsCalling={() => setIsCalling(false)}
-        setCallRef={() => {
-          setCallRef(undefined);
-        }}
-        callRef={callRef}
-      />
-    );
+
 
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Stack.Screen
         options={{
-          headerShown: isCalling && callRef ? false : true,
+          headerShown:  true,
           headerTitle: loading ? "" : headerTitle,
           headerShadowVisible: false,
           headerTitleAlign: "center",

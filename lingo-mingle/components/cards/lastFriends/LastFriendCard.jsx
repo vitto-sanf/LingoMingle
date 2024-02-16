@@ -1,8 +1,9 @@
 // Imports
 import { View, Text, Image, Pressable } from "react-native";
-import React from "react";
+import React  from "react";
 import { Link } from "expo-router";
-
+import { useRouter } from "expo-router";
+import { useContext } from "react";
 // Styles
 import styles from "./LastFriendCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
@@ -16,19 +17,24 @@ import api from "../../../services/api";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const LastFriendCard = ({ item, my_uuid,setCallRef,setIsCalling, setItem }) => {
+//Context
+import { DirectCallContext } from "../../../contexts/directCallContext";
+
+const LastFriendCard = ({ item, my_uuid }) => {
+  const router = useRouter ();
   const notify = useNotification();
+  const {setCallInfo,setContactedUser}= useContext(DirectCallContext)
+
   const chatId = item.friends.map((e) => {
     if (e.id === my_uuid){ console.log("CHAT", e.chatId);return e.chatId};
   });
 
   const handleStartVideoCall = () => {
     const generatedUuid = Math.floor(Math.random() * (100000 - 2000)) + 2000;
-    console.log("ITEM",my_uuid,item.uuid)
     api.directCall(my_uuid,item.uuid,generatedUuid).then((doc)=>{
-      setIsCalling(true);
-      setCallRef(doc.id)
-      setItem(item)
+      setCallInfo(doc.id)
+      setContactedUser(item)
+      router.push('/outgoingCall')
     })
   };
 

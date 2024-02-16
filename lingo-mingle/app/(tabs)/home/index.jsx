@@ -14,7 +14,7 @@ import {
 } from "../../../components/cards";
 import { Loader } from "../../../components/common";
 import { StartVideoCallModal } from "../../../components/modals";
-import { OutgoingCall } from "../../../components/videocall";
+
 
 // Services
 import api from "../../../services/api";
@@ -30,9 +30,6 @@ const HomePage = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const [isCalling, setIsCalling] = useState(false);
-  const [callRef, setCallRef] = useState(undefined);
-  const [item, setItem] = useState(undefined);
 
   const { user } = useContext(AuthContext);
   const MY_UUID = user.uuid;
@@ -74,17 +71,7 @@ const HomePage = () => {
   }, [MY_UUID]);
 
   if (loading) return <Loader />;
-  if (isCalling && callRef && item)
-    return (
-      <OutgoingCall
-        contactedUser={item}
-        setIsCalling={() => setIsCalling(false)}
-        setCallRef={() => {
-          setCallRef(undefined);
-        }}
-        callRef={callRef}
-      />
-    );
+ 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>LingoMingle</Text>
@@ -109,9 +96,7 @@ const HomePage = () => {
                   <LastUserCard
                     item={item}
                     myUUID={MY_UUID}
-                    setIsCalling={() => setIsCalling(true)}
-                    setCallRef={(ref) => setCallRef(ref)}
-                    setItem={(item) => setItem(item)}
+                   
                   />
                 )}
                 keyExtractor={(item) => item.uuid}
@@ -130,9 +115,9 @@ const HomePage = () => {
                   <LastFriendCard
                     item={item}
                     my_uuid={MY_UUID}
-                    setIsCalling={() => setIsCalling(true)}
+                    /* setIsCalling={() => setIsCalling(true)}
                     setCallRef={(ref) => setCallRef(ref)}
-                    setItem={(item) => setItem(item)}
+                    setItem={(item) => setItem(item)} */
                   />
                 )}
                 keyExtractor={(item) => item.uuid}

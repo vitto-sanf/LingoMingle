@@ -1,7 +1,8 @@
 // Imports
 import { View, Text, Image, Pressable } from "react-native";
 import React, { useState } from "react";
-
+import { useRouter } from "expo-router";
+import { useContext } from "react";
 // Styles
 import styles from "./LastUserCard.styles";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
@@ -15,10 +16,14 @@ import api from "../../../services/api";
 // Hooks
 import useNotification from "../../../hooks/useNotification";
 
-const LastUserCard = ({ item, myUUID, setCallRef, setIsCalling, setItem }) => {
+//Context
+import { DirectCallContext } from "../../../contexts/directCallContext";
+
+const LastUserCard = ({ item, myUUID }) => {
   const notify = useNotification();
   const friendRequestUUID = item.uuid;
-
+  const router = useRouter ();
+  const {setCallInfo,setContactedUser}= useContext(DirectCallContext)
   const [friendRequestSent, setFriendRequestSent] = useState(false);
 
   const handleSendFriendRequest = () => {
@@ -43,12 +48,11 @@ const LastUserCard = ({ item, myUUID, setCallRef, setIsCalling, setItem }) => {
 
   const handleStartVideoCall = () => {
     const generatedUuid = Math.floor(Math.random() * (100000 - 2000)) + 2000;
-    console.log("ITEM", myUUID, item.uuid);
-    api.directCall(myUUID, item.uuid, generatedUuid).then((doc) => {
-      setIsCalling(true);
-      setCallRef(doc.id);
-      setItem(item);
-    });
+    api.directCall(myUUID,item.uuid,generatedUuid).then((doc)=>{
+      setCallInfo(doc.id)
+      setContactedUser(item)
+      router.push('/outgoingCall')
+    })
   };
 
   // TODO: Evaluate whether to make the card clickable!

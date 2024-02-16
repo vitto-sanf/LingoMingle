@@ -1,6 +1,6 @@
 // Imports
 import { StyleSheet, View, Pressable, Image, Text } from "react-native";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { onSnapshot, doc } from "firebase/firestore";
 import { database } from "../../config/firebase";
 import { useRouter } from "expo-router";
@@ -12,6 +12,9 @@ import api from "../../services/api";
 import styles from "../../styles/OutgoingCalls.styles";
 import femaleAvatar from "../../assets/images/femaleAvatar.png";
 import maleAvatar from "../../assets/images/maleAvatar.png";
+
+//context 
+import { DirectCallContext } from "../../contexts/directCallContext";
 
 const UserInfoComponent = ({ contactedUser }) => {
   return (
@@ -27,11 +30,12 @@ const UserInfoComponent = ({ contactedUser }) => {
   );
 };
 
-const OutgoingCallButtonGroup = ({ setIsCalling, callRef, setCallRef }) => {
+const OutgoingCallButtonGroup = ({callRef}) => {
+  const router = useRouter();
+
   const hangupCallHandler = () => {
     api.rejectCall(callRef).then(() => {
-      setIsCalling();
-      setCallRef();
+      router.back()
     });
   };
 
@@ -47,19 +51,17 @@ const OutgoingCallButtonGroup = ({ setIsCalling, callRef, setCallRef }) => {
   );
 };
 
-const OutgoingCall = ({ contactedUser, setIsCalling, callRef, setCallRef }) => {
+const OutgoingCall = () => {
   const router = useRouter();
+  const {contactedUser,callInfo}= useContext(DirectCallContext)
 
   useEffect(() => {
-    const listener = onSnapshot(doc(database, "directCall", callRef), (doc) => {
-      console.log("Outgoing Current Data: ", callRef, doc.data());
+    const listener = onSnapshot(doc(database, "directCall", callInfo), (doc) => {
+      console.log("Outgoing Current Data: ", callInfo, doc.data());
 
       if (doc.data().status == "Rejected") {
-        setIsCalling();
-        setCallRef();
+        router.back();
       } else if (doc.data().status == "Accepted") {
-        setIsCalling();
-        setCallRef();
         router.push(`/rooms/${doc.data().roomId}`);
       }
     });
@@ -71,9 +73,9 @@ const OutgoingCall = ({ contactedUser, setIsCalling, callRef, setCallRef }) => {
     <View style={[StyleSheet.absoluteFill, styles.container]}>
       <UserInfoComponent contactedUser={contactedUser} />
       <OutgoingCallButtonGroup
-        setIsCalling={setIsCalling}
-        callRef={callRef}
-        setCallRef={setCallRef}
+      
+        callRef={callInfo}
+       
       />
     </View>
   );
