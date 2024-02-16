@@ -32,9 +32,11 @@ const UserInfoComponent = ({ contactedUser }) => {
 
 const OutgoingCallButtonGroup = ({callRef}) => {
   const router = useRouter();
-
+  const {setContactedUser,setCallInfo}= useContext(DirectCallContext)
   const hangupCallHandler = () => {
     api.rejectCall(callRef).then(() => {
+      setCallInfo(undefined);
+      setContactedUser(undefined)
       router.back()
     });
   };

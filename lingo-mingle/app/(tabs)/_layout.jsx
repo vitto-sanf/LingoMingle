@@ -3,12 +3,13 @@ import { Tabs } from "expo-router";
 import { useEffect, useContext, useState } from "react";
 import { onSnapshot, collection } from "firebase/firestore";
 import { database } from "../../config/firebase";
-
+import { useRouter } from "expo-router";
 // Components
 import { IncomingCall } from "../../components/videocall";
 
 // Context
 import { AuthContext } from "../../contexts/AuthContext";
+import { DirectCallContext } from "../../contexts/directCallContext";
 
 // Styles
 import FAIcons from "react-native-vector-icons/FontAwesome";
@@ -16,10 +17,9 @@ import { COLOR } from "../../constants";
 
 const MainLayout = () => {
   const { user } = useContext(AuthContext);
+  const router = useRouter();
 
-  const [callData, setCallData] = useState(undefined);
-  const [comingCall, setComingCall] = useState(false);
-
+  const {setCallInfo}= useContext(DirectCallContext)
   useEffect(() => {
     const listener = onSnapshot(
       collection(database, "directCall"),
@@ -43,9 +43,9 @@ const MainLayout = () => {
             console.log("INCOMING", doc);
             let ref = doc.data();
             ref.id = doc.id;
-            setCallData(ref);
-            setComingCall(true);
-            return doc;
+            setCallInfo(ref);
+            router.push("/incomingCall")
+            
           }
         });
       }
@@ -54,14 +54,14 @@ const MainLayout = () => {
     return listener;
   }, []);
 
-  if (callData && comingCall)
+/*   if (callData && comingCall)
     return (
       <IncomingCall
         callData={callData}
         setComingCall={() => setComingCall(false)}
         setCallData={() => setCallData(undefined)}
       />
-    );
+    ); */
 
   return (
     <Tabs
