@@ -380,14 +380,16 @@ const api = {
       sender: message.sender,
       edited: true,
     };
+    console.log("EDIT",chatId)
     try {
       const messageRef = doc(
         database,
-        `/chats/${chatId.replace(",", "")}}/messages`,
+        `/chats/${chatId.replace(",", "")}/messages`,
         messageId
       );
       await updateDoc(messageRef, data);
     } catch (error) {
+      console.log(error)
       return {
         message: "Error editing the message",
       };

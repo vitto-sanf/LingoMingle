@@ -234,8 +234,8 @@ const Chat = () => {
   const sendMessage = () => {
     const msg = message.trim();
     if (msg.length === 0 && (!targetMessage || !targetMessage.message)) return;
-
     if (isEditing && targetMessage && targetMessage.message) {
+      
       api
         .editMessage(targetMessage, id)
         .then(() => {
@@ -381,7 +381,7 @@ const Chat = () => {
           <FAIcon
             name="send"
             size={24}
-            color={message.length !== 0 ? COLOR.primary : COLOR.gray}
+            color={message.length !== 0 || targetMessage.message ? COLOR.primary : COLOR.gray}
             style={styles.icon}
           />
         </Pressable>
