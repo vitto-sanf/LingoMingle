@@ -5,3 +5,4 @@ export { default as CustomCallControls } from "./CustomCallControls";
 export { default as CustomInput } from "./CustomInput";
 export { default as IncomingCall } from "./IncomingCall";
 export { default as OutgoingCall } from "./OutgoingCall";
+export {default as CustomCallTopView} from "./CustomCallTopView";

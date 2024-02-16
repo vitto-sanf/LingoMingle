@@ -8,6 +8,7 @@ import {
   StreamCall,
   useStreamVideoClient,
 } from "@stream-io/video-react-native-sdk";
+import { CallTopView } from "@stream-io/video-react-native-sdk";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { onSnapshot, collection } from "firebase/firestore";
 import { database } from "../../config/firebase";
@@ -23,6 +24,7 @@ import {
 import {
   CustomBottomSheet,
   CustomCallControls,
+  CustomCallTopView,
 } from "../../components/videocall";
 
 // Context
@@ -148,6 +150,10 @@ const Room = () => {
     onHangupCallHandler: goToHomeScreen,
   };
 
+  const customCallTopViewProps ={
+    call: call
+  };
+
   if (!call) return null;
 
   return (
@@ -159,11 +165,15 @@ const Room = () => {
           CallControls={(props) => (
             <CustomCallControls {...customCallControlsProps} />
           )}
+          CallTopView={(props) => (
+            <CustomCallTopView {...customCallTopViewProps} />
+          )}
           onHangupCallHandler={goToHomeScreen}
           onChatOpenHandler={handleChat}
           toggleModal={toggleModal}
         />
 
+           
         {!advinaLaPalabraVisible && !cantenJuntosVisible
         && !nuevoTemaVisible &&
         <GamesModal
