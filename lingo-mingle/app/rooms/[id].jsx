@@ -151,7 +151,7 @@ const Room = () => {
   };
 
   const customCallTopViewProps ={
-    call: call
+    callid: id
   };
 
   if (!call) return null;
@@ -165,7 +165,9 @@ const Room = () => {
           CallControls={(props) => (
             <CustomCallControls {...customCallControlsProps} />
           )}
+          
           CallTopView={(props) => (
+            
             <CustomCallTopView {...customCallTopViewProps} />
           )}
           onHangupCallHandler={goToHomeScreen}
