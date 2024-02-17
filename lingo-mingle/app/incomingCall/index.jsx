@@ -46,7 +46,7 @@ const IncomingCallButtonGroup = () => {
   };
 
   const rejectCallHandler = () => {
-    api.rejectCall(callInfo).then(() => {
+    api.rejectCall(callInfo.id).then(() => {
       setCallInfo(undefined);
       router.back()
     });
