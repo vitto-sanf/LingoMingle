@@ -174,79 +174,85 @@ const api = {
       };
     }
   },
-
-  acceptFriendRequest: async (user, friendRequestUUID) => {
-    console.log("USER",user)
+  
+ acceptFriendRequest : async (user, friendRequestUUID) => {
     try {
       const data = {
         sender: friendRequestUUID,
         receiver: user.uuid,
         status: "pending",
       };
-
+  
       const senderRef = doc(database, "user", friendRequestUUID);
       const receiverRef = doc(database, "user", user.uuid);
-
+  
       const chatRef = await addDoc(collection(database, "chats"), {
         participant1: user.uuid,
         participant2: friendRequestUUID,
       });
-
+  
       const chatId = chatRef.id;
-
-      const SenderData = {
+  
+      const senderData = {
         id: user.uuid,
         chatId: chatId,
       };
-      const SenderContactedList = {
-        id :user.uuid,
+  
+      const senderContacted = {
+        id: user.uuid,
         contactedAt: new Date()
       };
-
-      const ReceiverData = {
+  
+      const receiverData = {
         id: friendRequestUUID,
         chatId: chatId,
       };
-
-      const ReceiverContactedList = {
-        id :friendRequestUUID,
+  
+      const receiverContacted = {
+        id: friendRequestUUID,
         contactedAt: new Date()
       };
-      const ReceiverToRemove = user.last_user_contacted.find(friend => friend.id === friendRequestUUID);
-      let SenderToRemove;
-      const docSnap = await getDoc(senderRef);
-      if (docSnap.exists()) {
-         SenderToRemove= docSnap.data().last_user_contacted.find(friend => friend.id === user.uuid);;
-      } else {
-        console.log("User Not Found!");
+  
+      // Remove the friend from the last_user_contacted list of the user who accepted the friend request
+      const senderDoc = await getDoc(senderRef);
+      const senderLastUserContacted = senderDoc.data().last_user_contacted;
+      const senderIndexToRemove = senderLastUserContacted.findIndex(friend => friend.id === user.uuid);
+      if (senderIndexToRemove !== -1) {
+        senderLastUserContacted.splice(senderIndexToRemove, 1);
+        await updateDoc(senderRef, { last_user_contacted: senderLastUserContacted });
       }
-    
-      console.log(SenderToRemove)
+  
+      // Remove the friend from the last_user_contacted list of the user who sent the friend request
+      const receiverDoc = await getDoc(receiverRef);
+      const receiverLastUserContacted = receiverDoc.data().last_user_contacted;
+      const receiverIndexToRemove = receiverLastUserContacted.findIndex(friend => friend.id === friendRequestUUID);
+      if (receiverIndexToRemove !== -1) {
+        receiverLastUserContacted.splice(receiverIndexToRemove, 1);
+        await updateDoc(receiverRef, { last_user_contacted: receiverLastUserContacted });
+      }
+  
       await updateDoc(senderRef, {
         friends_request: arrayRemove(data),
-        friends: arrayUnion(SenderData),
-        last_friends_contacted: arrayUnion(SenderContactedList), 
-        last_user_contacted: arrayRemove(SenderToRemove)
+        friends: arrayUnion(senderData),
+        last_friends_contacted: arrayUnion(senderContacted)
       });
-
+  
       await updateDoc(receiverRef, {
         friends_request: arrayRemove(data),
-        friends: arrayUnion(ReceiverData),
-        last_friends_contacted: arrayUnion(ReceiverContactedList),
-        last_user_contacted: arrayRemove( ReceiverToRemove)
+        friends: arrayUnion(receiverData),
+        last_friends_contacted: arrayUnion(receiverContacted)
       });
-
+  
       return {
         message: "User added to your friend list",
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         message: "Error while adding friend request",
       };
     }
   },
-
   
 
   rejectFriendRequest: async (myUUID, friendRequestUUID) => {
@@ -278,7 +284,7 @@ const api = {
     }
   },
 
-  cancelFriend: async (myUUID, friendUUID, chatId) => {
+  cancelFriend: async (user, friendUUID, chatId) => {
     try {
       const querySnapshot = await getDocs(
         collection(database, `/chats/${chatId}/messages`)
@@ -294,20 +300,55 @@ const api = {
 
       const secondData = {
         chatId: chatId,
-        id: myUUID,
+        id: user.uuid,
       };
-      const firstUserRef = doc(database, "user", myUUID);
+      const firstUserRef = doc(database, "user", user.uuid);
       const secondUserRef = doc(database, "user", friendUUID);
+
+      const firstContactedList ={
+        id : friendUUID,
+        contactedAt: new Date()
+      }
+
+      const secondContactedList ={
+        id : user.uuid,
+        contactedAt: new Date()
+      }
+    
 
       await deleteDoc(doc(database, "chats", chatId));
 
-      await updateDoc(firstUserRef, {
-        friends: arrayRemove(firstData),
-      });
+       // Remove friend from last_friends_contacted list
+      const firstDoc = await getDoc(firstUserRef);
+      const firstLastFriendContacted = firstDoc.data().last_friends_contacted;
+      const firstIndexToRemove = firstLastFriendContacted.findIndex(friend => friend.id === friendUUID);
+      if (firstIndexToRemove !== -1) {
+        firstLastFriendContacted.splice(firstIndexToRemove, 1);
+        await updateDoc(firstUserRef, { last_friends_contacted: firstLastFriendContacted });
+      }
+
+      // Remove friend from last_friends_contacted list
+      const secondDoc = await getDoc(secondUserRef);
+      const secondLastFriendContacted = secondDoc.data().last_friends_contacted;
+      const secondIndexToRemove = secondLastFriendContacted.findIndex(friend => friend.id === user.uuid);
+      if (secondIndexToRemove !== -1) {
+        secondLastFriendContacted.splice(secondIndexToRemove, 1);
+        await updateDoc(secondUserRef, { last_friends_contacted: secondLastFriendContacted });
+      }
 
       await updateDoc(secondUserRef, {
         friends: arrayRemove(secondData),
+        last_user_contacted: arrayUnion(secondContactedList),
+        
       });
+
+      await updateDoc(firstUserRef, {
+        friends: arrayRemove(firstData),
+        last_user_contacted: arrayUnion(firstContactedList),
+       
+      });
+
+     
 
       return {
         message: "Friend cancelled from the list correctly",

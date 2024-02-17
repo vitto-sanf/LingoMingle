@@ -126,7 +126,7 @@ const Friends = () => {
   const handleCancelFriend = () => {
     if (targetID) {
       api
-        .cancelFriend(MY_UUID, targetID, targetChat)
+        .cancelFriend(user, targetID, targetChat)
         .then((res) => {
           notify.success(res.message);
           const newFriendList = filteredFriends.filter(
