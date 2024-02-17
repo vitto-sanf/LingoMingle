@@ -1,7 +1,7 @@
 // Imports
 import { Tabs } from "expo-router";
 import { useEffect, useContext, useState } from "react";
-import { onSnapshot, collection } from "firebase/firestore";
+import { onSnapshot, collection,query,where } from "firebase/firestore";
 import { database } from "../../config/firebase";
 import { useRouter } from "expo-router";
 // Components
@@ -21,38 +21,25 @@ const MainLayout = () => {
 
   const {setCallInfo}= useContext(DirectCallContext)
   useEffect(() => {
-    const listener = onSnapshot(
-      collection(database, "directCall"),
+    const unsubscribe = onSnapshot(
+      query(collection(database, "directCall"), where("receiverId", "==", user.uuid), where("status", "==", "pending")),
       (snapshot) => {
         snapshot.forEach((doc) => {
-          console.log(
-            "DOCDATA",
-            user.uuid,
-            doc.data().receiverId,
-            doc.data().status
-          );
-          console.log(
-            "prova",
-            doc.data().receiverId == user.uuid,
-            doc.data().status == "pending"
-          );
-          if (
-            doc.data().receiverId == user.uuid &&
-            doc.data().status == "pending"
-          ) {
-            console.log("INCOMING", doc);
-            let ref = doc.data();
-            ref.id = doc.id;
-            setCallInfo(ref);
-            router.push("/incomingCall")
-            
-          }
+          console.log("INCOMING", doc);
+          const callInfo = { ...doc.data(), id: doc.id };
+          setCallInfo(callInfo);
+          router.push("/incomingCall");
         });
+      },
+      (error) => {
+        console.error("Error while listening to directCall collection:", error);
       }
     );
-
-    return listener;
-  }, []);
+  
+    return () => {
+      unsubscribe();
+    };
+  }, [user.uuid]);
 
 /*   if (callData && comingCall)
     return (

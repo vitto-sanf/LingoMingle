@@ -190,6 +190,7 @@ const Chat = () => {
   const flatListRef = useRef(null);
 
   useEffect(() => {
+    console.log("ID",id)
     api
       .getChatParticipant(id.replace(",", ""), MY_UUID)
       .then((data) => {
@@ -241,6 +242,7 @@ const Chat = () => {
         .then(() => {
           setIsEditing(false);
           setTargetMessage({});
+          api.editFriendContacted(user,friendData.uuid);
         })
         .catch((err) => notify.error(err));
     } else {
@@ -248,6 +250,7 @@ const Chat = () => {
         .sendMessage(id, msg, MY_UUID)
         .then(() => {
           setMessage("");
+          api.editFriendContacted(user,friendData.uuid);
           flatListRef.current.scrollToEnd({ animated: true }); // Usa il ref per spostare la FlatList
         })
         .catch((err) => notify.error(err));
@@ -257,8 +260,8 @@ const Chat = () => {
   const callFriend = () => {
     const generatedUuid = Math.floor(Math.random() * (100000 - 2000)) + 2000;
     api.directCall(user.uuid, friendData.uuid, generatedUuid).then((doc) => {
-      setCallInfo(doc.id)
-      setContactedUser(friendData)
+      setCallInfo(doc.id);
+      setContactedUser(friendData);
       router.push('/outgoingCall')
     });
   };

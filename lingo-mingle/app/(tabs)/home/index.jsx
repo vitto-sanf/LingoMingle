@@ -1,8 +1,9 @@
 // Imports
 import { ScrollView, Text, FlatList, Pressable } from "react-native";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext,useLayoutEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { collection, doc, onSnapshot, orderBy, query } from "firebase/firestore";
+import { database } from "../../../config/firebase";
 // Styles
 import { HomePageStyle as styles } from "../../../styles";
 
@@ -35,40 +36,25 @@ const HomePage = () => {
   const MY_UUID = user.uuid;
 
   useEffect(() => {
-    const getUserInfo = async () => {
+    const unsubscribe = onSnapshot(doc(database,'user', user.uuid), async (doc) => {
       try {
-        const lastUserContacted = await api.getLastUserContacted(
-          user?.last_user_contacted
-        );
-
-        const lastFriendsContacted = await api.getLastFriendsContacted(
-          user?.last_friends_contacted
-        );
-
-        const friendsRequest = await api.getFriendsRequest(
-          user?.friends_request,
-          MY_UUID
-        );
-
-        Promise.all([lastUserContacted, lastFriendsContacted, friendsRequest])
-          .then(
-            ([UserContactedList, FriendsContactedList, FriendsRequestList]) => {
-              setLastUserContacted(UserContactedList);
-              setLastFriendsContacted(FriendsContactedList);
-              setFriendsRequest(FriendsRequestList);
-              setLoading(false);
-            }
-          )
-          .catch((error) => {
-            console.error("Error during api calling", error);
-          });
+        const lastUserContacted = await api.getLastUserContacted(doc.data().last_user_contacted);
+        const lastFriendsContacted = await api.getLastFriendsContacted(doc.data().last_friends_contacted);
+        const friendsRequest = await api.getFriendsRequest(doc.data().friends_request, MY_UUID);
+  
+        setLastUserContacted(lastUserContacted);
+        setLastFriendsContacted(lastFriendsContacted);
+        setFriendsRequest(friendsRequest);
+        setLoading(false);
       } catch (error) {
-        console.log(error);
+        console.error("Error during API call:", error);
       }
+    });
+  
+    return () => {
+      unsubscribe();
     };
-
-    getUserInfo();
-  }, [MY_UUID]);
+  }, [user.uuid]);
 
   if (loading) return <Loader />;
  

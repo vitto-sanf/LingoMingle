@@ -43,6 +43,9 @@ const api = {
     return users; //snapshot.docs.map(doc => doc.data());
   },
   getLastUserContacted: async (lastUserContacted) => {
+    if (!lastUserContacted || lastUserContacted.length === 0) {
+      return []; 
+    }
     const promises = lastUserContacted.map((doc) =>
       api.getUser(doc).then((data) => {
         data.uuid = doc;
@@ -57,9 +60,15 @@ const api = {
   },
 
   getLastFriendsContacted: async (lastFriendsContacted) => {
-    const promises = lastFriendsContacted.map((doc) =>
-      api.getUser(doc).then((data) => {
-        data.uuid = doc;
+    if (!lastFriendsContacted || lastFriendsContacted.length === 0) {
+      return []; 
+    }
+    console.log("Friends Contacted",lastFriendsContacted)
+    const promises = lastFriendsContacted.sort((a,b)=>{
+      return b.contactedAt.seconds - a.contactedAt.seconds
+    }).map((doc) =>
+      api.getUser(doc.id).then((data) => {
+        data.uuid = doc.id;
         return data;
       })
     );
@@ -281,6 +290,33 @@ const api = {
         message: "Error while Cancelling friend from the list",
       };
     }
+  },
+
+  editFriendContacted: async(user,friendId) =>{
+    let add = true;
+    user.last_friends_contacted.map((friend)=>{
+      if (friend.id== friendId){ return  add = false} 
+    })
+
+    console.log(add)
+    const docRef =  doc(database, "user", user.uuid)
+    if (!add){
+      const fieldPath = `last_friends_contacted.${friendId}`;
+      await updateDoc(docRef,{
+        [fieldPath] :{
+          id : friendId,
+          contactedAt : new Date(),
+        }
+      })
+    }else{
+      await updateDoc(docRef, {
+        last_friends_contacted: arrayUnion({
+          id : friendId,
+          contactedAt : new Date(),
+        })
+      })
+    }
+
   },
 
   sendMessage: async (chatId, msg, senderId) => {
