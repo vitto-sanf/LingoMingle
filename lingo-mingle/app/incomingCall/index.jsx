@@ -18,6 +18,7 @@ import maleAvatar from "../../assets/images/maleAvatar.png";
 
 //context 
 import { DirectCallContext } from "../../contexts/directCallContext";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const UserInfoComponent = ({ caller }) => {
   console.log("CALLER", caller);
@@ -34,14 +35,19 @@ const UserInfoComponent = ({ caller }) => {
   );
 };
 
-const IncomingCallButtonGroup = () => {
+const IncomingCallButtonGroup = ({caller}) => {
 
   const router = useRouter();
   const {callInfo,setCallInfo}= useContext(DirectCallContext)
+  const {user}= useContext(AuthContext)
+
   const acceptCallHandler = () => {
     api.acceptCall(callInfo.id).then(() => {
       setCallInfo(undefined)
-      router.push(`/rooms/${callInfo.roomId}`);
+      api.editFriendContacted(user,caller.uuid).then(()=>{
+        router.push(`/rooms/${callInfo.roomId}`);
+      })
+     
     });
   };
 
@@ -105,7 +111,7 @@ const IncomingCall = () => {
   return (
     <View style={[StyleSheet.absoluteFill, styles.container]}>
       <UserInfoComponent caller={caller} />
-      <IncomingCallButtonGroup/>
+      <IncomingCallButtonGroup caller={caller}/>
     </View>
   );
 };

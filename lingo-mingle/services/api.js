@@ -362,27 +362,25 @@ const api = {
   },
 
   editFriendContacted: async(user,friendId) =>{
-    let add = true;
+    let isfriend = false;
     user.last_friends_contacted.map((friend)=>{
-      if (friend.id== friendId){ return  add = false} 
+      if (friend.id== friendId){ return  isfriend = true} 
     })
 
-    console.log(add)
-    const docRef =  doc(database, "user", user.uuid)
-    if (!add){
+    const docRef =  doc(database, "user", user.uuid);
+    const data = {
+      id : friendId,
+      contactedAt : new Date(),
+    }
+    if (isfriend){
       const fieldPath = `last_friends_contacted.${friendId}`;
       await updateDoc(docRef,{
-        [fieldPath] :{
-          id : friendId,
-          contactedAt : new Date(),
-        }
+        [fieldPath] :data
       })
     }else{
-      await updateDoc(docRef, {
-        last_friends_contacted: arrayUnion({
-          id : friendId,
-          contactedAt : new Date(),
-        })
+      const fieldPath = `last_user_contacted.${friendId}`;
+      await updateDoc(docRef,{
+        [fieldPath] :data
       })
     }
 

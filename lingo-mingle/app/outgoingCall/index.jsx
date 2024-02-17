@@ -15,6 +15,7 @@ import maleAvatar from "../../assets/images/maleAvatar.png";
 
 //context 
 import { DirectCallContext } from "../../contexts/directCallContext";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const UserInfoComponent = ({ contactedUser }) => {
   return (
@@ -57,7 +58,7 @@ const OutgoingCall = () => {
   const router = useRouter();
   const { contactedUser, callInfo } = useContext(DirectCallContext);
   const [callStatus, setCallStatus] = useState(null);
-
+  const {user}=useContext(AuthContext)
   useEffect(() => {
     if (!callInfo) return;
 
@@ -70,13 +71,16 @@ const OutgoingCall = () => {
       const callData = doc.data();
       console.log("Outgoing Current Data: ", callData);
 
-      setCallStatus(callData.status); // Aggiorna lo stato della chiamata
+      setCallStatus(callData.status); // Update Status call 
 
       if (callData.status === "Rejected") {
         console.log("rejected")
         router.back();
       } else if (callData.status === "Accepted") {
-        router.push(`/rooms/${callData.roomId}`);
+        api.editFriendContacted(user,contactedUser.uuid).then(()=>{
+          router.push(`/rooms/${callData.roomId}`);
+        })
+        
       }
     }, (error) => {
       console.error("Error while listening to directCall document:", error);
