@@ -262,7 +262,10 @@ const Chat = () => {
     api.directCall(user.uuid, friendData.uuid, generatedUuid).then((doc) => {
       setCallInfo(doc.id);
       setContactedUser(friendData);
-      router.push('/outgoingCall')
+      api.editFriendContacted(user,friendData.uuid).then(()=>{
+        router.push('/outgoingCall')
+      })
+      
     });
   };
 

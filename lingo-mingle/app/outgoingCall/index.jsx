@@ -36,7 +36,7 @@ const OutgoingCallButtonGroup = ({callRef}) => {
   const hangupCallHandler = () => {
     api.rejectCall(callRef).then(() => {
       setCallInfo(undefined);
-      /* setContactedUser(undefined) */
+      setContactedUser(undefined)
       router.back()
     });
   };

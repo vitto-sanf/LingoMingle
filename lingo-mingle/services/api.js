@@ -46,9 +46,10 @@ const api = {
     if (!lastUserContacted || lastUserContacted.length === 0) {
       return []; 
     }
+    console.log(lastUserContacted)
     const promises = lastUserContacted.map((doc) =>
-      api.getUser(doc).then((data) => {
-        data.uuid = doc;
+      api.getUser(doc.id).then((data) => {
+        data.uuid = doc.id;
         return data;
       })
     );
@@ -194,20 +195,31 @@ const api = {
         id: myUUID,
         chatId: chatId,
       };
+      const SenderContactedList = {
+        id :myUUID,
+        contactedAt: new Date()
+      };
 
       const ReceiverData = {
         id: friendRequestUUID,
         chatId: chatId,
       };
 
+      const ReceiverContactedList = {
+        id :friendRequestUUID,
+        contactedAt: new Date()
+      };
+
       await updateDoc(senderRef, {
         friends_request: arrayRemove(data),
         friends: arrayUnion(SenderData),
+        last_friends_contacted: arrayUnion(SenderContactedList)
       });
 
       await updateDoc(receiverRef, {
         friends_request: arrayRemove(data),
         friends: arrayUnion(ReceiverData),
+        last_friends_contacted: arrayUnion(ReceiverContactedList)
       });
 
       return {
