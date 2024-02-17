@@ -23,7 +23,7 @@ import api from "../../../services/api";
 import { AuthContext } from "../../../contexts/AuthContext";
 
 const HomePage = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [lastUsersContacted, setLastUserContacted] = useState([]);
   const [lastFriendsContacted, setLastFriendsContacted] = useState([]);
   const [friendsRequests, setFriendsRequest] = useState([]);

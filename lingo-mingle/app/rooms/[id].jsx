@@ -7,11 +7,13 @@ import {
   CallContent,
   StreamCall,
   useStreamVideoClient,
+  useCallStateHooks,
 } from "@stream-io/video-react-native-sdk";
 import { CallTopView } from "@stream-io/video-react-native-sdk";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { onSnapshot, collection } from "firebase/firestore";
 import { database } from "../../config/firebase";
+import useNotification from "../../hooks/useNotification";
 
 // Components
 import {
@@ -35,25 +37,29 @@ import api from "../../services/api";
 
 const Room = () => {
   const { user, token } = useContext(AuthContext);
+  const MY_UUID = user.uuid;
   const router = useRouter();
-
+  
   const [modalVisible, setModalVisible] = useState(false);
   const [advinaLaPalabraVisible, setAdivinaLaPalabraVisible] = useState(false);
   const [cantenJuntosVisible, setCantenJuntosVisible] = useState(false);
   const [nuevoTemaVisible, setNuevoTemaVisible] = useState(false);
   const [gamesData, setGamesData] = useState({});
-
+  
   const [call, setCall] = useState(null);
   const client = useStreamVideoClient();
   const { id } = useLocalSearchParams();
-
+  const notify = useNotification();
   const BottomSheetModalRef = useRef();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
     console.log(BottomSheetModalRef.current);
+    
   }, []);
+
+
 
   useEffect(() => {
     const listener = onSnapshot(collection(database, "games"), (snapshot) => {
@@ -66,6 +72,8 @@ const Room = () => {
       });
     });
   }, []);
+
+  
 
   const toggleModal = async () => {
     setModalVisible(!gamesData.ModalGameVisible);
@@ -155,6 +163,8 @@ const Room = () => {
   };
 
   if (!call) return null;
+
+  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
