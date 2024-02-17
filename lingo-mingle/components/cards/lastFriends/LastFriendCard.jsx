@@ -26,7 +26,7 @@ const LastFriendCard = ({ item, my_uuid }) => {
   const {setCallInfo,setContactedUser}= useContext(DirectCallContext)
 
   const chatId = item.friends.map((e) => {
-    if (e.id === my_uuid){ console.log("CHAT", e.chatId);return e.chatId};
+    if (e.id === my_uuid){ return e.chatId};
   });
 
   const handleStartVideoCall = () => {

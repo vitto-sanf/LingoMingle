@@ -47,7 +47,9 @@ const api = {
       return []; 
     }
     console.log(lastUserContacted)
-    const promises = lastUserContacted.map((doc) =>
+    const promises = lastUserContacted.sort((a,b)=>{
+      return b.contactedAt.seconds - a.contactedAt.seconds
+    }).map((doc) =>
       api.getUser(doc.id).then((data) => {
         data.uuid = doc.id;
         return data;
@@ -173,30 +175,31 @@ const api = {
     }
   },
 
-  acceptFriendRequest: async (myUUID, friendRequestUUID) => {
+  acceptFriendRequest: async (user, friendRequestUUID) => {
+    console.log("USER",user)
     try {
       const data = {
         sender: friendRequestUUID,
-        receiver: myUUID,
+        receiver: user.uuid,
         status: "pending",
       };
 
       const senderRef = doc(database, "user", friendRequestUUID);
-      const receiverRef = doc(database, "user", myUUID);
+      const receiverRef = doc(database, "user", user.uuid);
 
       const chatRef = await addDoc(collection(database, "chats"), {
-        participant1: myUUID,
+        participant1: user.uuid,
         participant2: friendRequestUUID,
       });
 
       const chatId = chatRef.id;
 
       const SenderData = {
-        id: myUUID,
+        id: user.uuid,
         chatId: chatId,
       };
       const SenderContactedList = {
-        id :myUUID,
+        id :user.uuid,
         contactedAt: new Date()
       };
 
@@ -209,17 +212,28 @@ const api = {
         id :friendRequestUUID,
         contactedAt: new Date()
       };
-
+      const ReceiverToRemove = user.last_user_contacted.find(friend => friend.id === friendRequestUUID);
+      let SenderToRemove;
+      const docSnap = await getDoc(senderRef);
+      if (docSnap.exists()) {
+         SenderToRemove= docSnap.data().last_user_contacted.find(friend => friend.id === user.uuid);;
+      } else {
+        console.log("User Not Found!");
+      }
+    
+      console.log(SenderToRemove)
       await updateDoc(senderRef, {
         friends_request: arrayRemove(data),
         friends: arrayUnion(SenderData),
-        last_friends_contacted: arrayUnion(SenderContactedList)
+        last_friends_contacted: arrayUnion(SenderContactedList), 
+        last_user_contacted: arrayRemove(SenderToRemove)
       });
 
       await updateDoc(receiverRef, {
         friends_request: arrayRemove(data),
         friends: arrayUnion(ReceiverData),
-        last_friends_contacted: arrayUnion(ReceiverContactedList)
+        last_friends_contacted: arrayUnion(ReceiverContactedList),
+        last_user_contacted: arrayRemove( ReceiverToRemove)
       });
 
       return {
@@ -232,6 +246,8 @@ const api = {
       };
     }
   },
+
+  
 
   rejectFriendRequest: async (myUUID, friendRequestUUID) => {
     try {
