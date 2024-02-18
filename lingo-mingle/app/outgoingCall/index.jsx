@@ -78,7 +78,7 @@ const OutgoingCall = () => {
         router.back();
       } else if (callData.status === "Accepted") {
         api.editFriendContacted(user,contactedUser.uuid)
-        router.push(`/rooms/${callData.roomId}`);
+        router.replace(`/rooms/${callData.roomId}`);
         
       }
     }, (error) => {

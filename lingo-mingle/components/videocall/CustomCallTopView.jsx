@@ -56,13 +56,16 @@ const CustomCallTopView = (props) => {
   }, [participant]);
 
   useEffect(() => {
-    const participantsUuids = participant.map(
-      (participant) => participant.userId
-    );
-    setFilteredParticipant(participantsUuids);
-    if (participant.length > 1) {
-      setIsVisible(false);
-    }
+    
+      const participantsUuids = participant.map(
+        (participant) => participant.userId
+      );
+      setFilteredParticipant(participantsUuids);
+      if (participant.length > 1) {
+        setIsVisible(false);
+      }
+    
+    
   }, [participant]);
 
   useEffect(() => {
@@ -82,6 +85,7 @@ const CustomCallTopView = (props) => {
 
   useEffect(() => {
     console.log(" Call participants:", filteredParticipant);
+
     const otherUuid = filteredParticipant.filter(
       (element) => element !== MY_UUID
     );
