@@ -84,16 +84,47 @@ const CustomCallTopView = (props) => {
   }, [user]);
 
   useEffect(() => {
-    console.log(" Call participants:", filteredParticipant);
+    //console.log(" Call participants:", filteredParticipant);
 
-    const otherUuid = filteredParticipant.filter(
-      (element) => element !== MY_UUID
-    );
-    setOtherParticipantUuid(otherUuid);
+    if (filteredParticipant.length >1 && friends.length>=1 )
+    {
+
+      const otherUuid = filteredParticipant.filter(
+        (element) => element !== MY_UUID
+      );
+      setOtherParticipantUuid(otherUuid);
+      console.log(MY_UUID," : otherUUid: ",otherUuid)
+      /*const isContained = friends.includes(OtherParticipantUuid[0]);
+      console.log(MY_UUID," : otherUUid: ",otherUuid)
+      console.log(MY_UUID," : friends: ",friends)
+      console.log(MY_UUID," : OtherParticipantUuid: ",OtherParticipantUuid)
+      console.log(MY_UUID," : isContained: ",isContained)
+      //console.log(MY_UUID," : otherUUid: ",otherUuid)
+      setIsFriend(isContained);*/
+    }
+    
+  }, [filteredParticipant,friends]);
+
+  useEffect(()=>{
+
+    if(OtherParticipantUuid.length>=1)
+    {
     const isContained = friends.includes(OtherParticipantUuid[0]);
+      
+      console.log(MY_UUID," : friends: ",friends)
+      console.log(MY_UUID," : OtherParticipantUuid: ",OtherParticipantUuid)
+      console.log(MY_UUID," : isContained: ",isContained)
+      //console.log(MY_UUID," : otherUUid: ",otherUuid)
+      setIsFriend(isContained);
+    }
 
-    setIsFriend(isContained);
-  }, [filteredParticipant]);
+  },[OtherParticipantUuid])
+
+
+  useEffect(() => {
+    console.log(MY_UUID," : isFriend: ",isFriend)
+    
+  }, [isFriend]);
 
   return (
     <View style={styles.topView}>
