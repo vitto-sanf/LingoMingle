@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
 
   gamesButtonPressed: {
-    backgroundColor: "#141414",
+    backgroundColor: COLOR.gray,
     borderRadius: 100,
     width: 50,
     height: 50,

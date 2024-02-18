@@ -1,6 +1,6 @@
 // Imports
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { PermissionsAndroid, Platform } from 'react-native';
+import { PermissionsAndroid, Platform } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
@@ -26,6 +26,7 @@ import {
 import {
   CustomBottomSheet,
   CustomCallControls,
+  CustomCallControlsAudioVideo,
   CustomCallTopView,
 } from "../../components/videocall";
 
@@ -35,19 +36,17 @@ import { AuthContext } from "../../contexts/AuthContext";
 // Services
 import api from "../../services/api";
 
-
-
 const Room = () => {
   const { user, token } = useContext(AuthContext);
   const MY_UUID = user.uuid;
   const router = useRouter();
-  
+
   const [modalVisible, setModalVisible] = useState(false);
   const [advinaLaPalabraVisible, setAdivinaLaPalabraVisible] = useState(false);
   const [cantenJuntosVisible, setCantenJuntosVisible] = useState(false);
   const [nuevoTemaVisible, setNuevoTemaVisible] = useState(false);
   const [gamesData, setGamesData] = useState({});
-  
+
   const [call, setCall] = useState(null);
   const client = useStreamVideoClient();
   const { id } = useLocalSearchParams();
@@ -55,28 +54,26 @@ const Room = () => {
   const BottomSheetModalRef = useRef();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isFriend, setIsFriend ]= useState(undefined)
+  const [isFriend, setIsFriend] = useState(undefined);
 
   useEffect(() => {
     console.log(BottomSheetModalRef.current);
-    
   }, []);
 
   useEffect(() => {
     const run = async () => {
-      if (Platform.OS === 'android') {
+      if (Platform.OS === "android") {
         await PermissionsAndroid.requestMultiple([
-          'android.permission.POST_NOTIFICATIONS',
-          'android.permission.BLUETOOTH_CONNECT',
+          "android.permission.POST_NOTIFICATIONS",
+          "android.permission.BLUETOOTH_CONNECT",
         ]);
       }
     };
     run();
   }, []);
 
-
   useEffect(() => {
-    console.log("ISFRIEND", isFriend)
+    console.log("ISFRIEND", isFriend);
     const listener = onSnapshot(collection(database, "games"), (snapshot) => {
       snapshot.forEach((doc) => {
         setGamesData(doc.data());
@@ -87,8 +84,6 @@ const Room = () => {
       });
     });
   }, []);
-
-  
 
   const toggleModal = async () => {
     setModalVisible(!gamesData.ModalGameVisible);
@@ -143,7 +138,7 @@ const Room = () => {
   };
 
   // Join the call
- /*  useEffect(() => {
+  /*  useEffect(() => {
     if (!client || call) return;
     console.log("CALL",call)
     const joinCall = async () => {
@@ -156,9 +151,9 @@ const Room = () => {
     joinCall();
   }, [client, call]); */
 
-    useEffect(() => {
+  useEffect(() => {
     if (!client || call) return;
-    console.log("CALL",call)
+    console.log("CALL", call);
     const joinCall = async () => {
       const call = client.call("default", id);
       await client.connectUser({ id: user.uuid }, token);
@@ -186,13 +181,11 @@ const Room = () => {
     onHangupCallHandler: goToHomeScreen,
   };
 
-  const customCallTopViewProps ={
+  const customCallTopViewProps = {
     callid: id,
   };
-  
-  if (!call) return null;
 
-  
+  if (!call) return null;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -200,37 +193,42 @@ const Room = () => {
 
       <StreamCall call={call}>
         <CallContent
-         CallControls={(props) => {
-        return (
-          <>
-            <CustomCallControls {...props} {...customCallControlsProps} />
-            {/* TODO FIX UI  */}
-           {/*  <CustomCallControls {...props} {...customCallControlsProps} /> */}
-          </>
-        );
-      }}
+          CallControls={(props) => {
+            return (
+              <>
+                <CustomCallControls
+                  {...props}
+                  {...customCallControlsProps}
+                  modalVisible={modalVisible}
+                />
+                <CustomCallControlsAudioVideo isChatOpen={isChatOpen} />
+              </>
+            );
+          }}
           CallTopView={(props) => (
-            
-            <CustomCallTopView {...customCallTopViewProps }  setIsUserFriend= {(friend)=>setIsFriend(friend)} />
+            <CustomCallTopView
+              {...customCallTopViewProps}
+              setIsUserFriend={(friend) => setIsFriend(friend)}
+            />
           )}
           onHangupCallHandler={goToHomeScreen}
           onChatOpenHandler={handleChat}
           toggleModal={toggleModal}
         />
 
-           
-        {!advinaLaPalabraVisible && !cantenJuntosVisible
-        && !nuevoTemaVisible &&
-        <GamesModal
-          modalVisible={modalVisible}
-          setModalVisible={toggleModal}
-          AdivinamodalVisible={advinaLaPalabraVisible}
-          setModalAdivinaVisible={toggleModalAdivina}
-          setModalCantenJuntosVisible={toggleModalCantenJuntos}
-          setModalNuevoTemaVisible={toggleModalNuevoTema}
-        />
-        }
-        
+        {!advinaLaPalabraVisible &&
+          !cantenJuntosVisible &&
+          !nuevoTemaVisible && (
+            <GamesModal
+              modalVisible={modalVisible}
+              setModalVisible={toggleModal}
+              AdivinamodalVisible={advinaLaPalabraVisible}
+              setModalAdivinaVisible={toggleModalAdivina}
+              setModalCantenJuntosVisible={toggleModalCantenJuntos}
+              setModalNuevoTemaVisible={toggleModalNuevoTema}
+            />
+          )}
+
         <AdivinaLaPalabraModal
           modalVisible={advinaLaPalabraVisible}
           setModalVisible={toggleModalAdivina}
