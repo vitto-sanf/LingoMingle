@@ -36,8 +36,8 @@ const OutgoingCallButtonGroup = ({callRef}) => {
   const {setContactedUser,setCallInfo}= useContext(DirectCallContext)
   const hangupCallHandler = () => {
     api.rejectCall(callRef).then(() => {
-      setCallInfo(undefined);
-      setContactedUser(undefined)
+      /* setCallInfo(undefined);
+      setContactedUser(undefined) */
       router.back()
     });
   };
