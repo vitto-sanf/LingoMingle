@@ -172,10 +172,15 @@ const Room = () => {
 
       <StreamCall call={call}>
         <CallContent
-          CallControls={(props) => (
-            <CustomCallControls {...customCallControlsProps} />
-          )}
-          
+         CallControls={(props) => {
+        return (
+          <>
+            <CustomCallControls {...props} {...customCallControlsProps} />
+            {/* TODO FIX UI  */}
+           {/*  <CustomCallControls {...props} {...customCallControlsProps} /> */}
+          </>
+        );
+      }}
           CallTopView={(props) => (
             
             <CustomCallTopView {...customCallTopViewProps} />

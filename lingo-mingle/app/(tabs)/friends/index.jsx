@@ -11,6 +11,8 @@ import {
 import React, { useEffect, useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
+import { collection, doc, onSnapshot, orderBy, query } from "firebase/firestore";
+import { database } from "../../../config/firebase";
 
 // Components
 import { Loader } from "../../../components/common";
@@ -94,20 +96,33 @@ const Friends = () => {
   const MY_UUID = user.uuid;
 
   useEffect(() => {
-    api
-      .getUser(MY_UUID)
-      .then((data) => {
-        api
-          .getFriends(data.friends)
-          .then((friendsInfo) => {
-            setFriends(friendsInfo);
-            setFilteredFriends(friendsInfo);
-          })
-          .catch((err) => notify.error(err));
+    
+    const unsubscribe = onSnapshot(doc(database, 'user', user.uuid), (snapshot) => {
+      const userData = snapshot.data();
+      console.log("DATA", userData.friends)
+      const friendIds = userData.friends.map(friend => friend.id) || []; // Ottieni gli ID degli amici dall'array di oggetti nel campo "friends" del documento utente
+      Promise.all(friendIds.map(async friendId => {
+        const friendData = await api.getUser(friendId);
+        // Aggiungi l'ID dell'amico all'oggetto ottenuto da api.getUser
+        friendData.id = friendId;
+        return friendData;
+      }))
+      .then(friendsData => {
+        // Costruisci un nuovo array di amici con l'ID aggiunto
+        const newFriends = friendsData.map(friendData => ({
+          uuid: friendData.id,
+          ...friendData
+        }));
+        setFriends(newFriends);
+        setFilteredFriends(newFriends);
+        setLoading(false);
       })
-      .catch((err) => notify.error(err))
-      .finally(() => setLoading(false));
-  }, [user]);
+      .catch((err) => notify.error(err));
+    });
+    
+    return () => unsubscribe();
+    }, [user]);
+  
 
   const handleOnChange = (text) => {
     if (typeof text === "object" && text.nativeEvent) {
@@ -126,7 +141,7 @@ const Friends = () => {
   const handleCancelFriend = () => {
     if (targetID) {
       api
-        .cancelFriend(MY_UUID, targetID, targetChat)
+        .cancelFriend(user, targetID, targetChat)
         .then((res) => {
           notify.success(res.message);
           const newFriendList = filteredFriends.filter(

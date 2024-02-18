@@ -1,14 +1,15 @@
 // Imports
 import { Tabs } from "expo-router";
 import { useEffect, useContext, useState } from "react";
-import { onSnapshot, collection } from "firebase/firestore";
+import { onSnapshot, collection,query,where } from "firebase/firestore";
 import { database } from "../../config/firebase";
-
+import { useRouter } from "expo-router";
 // Components
 import { IncomingCall } from "../../components/videocall";
 
 // Context
 import { AuthContext } from "../../contexts/AuthContext";
+import { DirectCallContext } from "../../contexts/directCallContext";
 
 // Styles
 import FAIcons from "react-native-vector-icons/FontAwesome";
@@ -16,52 +17,38 @@ import { COLOR } from "../../constants";
 
 const MainLayout = () => {
   const { user } = useContext(AuthContext);
+  const router = useRouter();
 
-  const [callData, setCallData] = useState(undefined);
-  const [comingCall, setComingCall] = useState(false);
-
+  const {setCallInfo}= useContext(DirectCallContext)
   useEffect(() => {
-    const listener = onSnapshot(
-      collection(database, "directCall"),
+    const unsubscribe = onSnapshot(
+      query(collection(database, "directCall"), where("receiverId", "==", user.uuid), where("status", "==", "pending")),
       (snapshot) => {
         snapshot.forEach((doc) => {
-          console.log(
-            "DOCDATA",
-            user.uuid,
-            doc.data().receiverId,
-            doc.data().status
-          );
-          console.log(
-            "prova",
-            doc.data().receiverId == user.uuid,
-            doc.data().status == "pending"
-          );
-          if (
-            doc.data().receiverId == user.uuid &&
-            doc.data().status == "pending"
-          ) {
-            console.log("INCOMING", doc);
-            let ref = doc.data();
-            ref.id = doc.id;
-            setCallData(ref);
-            setComingCall(true);
-            return doc;
-          }
+          console.log("INCOMING", doc);
+          const callInfo = { ...doc.data(), id: doc.id };
+          setCallInfo(callInfo);
+          router.push("/incomingCall");
         });
+      },
+      (error) => {
+        console.error("Error while listening to directCall collection:", error);
       }
     );
+  
+    return () => {
+      unsubscribe();
+    };
+  }, [user.uuid]);
 
-    return listener;
-  }, []);
-
-  if (callData && comingCall)
+/*   if (callData && comingCall)
     return (
       <IncomingCall
         callData={callData}
         setComingCall={() => setComingCall(false)}
         setCallData={() => setCallData(undefined)}
       />
-    );
+    ); */
 
   return (
     <Tabs

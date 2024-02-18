@@ -33,7 +33,11 @@ const Profile = () => {
       username: "Giulia",
       token:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTlcwMWM4UzR0c3JqWjY2YlIwTGwifQ.bt-chAvUN5uIsxzx-pDU3ewHzO-W98OfFhmRN0W0x80",
-    },
+    },{
+      id:"EIIr5pUGKdiC76UvnGZA",
+      username : "Matteo",
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiRUlJcjVwVUdLZGlDNzZVdm5HWkEifQ.HNs4lwiQ25OQvS6ipYTbQqcS0Vxh_mzFQs4po3q1dus"
+    }
     // ... add more users as needed
   ]);
 
