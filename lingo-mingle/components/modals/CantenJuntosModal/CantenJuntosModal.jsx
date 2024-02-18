@@ -24,6 +24,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
   const [correctAnswer, setCorrectAnswer] = useState(false);
   const [localCorrect, setLocalCorrect] = useState(false);
   const [AudioPos, SetPos] = useState(0);
+  const [wrongAnswer,setWrongAnswer]=useState(false);
   const text = [
     "Voy a reír voy a gozar Vivir mi _ _ _ _, la la la la",
     "Vivir mi vida, la la la la",
@@ -219,6 +220,12 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
         await api.setGamesData(newData);
         setLocalCorrect(true);
       }
+      else{
+        setWrongAnswer(true);
+        setTimeout(()=>{
+          setWrongAnswer(false);
+        },1500)
+      }
     }
     if (songTextIndex == 2) {
       if (answer == "limpiar") {
@@ -230,6 +237,12 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
         setGamesData(newData);
         await api.setGamesData(newData);
         setLocalCorrect(true);
+      }
+      else{
+        setWrongAnswer(true);
+        setTimeout(()=>{
+          setWrongAnswer(false);
+        },1500)
       }
     }
 
@@ -245,6 +258,12 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
         await api.setGamesData(newData);
         setLocalCorrect(true);
       }
+      else{
+        setWrongAnswer(true);
+        setTimeout(()=>{
+          setWrongAnswer(false);
+        },1500)
+      }
     }
 
     if (songTextIndex == 6) {
@@ -257,6 +276,12 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
         setGamesData(newData);
         await api.setGamesData(newData);
         setLocalCorrect(true);
+      }
+      else{
+        setWrongAnswer(true);
+        setTimeout(()=>{
+          setWrongAnswer(false);
+        },1500)
       }
     }
   };
@@ -319,6 +344,16 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
                   {correctAnswer !== localCorrect && dirty === false ? (
                     <Text style={styles.WinText}>
                       The other player answered correctly before you
+                    </Text>
+                  ) : (
+                    ""
+                  )}
+                </View>
+
+                <View>
+                  {wrongAnswer ? (
+                    <Text style={styles.WinText}>
+                      Wrong word! Try Again
                     </Text>
                   ) : (
                     ""
