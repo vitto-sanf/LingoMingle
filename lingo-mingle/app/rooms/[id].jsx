@@ -56,6 +56,9 @@ const Room = () => {
 
   useEffect(() => {
     console.log(BottomSheetModalRef.current);
+    setTimeout(() => {
+      toggleModal();
+    }, 30000);
     
   }, []);
 
