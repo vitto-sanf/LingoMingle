@@ -45,7 +45,7 @@ const IncomingCallButtonGroup = ({caller}) => {
     api.acceptCall(callInfo.id).then(() => {
       /* setCallInfo(undefined) */
       api.editFriendContacted(user,caller.uuid)
-      router.push(`/rooms/${callInfo.roomId}`);
+      router.replace(`/rooms/${callInfo.roomId}`);
     });
   };
 

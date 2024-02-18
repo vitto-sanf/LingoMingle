@@ -155,14 +155,21 @@ const Room = () => {
       <Spinner visible={!call} />
 
       <StreamCall call={call}>
-        <CallContent
-          CallControls={(props) => (
-            <CustomCallControls {...customCallControlsProps} />
-          )}
-          onHangupCallHandler={goToHomeScreen}
-          onChatOpenHandler={handleChat}
-          toggleModal={toggleModal}
-        />
+      <CallContent
+      CallControls={(props) => {
+        return (
+          <>
+            <CustomCallControls {...props} {...customCallControlsProps} />
+            {/* TODO FIX UI  */}
+           {/*  <CustomCallControls {...props} {...customCallControlsProps} /> */}
+          </>
+        );
+      }}
+      onHangupCallHandler={goToHomeScreen}
+      onChatOpenHandler={handleChat}
+      toggleModal={toggleModal}
+/>
+
 
         {!advinaLaPalabraVisible && !cantenJuntosVisible
         && !nuevoTemaVisible &&
