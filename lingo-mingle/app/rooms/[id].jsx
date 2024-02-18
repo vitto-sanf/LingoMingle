@@ -55,6 +55,7 @@ const Room = () => {
 
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isFriend, setIsFriend] = useState(undefined);
+  const [participantId, setParticipantId] = useState(undefined);
 
   useEffect(() => {
     console.log(BottomSheetModalRef.current);
@@ -73,7 +74,6 @@ const Room = () => {
   }, []);
 
   useEffect(() => {
-    console.log("ISFRIEND", isFriend);
     const listener = onSnapshot(collection(database, "games"), (snapshot) => {
       snapshot.forEach((doc) => {
         setGamesData(doc.data());
@@ -166,6 +166,11 @@ const Room = () => {
 
   const goToHomeScreen = async () => {
     /* await call.leave(); */
+    console.log("ISFRIEND", isFriend),
+      console.log("participantId", participantId[0]);
+    if (isFriend == false) {
+      api.editUserContacted(user, participantId[0]);
+    }
     router.back();
   };
 
@@ -209,6 +214,7 @@ const Room = () => {
             <CustomCallTopView
               {...customCallTopViewProps}
               setIsUserFriend={(friend) => setIsFriend(friend)}
+              setPartcipantId={(id) => setParticipantId(id)}
             />
           )}
           onHangupCallHandler={goToHomeScreen}
