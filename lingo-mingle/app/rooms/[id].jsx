@@ -55,7 +55,7 @@ const Room = () => {
   const BottomSheetModalRef = useRef();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
-  
+  const [isFriend, setIsFriend ]= useState(undefined)
 
   useEffect(() => {
     console.log(BottomSheetModalRef.current);
@@ -76,6 +76,7 @@ const Room = () => {
 
 
   useEffect(() => {
+    console.log("ISFRIEND", isFriend)
     const listener = onSnapshot(collection(database, "games"), (snapshot) => {
       snapshot.forEach((doc) => {
         setGamesData(doc.data());
@@ -169,7 +170,7 @@ const Room = () => {
   }, [client, call]);
 
   const goToHomeScreen = async () => {
-    await call.leave();
+    /* await call.leave(); */
     router.back();
   };
 
@@ -186,9 +187,9 @@ const Room = () => {
   };
 
   const customCallTopViewProps ={
-    callid: id
+    callid: id,
   };
-
+  
   if (!call) return null;
 
   
@@ -210,7 +211,7 @@ const Room = () => {
       }}
           CallTopView={(props) => (
             
-            <CustomCallTopView {...customCallTopViewProps} />
+            <CustomCallTopView {...customCallTopViewProps }  setIsUserFriend= {(friend)=>setIsFriend(friend)} />
           )}
           onHangupCallHandler={goToHomeScreen}
           onChatOpenHandler={handleChat}
