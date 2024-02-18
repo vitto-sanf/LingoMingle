@@ -13,7 +13,7 @@ import api from "../../services/api";
 import useNotification from "../../hooks/useNotification";
 // TODO: Capire cosa succede nella grafica dell'altro user quando l'altro manda la richiesta,
 // capire se quando si avvia la chiamata si deve controllare un eventuale richiesta già inviata
-const CustomCallTopView = ({setIsUserFriend}) => {
+const CustomCallTopView = ({setIsUserFriend,setPartcipantId}) => {
   const { user, token } = useContext(AuthContext);
   const call = useCall();
   const { useCallCallingState, useParticipants } = useCallStateHooks();
@@ -117,6 +117,7 @@ const CustomCallTopView = ({setIsUserFriend}) => {
       //console.log(MY_UUID," : otherUUid: ",otherUuid)
       setIsFriend(isContained);
       setIsUserFriend(isContained);
+      setPartcipantId(OtherParticipantUuid)
     }
 
   },[OtherParticipantUuid])
