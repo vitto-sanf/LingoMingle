@@ -1,6 +1,6 @@
 // Imports
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { Dimensions } from "react-native";
+import { PermissionsAndroid, Platform } from 'react-native';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
@@ -35,6 +35,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 // Services
 import api from "../../services/api";
 
+
+
 const Room = () => {
   const { user, token } = useContext(AuthContext);
   const MY_UUID = user.uuid;
@@ -53,12 +55,24 @@ const Room = () => {
   const BottomSheetModalRef = useRef();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
+  
 
   useEffect(() => {
     console.log(BottomSheetModalRef.current);
     
   }, []);
 
+  useEffect(() => {
+    const run = async () => {
+      if (Platform.OS === 'android') {
+        await PermissionsAndroid.requestMultiple([
+          'android.permission.POST_NOTIFICATIONS',
+          'android.permission.BLUETOOTH_CONNECT',
+        ]);
+      }
+    };
+    run();
+  }, []);
 
 
   useEffect(() => {
@@ -128,9 +142,22 @@ const Room = () => {
   };
 
   // Join the call
-  useEffect(() => {
+ /*  useEffect(() => {
     if (!client || call) return;
+    console.log("CALL",call)
+    const joinCall = async () => {
+      const call = client.call("default", id);
+      await client.connectUser({ id: user.uuid }, token);
+      await call.join({ create: true });
+      setCall(call);
+    };
 
+    joinCall();
+  }, [client, call]); */
+
+    useEffect(() => {
+    if (!client || call) return;
+    console.log("CALL",call)
     const joinCall = async () => {
       const call = client.call("default", id);
       await client.connectUser({ id: user.uuid }, token);
@@ -142,7 +169,7 @@ const Room = () => {
   }, [client, call]);
 
   const goToHomeScreen = async () => {
-    await call.endCall();
+    await call.leave();
     router.back();
   };
 
