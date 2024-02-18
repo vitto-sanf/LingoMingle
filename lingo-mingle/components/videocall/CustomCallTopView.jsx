@@ -24,19 +24,21 @@ const CustomCallTopView = (props) => {
   const [isFriend, setIsFriend] = useState(true);
   const [friendRequestSent, setFriendRequestSent] = useState(false);
   const [requestReceived, setRequestReceived] = useState(false);
+  const [allUsersData, setAllUserData] = useState();
   const MY_UUID = user.uuid;
   const [isVisible, setIsVisible] = useState(false);
   const notify = useNotification();
 
   useEffect(() => {
     const listener = onSnapshot(doc(database, "user", MY_UUID), (snapshot) => {
+      setAllUserData(snapshot.data());
       if (snapshot.data().friends_request.length >= 1) {
-        console.log(
+        /*console.log(
           "Firends_Request: ",
           snapshot.data().friends_request[
             snapshot.data().friends_request.length - 1
           ]?.receiver
-        );
+        );*/
         if (
           snapshot.data().friends_request[
             snapshot.data().friends_request.length - 1
@@ -52,9 +54,7 @@ const CustomCallTopView = (props) => {
     });
   }, [friendRequestSent]);
 
-  useEffect(() => {
-    console.log("request Received:", requestReceived);
-  }, [requestReceived]);
+ 
 
   const handleSendFriendRequest = () => {
     api
@@ -111,21 +111,12 @@ const CustomCallTopView = (props) => {
   }, [user]);
 
   useEffect(() => {
-    //console.log(" Call participants:", filteredParticipant);
-
     if (filteredParticipant.length > 1 && friends.length >= 1) {
       const otherUuid = filteredParticipant.filter(
         (element) => element !== MY_UUID
       );
       setOtherParticipantUuid(otherUuid);
-      console.log(MY_UUID, " : otherUUid: ", otherUuid);
-      /*const isContained = friends.includes(OtherParticipantUuid[0]);
-      console.log(MY_UUID," : otherUUid: ",otherUuid)
-      console.log(MY_UUID," : friends: ",friends)
-      console.log(MY_UUID," : OtherParticipantUuid: ",OtherParticipantUuid)
-      console.log(MY_UUID," : isContained: ",isContained)
-      //console.log(MY_UUID," : otherUUid: ",otherUuid)
-      setIsFriend(isContained);*/
+     
     }
   }, [filteredParticipant, friends]);
 
@@ -133,17 +124,9 @@ const CustomCallTopView = (props) => {
     if (OtherParticipantUuid.length >= 1) {
       const isContained = friends.includes(OtherParticipantUuid[0]);
 
-      //console.log(MY_UUID," : friends: ",friends)
-      //console.log(MY_UUID," : OtherParticipantUuid: ",OtherParticipantUuid)
-      //console.log(MY_UUID," : isContained: ",isContained)
-      //console.log(MY_UUID," : otherUUid: ",otherUuid)
       setIsFriend(isContained);
     }
   }, [OtherParticipantUuid]);
-
-  useEffect(() => {
-    console.log(MY_UUID, " : isFriend: ", isFriend);
-  }, [isFriend]);
 
   return (
     <View style={styles.topView}>
@@ -154,19 +137,19 @@ const CustomCallTopView = (props) => {
         !requestReceived && (
           <Pressable
             onPress={
-              !friendRequestSent /*&&
-            !item.friends_request.some((request) => {
-              return request.sender === MY_UUID;
-            })*/
+              !friendRequestSent &&
+              !allUsersData.friends_request.some((request) => {
+                return request.sender === MY_UUID;
+              })
                 ? handleSendFriendRequest
                 : handleCancelFriendRequest
             }
             style={styles.friendReqPressable}
           >
-            {!friendRequestSent /*&&
-          !item.friends_request.some((request) => {
-            return request.sender === MY_UUID;
-          })*/ ? (
+            {!friendRequestSent &&
+            !allUsersData.friends_request.some((request) => {
+              return request.sender === MY_UUID;
+            }) ? (
               <FA5Icon name="user-plus" size={20} color={COLOR.white} />
             ) : (
               <FA5Icon name="user-times" size={20} color={COLOR.red} />
@@ -174,12 +157,8 @@ const CustomCallTopView = (props) => {
           </Pressable>
         )}
 
-      <View style={[styles.rightElement /*, callTopView.rightElement*/]}>
-        {ParticipantsInfoBadge && (
-          <ParticipantsInfoBadge
-          //onParticipantInfoPress={onParticipantInfoPress}
-          />
-        )}
+      <View style={[styles.rightElement]}>
+        {ParticipantsInfoBadge && <ParticipantsInfoBadge />}
       </View>
     </View>
   );
@@ -188,9 +167,9 @@ const CustomCallTopView = (props) => {
 const styles = StyleSheet.create({
   topView: {
     width: "100%",
-    //height: '20%',
+
     backgroundColor: "#272b2e",
-    //position: 'absolute',
+
     top: 0,
     flexDirection: "row",
     paddingTop: 24,
