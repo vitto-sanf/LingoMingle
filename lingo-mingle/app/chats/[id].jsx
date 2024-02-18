@@ -13,7 +13,7 @@ import { useLocalSearchParams, Stack } from "expo-router";
 import { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { database } from "../../config/firebase";
-import { NewInvitationModal } from "../../components/modals";
+import ChatInvitationModal from "../../components/modals/ChatInvitationsModal/NewInvitationsModal";
 import { useRouter } from "expo-router";
 
 
@@ -51,10 +51,11 @@ const RenderMessage = ({
   setIsEditing,
   setViewEditMessage,
   isLastItem,
+  friendData
 }) => {
   const myMessage = item.sender === myId;
   const [editVisible, setEditVisible] = useState(false);
-
+  const [systemMessage, setSystemMessage]= useState(undefined)
   const editMessage = () => {
     setTargetMessage(item);
     setIsEditing();
@@ -68,6 +69,8 @@ const RenderMessage = ({
       minute: "numeric",
     });
   };
+
+  
 
   // TODO: Valutare una eventuale rimozione
   // Funzione per formattare la data
@@ -91,10 +94,20 @@ const RenderMessage = ({
           myMessage ? { alignSelf: "flex-end" } : { alignSelf: "flex-start" },
         ]}
       >
-        {!myMessage ? (
+        {item.sender== "SYSTEM" ?
+        <View style={styles.messageRow}>
+            <View style={[styles.messageSystemContainer,styles.systemMessageContainer]}> 
+              <Text style={styles.messageText}>{item.senderUsername} sent a new invitation ! You will be able to manage it in the "Invitation" section. </Text>
+              <Text style={styles.messageText}>Place : {JSON.parse(item.message).place}  </Text>
+              <Text style={styles.messageText}>Day : {new Date(JSON.parse(item.message).timestamp).toLocaleDateString()}  </Text>
+              <Text style={styles.messageText}>Time : {new Date(JSON.parse(item.message).timestamp).toLocaleTimeString()}  </Text>
+            </View>
+        </View>
+        
+        :!myMessage && !item.sender== "SYSTEM" ? (
           <View style={styles.messageRow}>
             <Image
-              source={item.gender === "M" ? maleAvatar : femaleAvatar}
+              source={friendData.gender === "M" ? maleAvatar : femaleAvatar}
               style={myMessage ? styles.imageUser : styles.imageOther}
             />
 
@@ -291,6 +304,16 @@ const Chat = () => {
     setViewEditMessage("");
   };
 
+  const handleSendInvitation = (systemMessage) =>{
+    data = {
+      sender: "SYSTEM",
+      message: JSON.stringify(systemMessage),
+      createdAt: new Date(),
+      senderUsername: user.username
+    };
+    api.sendSystemMessage(id,data)
+  }
+
   if (loading) return <Loader />;
 
 
@@ -330,10 +353,11 @@ const Chat = () => {
           ),
         }}
       />
-      {modalVisible?  <NewInvitationModal
+      {modalVisible?  <ChatInvitationModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         friendData={friendData}
+        handleSendInvitation = {(invitation)=>{handleSendInvitation(invitation )}}
 
       /> :''}
       <FlatList
@@ -348,6 +372,7 @@ const Chat = () => {
             setIsEditing={() => setIsEditing(true)}
             setViewEditMessage={(text) => setViewEditMessage(text)}
             isLastItem={index === messages.length - 1}
+            friendData= {friendData}
           />
         )}
         showsVerticalScrollIndicator={false}

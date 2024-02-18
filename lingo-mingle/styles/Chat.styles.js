@@ -37,6 +37,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     maxWidth: "80%",
   },
+  messageSystemContainer: {
+    padding: 10,
+    marginTop: 10,
+    marginHorizontal: 10,
+    borderRadius: 10,
+  },
+  systemMessageContainer: {
+    backgroundColor: COLOR.gray2,
+    alignSelf: "flex-start",
+    maxWidth: "85%",
+  },
   userMessageContainer: {
     backgroundColor: "#3498DB",
     alignSelf: "flex-end",

@@ -428,6 +428,21 @@ const api = {
     }
   },
 
+  sendSystemMessage : async (chatId,data)=>{
+    try {
+      const messageRef = collection(
+        database,
+        `/chats/${chatId.replace(",", "")}/messages`
+      );
+
+      await addDoc(messageRef, data);
+    } catch (error) {
+      return {
+        message: "Error sending the message",
+      };
+    }
+  },
+
   directCall: async (callerId, receiverId, roomId) => {
     try {
       const docRef = await addDoc(collection(database, "directCall"), {
