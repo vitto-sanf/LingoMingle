@@ -3,7 +3,7 @@ import { useCall } from "@stream-io/video-react-native-sdk";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import { COLOR } from "../../constants";
 import {
-  ParticipantsInfoBadge /*as DefaultParticipantsInfoBadge*/,
+  ParticipantsInfoBadge,
   ParticipantsInfoBadgeProps,
   useCallStateHooks,
 } from "@stream-io/video-react-native-sdk";
@@ -11,8 +11,8 @@ import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import api from "../../services/api";
 import useNotification from "../../hooks/useNotification";
-// TODO: Capire cosa succede nella grafica dell'altro user quando l'altro manda la richiesta,
-// capire se quando si avvia la chiamata si deve controllare un eventuale richiesta già inviata
+import { onSnapshot, collection, doc } from "firebase/firestore";
+import { database } from "../../config/firebase";
 const CustomCallTopView = (props) => {
   const { user, token } = useContext(AuthContext);
   const call = useCall();
@@ -23,9 +23,38 @@ const CustomCallTopView = (props) => {
   const [friends, setFriends] = useState([]); // stato con gli uuid dei miei amici
   const [isFriend, setIsFriend] = useState(true);
   const [friendRequestSent, setFriendRequestSent] = useState(false);
+  const [requestReceived, setRequestReceived] = useState(false);
   const MY_UUID = user.uuid;
   const [isVisible, setIsVisible] = useState(false);
   const notify = useNotification();
+
+  useEffect(() => {
+    const listener = onSnapshot(doc(database, "user", MY_UUID), (snapshot) => {
+      if (snapshot.data().friends_request.length >= 1) {
+        console.log(
+          "Firends_Request: ",
+          snapshot.data().friends_request[
+            snapshot.data().friends_request.length - 1
+          ]?.receiver
+        );
+        if (
+          snapshot.data().friends_request[
+            snapshot.data().friends_request.length - 1
+          ]?.receiver == MY_UUID
+        ) {
+          setRequestReceived(true);
+        } else {
+          setRequestReceived(false);
+        }
+      } else {
+        setRequestReceived(false);
+      }
+    });
+  }, [friendRequestSent]);
+
+  useEffect(() => {
+    console.log("request Received:", requestReceived);
+  }, [requestReceived]);
 
   const handleSendFriendRequest = () => {
     api
@@ -44,28 +73,26 @@ const CustomCallTopView = (props) => {
         setFriendRequestSent(false);
         notify.success(res.message);
       })
+
       .catch((err) => notify.error(err.message));
   };
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsVisible(true);
-    }, 3500); // 3000 milliseconds = 3 seconds
+    }, 3500);
 
     return () => clearTimeout(timeout);
   }, [participant]);
 
   useEffect(() => {
-    
-      const participantsUuids = participant.map(
-        (participant) => participant.userId
-      );
-      setFilteredParticipant(participantsUuids);
-      if (participant.length > 1) {
-        setIsVisible(false);
-      }
-    
-    
+    const participantsUuids = participant.map(
+      (participant) => participant.userId
+    );
+    setFilteredParticipant(participantsUuids);
+    if (participant.length > 1) {
+      setIsVisible(false);
+    }
   }, [participant]);
 
   useEffect(() => {
@@ -86,14 +113,12 @@ const CustomCallTopView = (props) => {
   useEffect(() => {
     //console.log(" Call participants:", filteredParticipant);
 
-    if (filteredParticipant.length >1 && friends.length>=1 )
-    {
-
+    if (filteredParticipant.length > 1 && friends.length >= 1) {
       const otherUuid = filteredParticipant.filter(
         (element) => element !== MY_UUID
       );
       setOtherParticipantUuid(otherUuid);
-      console.log(MY_UUID," : otherUUid: ",otherUuid)
+      console.log(MY_UUID, " : otherUUid: ", otherUuid);
       /*const isContained = friends.includes(OtherParticipantUuid[0]);
       console.log(MY_UUID," : otherUUid: ",otherUuid)
       console.log(MY_UUID," : friends: ",friends)
@@ -102,28 +127,22 @@ const CustomCallTopView = (props) => {
       //console.log(MY_UUID," : otherUUid: ",otherUuid)
       setIsFriend(isContained);*/
     }
-    
-  }, [filteredParticipant,friends]);
+  }, [filteredParticipant, friends]);
 
-  useEffect(()=>{
+  useEffect(() => {
+    if (OtherParticipantUuid.length >= 1) {
+      const isContained = friends.includes(OtherParticipantUuid[0]);
 
-    if(OtherParticipantUuid.length>=1)
-    {
-    const isContained = friends.includes(OtherParticipantUuid[0]);
-      
-      console.log(MY_UUID," : friends: ",friends)
-      console.log(MY_UUID," : OtherParticipantUuid: ",OtherParticipantUuid)
-      console.log(MY_UUID," : isContained: ",isContained)
+      //console.log(MY_UUID," : friends: ",friends)
+      //console.log(MY_UUID," : OtherParticipantUuid: ",OtherParticipantUuid)
+      //console.log(MY_UUID," : isContained: ",isContained)
       //console.log(MY_UUID," : otherUUid: ",otherUuid)
       setIsFriend(isContained);
     }
-
-  },[OtherParticipantUuid])
-
+  }, [OtherParticipantUuid]);
 
   useEffect(() => {
-    console.log(MY_UUID," : isFriend: ",isFriend)
-    
+    console.log(MY_UUID, " : isFriend: ", isFriend);
   }, [isFriend]);
 
   return (
@@ -131,7 +150,8 @@ const CustomCallTopView = (props) => {
       {!isFriend &&
         participant.length > 1 &&
         filteredParticipant.length > 1 &&
-        isVisible && (
+        isVisible &&
+        !requestReceived && (
           <Pressable
             onPress={
               !friendRequestSent /*&&
