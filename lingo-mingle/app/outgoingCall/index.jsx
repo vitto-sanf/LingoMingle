@@ -77,9 +77,8 @@ const OutgoingCall = () => {
         console.log("rejected")
         router.back();
       } else if (callData.status === "Accepted") {
-        api.editFriendContacted(user,contactedUser.uuid).then(()=>{
-          router.push(`/rooms/${callData.roomId}`);
-        })
+        api.editFriendContacted(user,contactedUser.uuid)
+        router.push(`/rooms/${callData.roomId}`);
         
       }
     }, (error) => {
@@ -91,7 +90,7 @@ const OutgoingCall = () => {
     };
   }, [callInfo]);
 
-  useEffect(() => {
+/*   useEffect(() => {
     // Utilizza lo stato della chiamata dal contesto
     if (callStatus === "Rejected") {
       console.log("rejected")
@@ -99,7 +98,7 @@ const OutgoingCall = () => {
     } else if (callStatus === "Accepted") {
       router.push(`/rooms/${callData.roomId}`);
     }
-  }, [callStatus]);
+  }, [callStatus]); */
 
   return (
     <View style={[StyleSheet.absoluteFill, styles.container]}>

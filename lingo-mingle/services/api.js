@@ -368,19 +368,40 @@ const api = {
     })
 
     const docRef =  doc(database, "user", user.uuid);
+    const docSnap = await getDoc(docRef);
     const data = {
       id : friendId,
       contactedAt : new Date(),
     }
     if (isfriend){
-      const fieldPath = `last_friends_contacted.${friendId}`;
+     
+      const LastFriendContacted = docSnap.data().last_friends_contacted;
+      const modified = LastFriendContacted.map(friend =>{ 
+        if(friend.id === friendId){
+          return data
+        }else{
+          return friend
+        }
+        });
+      /* const fieldPath = `last_friends_contacted.${Index}`;  */
+     /*  docSnap.data().last_friends_contacted[Index]= data */
+     console.log("HERE",modified)
       await updateDoc(docRef,{
-        [fieldPath] :data
+        last_friends_contacted: modified
       })
     }else{
-      const fieldPath = `last_user_contacted.${friendId}`;
+      const LastUserContacted = docSnap.data().last_user_contacted;
+      const modified = LastUserContacted.map(friend =>{ 
+        if(friend.id === friendId){
+          return data
+        }else{
+          return friend
+        }
+        });
+      /* const Index = LastUserContacted.findIndex(friend => friend.id === friendId);
+      const fieldPath = `last_user_contacted.${Index}`; */
       await updateDoc(docRef,{
-        [fieldPath] :data
+        last_user_contacted :modified
       })
     }
 

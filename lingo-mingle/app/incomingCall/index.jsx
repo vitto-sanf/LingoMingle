@@ -44,10 +44,8 @@ const IncomingCallButtonGroup = ({caller}) => {
   const acceptCallHandler = () => {
     api.acceptCall(callInfo.id).then(() => {
       setCallInfo(undefined)
-      api.editFriendContacted(user,caller.uuid).then(()=>{
-        router.push(`/rooms/${callInfo.roomId}`);
-      })
-     
+      api.editFriendContacted(user,caller.uuid)
+      router.push(`/rooms/${callInfo.roomId}`);
     });
   };
 
@@ -101,6 +99,7 @@ const IncomingCall = () => {
     api
       .getUser(callInfo.callerId)
       .then((data) => {
+        data.uuid = callInfo.callerId
         setCaller(data);
       })
       .catch((error) => {
