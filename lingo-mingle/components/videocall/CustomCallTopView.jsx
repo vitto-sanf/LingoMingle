@@ -13,7 +13,7 @@ import api from "../../services/api";
 import useNotification from "../../hooks/useNotification";
 import { onSnapshot, collection, doc } from "firebase/firestore";
 import { database } from "../../config/firebase";
-const CustomCallTopView = (props) => {
+const CustomCallTopView = ({setIsUserFriend,setPartcipantId}) => {
   const { user, token } = useContext(AuthContext);
   const call = useCall();
   const { useCallCallingState, useParticipants } = useCallStateHooks();
@@ -115,7 +115,9 @@ const CustomCallTopView = (props) => {
       const otherUuid = filteredParticipant.filter(
         (element) => element !== MY_UUID
       );
+
       setOtherParticipantUuid(otherUuid);
+
      
     }
   }, [filteredParticipant, friends]);
@@ -125,6 +127,8 @@ const CustomCallTopView = (props) => {
       const isContained = friends.includes(OtherParticipantUuid[0]);
 
       setIsFriend(isContained);
+      setIsUserFriend(isContained);
+      setPartcipantId(OtherParticipantUuid)
     }
   }, [OtherParticipantUuid]);
 
