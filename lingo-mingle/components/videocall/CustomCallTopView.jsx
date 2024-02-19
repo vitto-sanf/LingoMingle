@@ -123,22 +123,7 @@ const CustomCallTopView = ({setIsUserFriend,setPartcipantId}) => {
     
   }, [filteredParticipant,friends]);
 
-  useEffect(()=>{
 
-    if(OtherParticipantUuid.length>=1)
-    {
-    const isContained = friends.includes(OtherParticipantUuid[0]);
-      
-      console.log(MY_UUID," : friends: ",friends)
-      console.log(MY_UUID," : OtherParticipantUuid: ",OtherParticipantUuid)
-      console.log(MY_UUID," : isContained: ",isContained)
-      //console.log(MY_UUID," : otherUUid: ",otherUuid)
-      setIsFriend(isContained);
-      setIsUserFriend(isContained);
-      setPartcipantId(OtherParticipantUuid)
-    }
-
-  },[OtherParticipantUuid])
 
 
   useEffect(() => {
