@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   topNavLinks: {
-    width: "50%",
+    width: "33%",
     textAlign: "center",
   },
   topNavLinkText: {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   topNavLinksSelected: {
-    width: "50%",
+    width: "33%",
     borderBottomColor: COLOR.primary,
     borderBottomWidth: 2,
   },

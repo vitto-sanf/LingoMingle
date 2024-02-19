@@ -8,6 +8,7 @@ import Swiper from "react-native-swiper";
 import { Loader } from "../../../components/common";
 import {
   NewInvitationCard,
+  PendingInvitationCard,
   ScheduledInvitationCard,
 } from "../../../components/cards";
 import {
@@ -40,6 +41,9 @@ const InvitationsPage = () => {
 
   const [accInvitations, setAccInvitations] = useState([]);
   const [dirty2, setDirty2] = useState(true);
+
+  const [pendingInvitations, setPendingInvitations] = useState([]);
+  const [dirty3, setDirty3] = useState(true);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -82,6 +86,7 @@ const InvitationsPage = () => {
       .then((res) => {
         setDirty(true);
         setDirty2(true);
+        setDirty3(true);
         notify.success("Invitation deleted");
       })
       .catch((err) => notify.error("Error while deleting the invitation"));
@@ -93,6 +98,7 @@ const InvitationsPage = () => {
       .then((res) => {
         setDirty(true);
         setDirty2(true);
+        setDirty3(true);
         notify.success("Invitation rejected");
       })
       .catch((err) => notify.error("Error while rejecting the invitation"));
@@ -128,9 +134,30 @@ const InvitationsPage = () => {
     }
   }, [accInvitations, dirty2]);
 
+  useEffect(() => {
+    if (dirty3) {
+      api
+        .getInvitation(MY_UUID, "sent")
+        .then((data) => {
+          if (data) {
+            setPendingInvitations(data);
+            setDirty3(false);
+            setLoading(false);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [pendingInvitations, dirty3]);
+
   const handleNavigation = (index) => {
-    setPageStatus(index === 0 ? "new" : "scheduled");
-    setSwiperIndex(index);
+    const statusOptions = ["new", "scheduled", "pending"];
+
+    const pageStatus = statusOptions[index];
+
+    if (pageStatus !== undefined) {
+      setPageStatus(pageStatus);
+      setSwiperIndex(index);
+    }
   };
 
   if (loading) return <Loader />;
@@ -147,7 +174,7 @@ const InvitationsPage = () => {
           }
           onPress={() => handleNavigation(0)}
         >
-          <Text style={styles.topNavLinkText}>New Invitations</Text>
+          <Text style={styles.topNavLinkText}>New</Text>
         </Pressable>
         <Pressable
           style={
@@ -159,11 +186,25 @@ const InvitationsPage = () => {
         >
           <Text style={styles.topNavLinkText}>Scheduled</Text>
         </Pressable>
-        {modalVisible? <NewInvitationModal
-          modalVisible={modalVisible}
-          setModalVisible={toggleModal}
-        />: ''}
-        
+        <Pressable
+          style={
+            pageStatus === "pending"
+              ? styles.topNavLinksSelected
+              : styles.topNavLinks
+          }
+          onPress={() => handleNavigation(2)}
+        >
+          <Text style={styles.topNavLinkText}>Pending</Text>
+        </Pressable>
+        {modalVisible ? (
+          <NewInvitationModal
+            modalVisible={modalVisible}
+            setModalVisible={toggleModal}
+          />
+        ) : (
+          ""
+        )}
+
         {editModalVisible && (
           <EditInvitationModal
             modalVisible={editModalVisible}
@@ -259,6 +300,37 @@ const InvitationsPage = () => {
               <View>
                 <Text style={styles.noInfoText}>
                   There are no new scheduled invitations
+                </Text>
+              </View>
+            )
+          )}
+        </View>
+        {/* Pending Invitation Section */}
+        <View style={styles.container}>
+          {pendingInvitations?.length !== 0 && pageStatus === "pending" ? (
+            <FlatList
+              data={pendingInvitations}
+              renderItem={({ item, index }) => {
+                const lastItem = index === pendingInvitations.length - 1;
+                return (
+                  <PendingInvitationCard
+                    item={item}
+                    lastItem={lastItem}
+                    setModalVisible={toggleModalConfirmation}
+                    setConfirmationModalStatus={setConfirmationModalStatus}
+                    setInvitationUUID={setInvitationUUID}
+                  />
+                );
+              }}
+              keyExtractor={(item) => item.uuid}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            pendingInvitations?.length === 0 &&
+            pageStatus === "pending" && (
+              <View>
+                <Text style={styles.noInfoText}>
+                  There are no pending invitations
                 </Text>
               </View>
             )
