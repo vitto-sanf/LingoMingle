@@ -1,4 +1,8 @@
 package com.luca_tamburo.lingomingle;
+import android.app.PictureInPictureParams;
+import androidx.lifecycle.Lifecycle;
+import android.util.Rational;
+import com.streamvideo.reactnative.StreamVideoReactNative;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -62,4 +66,15 @@ public class MainActivity extends ReactActivity {
     // because it's doing more than {@link Activity#moveTaskToBack} in fact.
     super.invokeDefaultOnBackPressed();
   }
+
+@Override
+      public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getLifecycle().getCurrentState() == Lifecycle.State.CREATED) {
+          // when user clicks on Close button of PIP
+          finishAndRemoveTask();
+        } else {
+          StreamVideoReactNative.onPictureInPictureModeChanged(isInPictureInPictureMode);
+        }
+      }
 }

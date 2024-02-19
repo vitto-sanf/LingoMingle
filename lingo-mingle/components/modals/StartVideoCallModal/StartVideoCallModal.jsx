@@ -34,16 +34,16 @@ const StartVideoCallModal = ({ isModalVisible, setIsModalVisible }) => {
             You are going to be connected with random user on videocall
           </Text>
           <View style={styles.buttonContainer}>
+            <Pressable onPress={onCancelStartMeeting} style={styles.button}>
+              <Text style={[styles.buttonText, { backgroundColor: COLOR.gray2 }]}>
+                Back
+              </Text>
+            </Pressable>
             <Pressable onPress={onConfirmStartMeeting} style={styles.button}>
               <Text
                 style={[styles.buttonText, { backgroundColor: COLOR.green }]}
               >
-                Continue
-              </Text>
-            </Pressable>
-            <Pressable onPress={onCancelStartMeeting} style={styles.button}>
-              <Text style={[styles.buttonText, { backgroundColor: COLOR.red }]}>
-                Exit
+                Connect Me
               </Text>
             </Pressable>
           </View>

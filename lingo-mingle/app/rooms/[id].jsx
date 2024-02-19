@@ -1,16 +1,19 @@
 // Imports
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { Dimensions } from "react-native";
+import { PermissionsAndroid, Platform } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
   CallContent,
   StreamCall,
   useStreamVideoClient,
+  useCallStateHooks,
 } from "@stream-io/video-react-native-sdk";
+import { CallTopView } from "@stream-io/video-react-native-sdk";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { onSnapshot, collection } from "firebase/firestore";
 import { database } from "../../config/firebase";
+import useNotification from "../../hooks/useNotification";
 
 // Components
 import {
@@ -23,6 +26,8 @@ import {
 import {
   CustomBottomSheet,
   CustomCallControls,
+  CustomCallControlsAudioVideo,
+  CustomCallTopView,
 } from "../../components/videocall";
 
 // Context
@@ -33,6 +38,7 @@ import api from "../../services/api";
 
 const Room = () => {
   const { user, token } = useContext(AuthContext);
+  const MY_UUID = user.uuid;
   const router = useRouter();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,13 +50,27 @@ const Room = () => {
   const [call, setCall] = useState(null);
   const client = useStreamVideoClient();
   const { id } = useLocalSearchParams();
-
+  const notify = useNotification();
   const BottomSheetModalRef = useRef();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isFriend, setIsFriend] = useState(undefined);
+  const [participantId, setParticipantId] = useState(undefined);
 
   useEffect(() => {
     console.log(BottomSheetModalRef.current);
+  }, []);
+
+  useEffect(() => {
+    const run = async () => {
+      if (Platform.OS === "android") {
+        await PermissionsAndroid.requestMultiple([
+          "android.permission.POST_NOTIFICATIONS",
+          "android.permission.BLUETOOTH_CONNECT",
+        ]);
+      }
+    };
+    run();
   }, []);
 
   useEffect(() => {
@@ -118,9 +138,22 @@ const Room = () => {
   };
 
   // Join the call
+  /*  useEffect(() => {
+    if (!client || call) return;
+    console.log("CALL",call)
+    const joinCall = async () => {
+      const call = client.call("default", id);
+      await client.connectUser({ id: user.uuid }, token);
+      await call.join({ create: true });
+      setCall(call);
+    };
+
+    joinCall();
+  }, [client, call]); */
+
   useEffect(() => {
     if (!client || call) return;
-
+    console.log("CALL", call);
     const joinCall = async () => {
       const call = client.call("default", id);
       await client.connectUser({ id: user.uuid }, token);
@@ -132,7 +165,9 @@ const Room = () => {
   }, [client, call]);
 
   const goToHomeScreen = async () => {
-    await call.endCall();
+    if (isFriend == false && participantId.length>0 ) {
+      api.editUserContacted(user, participantId[0]);
+    }
     router.back();
   };
 
@@ -148,6 +183,10 @@ const Room = () => {
     onHangupCallHandler: goToHomeScreen,
   };
 
+  const customCallTopViewProps = {
+    callid: id,
+  };
+
   if (!call) return null;
 
   return (
@@ -156,26 +195,43 @@ const Room = () => {
 
       <StreamCall call={call}>
         <CallContent
-          CallControls={(props) => (
-            <CustomCallControls {...customCallControlsProps} />
+          CallControls={(props) => {
+            return (
+              <>
+                <CustomCallControls
+                  {...props}
+                  {...customCallControlsProps}
+                  modalVisible={modalVisible}
+                />
+                <CustomCallControlsAudioVideo isChatOpen={isChatOpen} />
+              </>
+            );
+          }}
+          CallTopView={(props) => (
+            <CustomCallTopView
+              {...customCallTopViewProps}
+              setIsUserFriend={(friend) => setIsFriend(friend)}
+              setPartcipantId={(id) => setParticipantId(id)}
+            />
           )}
           onHangupCallHandler={goToHomeScreen}
           onChatOpenHandler={handleChat}
           toggleModal={toggleModal}
         />
 
-        {!advinaLaPalabraVisible && !cantenJuntosVisible
-        && !nuevoTemaVisible &&
-        <GamesModal
-          modalVisible={modalVisible}
-          setModalVisible={toggleModal}
-          AdivinamodalVisible={advinaLaPalabraVisible}
-          setModalAdivinaVisible={toggleModalAdivina}
-          setModalCantenJuntosVisible={toggleModalCantenJuntos}
-          setModalNuevoTemaVisible={toggleModalNuevoTema}
-        />
-        }
-        
+        {!advinaLaPalabraVisible &&
+          !cantenJuntosVisible &&
+          !nuevoTemaVisible && (
+            <GamesModal
+              modalVisible={modalVisible}
+              setModalVisible={toggleModal}
+              AdivinamodalVisible={advinaLaPalabraVisible}
+              setModalAdivinaVisible={toggleModalAdivina}
+              setModalCantenJuntosVisible={toggleModalCantenJuntos}
+              setModalNuevoTemaVisible={toggleModalNuevoTema}
+            />
+          )}
+
         <AdivinaLaPalabraModal
           modalVisible={advinaLaPalabraVisible}
           setModalVisible={toggleModalAdivina}

@@ -13,9 +13,8 @@ import { useLocalSearchParams, Stack } from "expo-router";
 import { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { database } from "../../config/firebase";
-
-// Components
-import { OutgoingCall } from "../../components/videocall";
+import ChatInvitationModal from "../../components/modals/ChatInvitationsModal/NewInvitationsModal";
+import { useRouter } from "expo-router";
 
 // Services
 import api from "../../services/api";
@@ -25,6 +24,7 @@ import { Loader } from "../../components/common";
 
 // Contexts
 import { AuthContext } from "../../contexts/AuthContext";
+import { DirectCallContext } from "../../contexts/directCallContext";
 
 // Hooks
 import useNotification from "../../hooks/useNotification";
@@ -50,10 +50,11 @@ const RenderMessage = ({
   setIsEditing,
   setViewEditMessage,
   isLastItem,
+  friendData,
 }) => {
   const myMessage = item.sender === myId;
   const [editVisible, setEditVisible] = useState(false);
-
+  const [systemMessage, setSystemMessage] = useState(undefined);
   const editMessage = () => {
     setTargetMessage(item);
     setIsEditing();
@@ -86,14 +87,45 @@ const RenderMessage = ({
       )}
       <View
         style={[
-          { flexDirection: "row", alignItems: "center" },
-          myMessage ? { alignSelf: "flex-end" } : { alignSelf: "flex-start" },
+          styles.messageRow,
+          {
+            justifyContent:
+              item.sender === "SYSTEM"
+                ? "center"
+                : item.sender === myId
+                ? "flex-end"
+                : "flex-start",
+          },
         ]}
       >
-        {!myMessage ? (
+        {item.sender === "SYSTEM" ? (
+          <View
+            style={[
+              styles.messageSystemContainer,
+              styles.systemMessageContainer,
+            ]}
+          >
+            <Text style={styles.invitationMessageText}>
+              {item.senderUsername} sent a new invitation! You will be able to
+              manage it in the "Invitation" section.
+            </Text>
+            <Text style={styles.invitationMessageSubText}>
+              Place: {JSON.parse(item.message).place}
+            </Text>
+            <Text style={styles.invitationMessageSubText}>
+              Date:{" "}
+              {new Date(
+                JSON.parse(item.message).timestamp
+              ).toLocaleDateString()}{" "}
+              {new Date(
+                JSON.parse(item.message).timestamp
+              ).toLocaleTimeString()}
+            </Text>
+          </View>
+        ) : !myMessage && !item.sender === "SYSTEM" ? (
           <View style={styles.messageRow}>
             <Image
-              source={item.gender === "M" ? maleAvatar : femaleAvatar}
+              source={friendData.gender === "M" ? maleAvatar : femaleAvatar}
               style={myMessage ? styles.imageUser : styles.imageOther}
             />
 
@@ -180,16 +212,22 @@ const Chat = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [viewEditMessage, setViewEditMessage] = useState("");
   const [friendData, setFriendData] = useState(undefined);
-  const [isCalling, setIsCalling] = useState(false);
-  const [callRef, setCallRef] = useState(undefined);
   const notify = useNotification();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+  const router = useRouter();
 
   const { user } = useContext(AuthContext);
+  const { setCallInfo, setContactedUser } = useContext(DirectCallContext);
   const MY_UUID = user.uuid;
 
   const flatListRef = useRef(null);
 
   useEffect(() => {
+    console.log("ID", id);
     api
       .getChatParticipant(id.replace(",", ""), MY_UUID)
       .then((data) => {
@@ -235,12 +273,12 @@ const Chat = () => {
     const msg = message.trim();
     if (msg.length === 0 && (!targetMessage || !targetMessage.message)) return;
     if (isEditing && targetMessage && targetMessage.message) {
-      
       api
         .editMessage(targetMessage, id)
         .then(() => {
           setIsEditing(false);
           setTargetMessage({});
+          api.editFriendContacted(user, friendData.uuid);
         })
         .catch((err) => notify.error(err));
     } else {
@@ -248,6 +286,7 @@ const Chat = () => {
         .sendMessage(id, msg, MY_UUID)
         .then(() => {
           setMessage("");
+          api.editFriendContacted(user, friendData.uuid);
           flatListRef.current.scrollToEnd({ animated: true }); // Usa il ref per spostare la FlatList
         })
         .catch((err) => notify.error(err));
@@ -257,8 +296,11 @@ const Chat = () => {
   const callFriend = () => {
     const generatedUuid = Math.floor(Math.random() * (100000 - 2000)) + 2000;
     api.directCall(user.uuid, friendData.uuid, generatedUuid).then((doc) => {
-      setIsCalling(true);
-      setCallRef(doc.id);
+      setCallInfo(doc.id);
+      setContactedUser(friendData);
+      api.editFriendContacted(user, friendData.uuid).then(() => {
+        router.push("/outgoingCall");
+      });
     });
   };
 
@@ -278,25 +320,23 @@ const Chat = () => {
     setViewEditMessage("");
   };
 
-  if (loading) return <Loader />;
+  const handleSendInvitation = (systemMessage) => {
+    data = {
+      sender: "SYSTEM",
+      message: JSON.stringify(systemMessage),
+      createdAt: new Date(),
+      senderUsername: user.username,
+    };
+    api.sendSystemMessage(id, data);
+  };
 
-  if (isCalling && callRef)
-    return (
-      <OutgoingCall
-        contactedUser={friendData}
-        setIsCalling={() => setIsCalling(false)}
-        setCallRef={() => {
-          setCallRef(undefined);
-        }}
-        callRef={callRef}
-      />
-    );
+  if (loading) return <Loader />;
 
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Stack.Screen
         options={{
-          headerShown: isCalling && callRef ? false : true,
+          headerShown: true,
           headerTitle: loading ? "" : headerTitle,
           headerShadowVisible: false,
           headerTitleAlign: "center",
@@ -304,7 +344,8 @@ const Chat = () => {
             <View style={{ flexDirection: "row", marginRight: 10 }}>
               <Pressable
                 onPress={() => {
-                  // TODO: Da implementare
+                  toggleModal();
+                  //console.log("DATA FRIEND;",friendData);
                 }}
               >
                 <FAIcon
@@ -326,6 +367,18 @@ const Chat = () => {
           ),
         }}
       />
+      {modalVisible ? (
+        <ChatInvitationModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          friendData={friendData}
+          handleSendInvitation={(invitation) => {
+            handleSendInvitation(invitation);
+          }}
+        />
+      ) : (
+        ""
+      )}
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
@@ -338,6 +391,7 @@ const Chat = () => {
             setIsEditing={() => setIsEditing(true)}
             setViewEditMessage={(text) => setViewEditMessage(text)}
             isLastItem={index === messages.length - 1}
+            friendData={friendData}
           />
         )}
         showsVerticalScrollIndicator={false}
@@ -381,7 +435,11 @@ const Chat = () => {
           <FAIcon
             name="send"
             size={24}
-            color={message.length !== 0 || targetMessage.message ? COLOR.primary : COLOR.gray}
+            color={
+              message.length !== 0 || targetMessage.message
+                ? COLOR.primary
+                : COLOR.gray
+            }
             style={styles.icon}
           />
         </Pressable>

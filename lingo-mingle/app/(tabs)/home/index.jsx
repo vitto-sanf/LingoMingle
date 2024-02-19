@@ -1,8 +1,9 @@
 // Imports
 import { ScrollView, Text, FlatList, Pressable } from "react-native";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext,useLayoutEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { collection, doc, onSnapshot, orderBy, query } from "firebase/firestore";
+import { database } from "../../../config/firebase";
 // Styles
 import { HomePageStyle as styles } from "../../../styles";
 
@@ -14,7 +15,7 @@ import {
 } from "../../../components/cards";
 import { Loader } from "../../../components/common";
 import { StartVideoCallModal } from "../../../components/modals";
-import { OutgoingCall } from "../../../components/videocall";
+
 
 // Services
 import api from "../../../services/api";
@@ -30,61 +31,33 @@ const HomePage = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const [isCalling, setIsCalling] = useState(false);
-  const [callRef, setCallRef] = useState(undefined);
-  const [item, setItem] = useState(undefined);
 
   const { user } = useContext(AuthContext);
   const MY_UUID = user.uuid;
 
   useEffect(() => {
-    const getUserInfo = async () => {
+    const unsubscribe = onSnapshot(doc(database,'user', user.uuid), async (doc) => {
       try {
-        const lastUserContacted = await api.getLastUserContacted(
-          user?.last_user_contacted
-        );
-
-        const lastFriendsContacted = await api.getLastFriendsContacted(
-          user?.last_friends_contacted
-        );
-
-        const friendsRequest = await api.getFriendsRequest(
-          user?.friends_request,
-          MY_UUID
-        );
-
-        Promise.all([lastUserContacted, lastFriendsContacted, friendsRequest])
-          .then(
-            ([UserContactedList, FriendsContactedList, FriendsRequestList]) => {
-              setLastUserContacted(UserContactedList);
-              setLastFriendsContacted(FriendsContactedList);
-              setFriendsRequest(FriendsRequestList);
-              setLoading(false);
-            }
-          )
-          .catch((error) => {
-            console.error("Error during api calling", error);
-          });
+        const lastUserContacted = await api.getLastUserContacted(doc.data().last_user_contacted);
+        const lastFriendsContacted = await api.getLastFriendsContacted(doc.data().last_friends_contacted);
+        const friendsRequest = await api.getFriendsRequest(doc.data().friends_request, MY_UUID);
+  
+        setLastUserContacted(lastUserContacted);
+        setLastFriendsContacted(lastFriendsContacted);
+        setFriendsRequest(friendsRequest);
+        setLoading(false);
       } catch (error) {
-        console.log(error);
+        console.error("Error during API call:", error);
       }
+    });
+  
+    return () => {
+      unsubscribe();
     };
-
-    getUserInfo();
-  }, [MY_UUID]);
+  }, [user.uuid]);
 
   if (loading) return <Loader />;
-  if (isCalling && callRef && item)
-    return (
-      <OutgoingCall
-        contactedUser={item}
-        setIsCalling={() => setIsCalling(false)}
-        setCallRef={() => {
-          setCallRef(undefined);
-        }}
-        callRef={callRef}
-      />
-    );
+ 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>LingoMingle</Text>
@@ -109,9 +82,7 @@ const HomePage = () => {
                   <LastUserCard
                     item={item}
                     myUUID={MY_UUID}
-                    setIsCalling={() => setIsCalling(true)}
-                    setCallRef={(ref) => setCallRef(ref)}
-                    setItem={(item) => setItem(item)}
+                   
                   />
                 )}
                 keyExtractor={(item) => item.uuid}
@@ -130,9 +101,9 @@ const HomePage = () => {
                   <LastFriendCard
                     item={item}
                     my_uuid={MY_UUID}
-                    setIsCalling={() => setIsCalling(true)}
+                    /* setIsCalling={() => setIsCalling(true)}
                     setCallRef={(ref) => setCallRef(ref)}
-                    setItem={(item) => setItem(item)}
+                    setItem={(item) => setItem(item)} */
                   />
                 )}
                 keyExtractor={(item) => item.uuid}

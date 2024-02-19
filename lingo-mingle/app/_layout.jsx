@@ -15,6 +15,10 @@ import { OverlayProvider } from "stream-chat-expo";
 
 // Context
 import { AuthProvider, AuthContext } from "../contexts/AuthContext";
+import {
+  DirectCallContext,
+  DirectCallProvider,
+} from "../contexts/directCallContext";
 
 // Config
 import toastConfig from "../config/toastConfig";
@@ -72,9 +76,11 @@ const InitialLayout = () => {
 const RootLayout = () => {
   return (
     <AuthProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <InitialLayout />
-      </GestureHandlerRootView>
+      <DirectCallProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <InitialLayout />
+        </GestureHandlerRootView>
+      </DirectCallProvider>
     </AuthProvider>
   );
 };

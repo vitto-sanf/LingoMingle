@@ -30,7 +30,7 @@ import formatDate from "../../../utils/formatDate";
 import { COLOR } from "../../../constants";
 
 //TODO: fix the styling, fix bugs on DatePicker
-const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
+const ChatInvitationModal = ({ modalVisible, setModalVisible, friendData,handleSendInvitation }) => {
   const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
   const notify = useNotification();
   const [selectedFriend, setSelectedFriend] = useState(
@@ -131,7 +131,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
       status: "pending",
     };
     console.log(ModformData);
-
+    handleSendInvitation(ModformData)
     api
       .addInvitation(ModformData)
       .then(() => {})
@@ -429,4 +429,4 @@ const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
   );
 };
 
-export default NewInvitationModal;
+export default ChatInvitationModal;
