@@ -300,7 +300,8 @@ const ChatInvitationModal = ({ modalVisible, setModalVisible, friendData,handleS
                     }}
                     render={({ field: { onChange, value } }) => (
                       <Picker
-                        style={{ width: "100%", height: 40 }}
+                        style={{ width: "100%", height: 40}}
+                        dropdownIconColor={COLOR.white}
                         mode="dropdown"
                         enabled={false}
                         selectedValue={selectedFriend}

@@ -283,7 +283,9 @@ const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
                     }}
                     render={({ field: { onChange, value } }) => (
                       <Picker
-                        style={{ width: "100%", height: 40 }}
+                        style={{ width: "100%", height: 40,color:COLOR.white }}
+                        dropdownIconColor={COLOR.white}
+                        dropdownIconRippleColor={COLOR.white}
                         mode="dropdown"
                         enabled={false}
                         selectedValue={selectedFriend}

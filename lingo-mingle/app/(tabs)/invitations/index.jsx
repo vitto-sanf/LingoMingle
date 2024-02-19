@@ -76,7 +76,9 @@ const InvitationsPage = () => {
         setDirty(true);
         setDirty2(true);
         notify.success(res.message);
+        setConfirmationModalVisible(!confirmationModalVisible);
       })
+      .finally(()=>{toggleModalConfirmation();})
       .catch((err) => notify.error(err.message));
   };
 
@@ -88,7 +90,9 @@ const InvitationsPage = () => {
         setDirty2(true);
         setDirty3(true);
         notify.success("Invitation deleted");
+        setConfirmationModalVisible(!confirmationModalVisible);
       })
+      
       .catch((err) => notify.error("Error while deleting the invitation"));
   };
 
@@ -100,6 +104,7 @@ const InvitationsPage = () => {
         setDirty2(true);
         setDirty3(true);
         notify.success("Invitation rejected");
+        setConfirmationModalVisible(!confirmationModalVisible);
       })
       .catch((err) => notify.error("Error while rejecting the invitation"));
   };
