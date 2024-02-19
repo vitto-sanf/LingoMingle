@@ -165,10 +165,7 @@ const Room = () => {
   }, [client, call]);
 
   const goToHomeScreen = async () => {
-    /* await call.leave(); */
-    console.log("ISFRIEND", isFriend),
-      console.log("participantId", participantId[0]);
-    if (isFriend == false) {
+    if (isFriend == false && participantId.length>0 ) {
       api.editUserContacted(user, participantId[0]);
     }
     router.back();
