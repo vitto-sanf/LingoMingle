@@ -142,8 +142,8 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
 
 
     console.log("sono amico",isFriend);
-    //setTheParticipantId(OtherParticipantUuid)
-
+    //setTheParticipantId(OtherParticipantUuid)  // funzione  che da problemi
+    
   },[isFriend])
 
   
