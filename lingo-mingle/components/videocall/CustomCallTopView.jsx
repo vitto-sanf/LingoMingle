@@ -13,7 +13,7 @@ import api from "../../services/api";
 import useNotification from "../../hooks/useNotification";
 import { onSnapshot, collection, doc } from "firebase/firestore";
 import { database } from "../../config/firebase";
-const CustomCallTopView = ({setIsUserFriend,setPartcipantId}) => {
+const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
   const { user, token } = useContext(AuthContext);
   const call = useCall();
   const { useCallCallingState, useParticipants } = useCallStateHooks();
@@ -78,6 +78,7 @@ const CustomCallTopView = ({setIsUserFriend,setPartcipantId}) => {
   };
 
   useEffect(() => {
+    console.log("Use effect timer");
     const timeout = setTimeout(() => {
       setIsVisible(true);
     }, 3500);
@@ -86,6 +87,7 @@ const CustomCallTopView = ({setIsUserFriend,setPartcipantId}) => {
   }, [participant]);
 
   useEffect(() => {
+    console.log("use effetct che setta i participant");
     const participantsUuids = participant.map(
       (participant) => participant.userId
     );
@@ -96,6 +98,7 @@ const CustomCallTopView = ({setIsUserFriend,setPartcipantId}) => {
   }, [participant]);
 
   useEffect(() => {
+    console.log("use effetct che setta gli amici");
     api
       .getUser(MY_UUID)
       .then((data) => {
@@ -111,24 +114,39 @@ const CustomCallTopView = ({setIsUserFriend,setPartcipantId}) => {
   }, [user]);
 
   useEffect(() => {
+    console.log("use effect che settare l'id dell'altro partecipante")
     if (filteredParticipant.length > 1 && friends.length >= 1) {
       const otherUuid = filteredParticipant.filter(
         (element) => element !== MY_UUID
       );
+      console.log("other:",otherUuid);
       setOtherParticipantUuid(otherUuid);
+      //setPartcipantId(otherUuid);
+      
      
     }
-  }, [filteredParticipant, friends]);
+  }, [filteredParticipant/*, friends*/]);
 
   useEffect(() => {
+    console.log("use effetct che va a settare se sono amico o no");
     if (OtherParticipantUuid.length >= 1) {
       const isContained = friends.includes(OtherParticipantUuid[0]);
 
       setIsUserFriend(isContained);
-      setPartcipantId(OtherParticipantUuid)
+      //setPartcipantId(OtherParticipantUuid)
       setIsFriend(isContained);
     }
   }, [OtherParticipantUuid]);
+
+  useEffect(()=>{
+
+
+    console.log("sono amico",isFriend);
+    //setTheParticipantId(OtherParticipantUuid)
+
+  },[isFriend])
+
+  
 
   return (
     <View style={styles.topView}>

@@ -54,8 +54,8 @@ const Room = () => {
   const BottomSheetModalRef = useRef();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isFriend, setIsFriend] = useState(undefined);
-  const [participantId, setParticipantId] = useState(undefined);
+  const [isUserFriend, setIsUserFriend] = useState(undefined);
+  const [participantId, setTheParticipantId] = useState([]);
 
   /*
   useEffect(() => {
@@ -171,7 +171,7 @@ const Room = () => {
   }, [client, call]);
 
   const goToHomeScreen = async () => {
-    if (isFriend == false && participantId.length>0 ) {
+    if (isUserFriend === false && participantId.length>0 ) {
       api.editUserContacted(user, participantId[0]);
     }
     router.back();
@@ -216,8 +216,8 @@ const Room = () => {
           CallTopView={(props) => (
             <CustomCallTopView
               {...customCallTopViewProps}
-              setIsUserFriend={(friend) => setIsFriend(friend)}
-              setPartcipantId={(id) => setParticipantId(id)}
+              setIsUserFriend={(friend) => setIsUserFriend(friend)}
+              setTheParticipantId={(id) => setTheParticipantId(id)}
             />
           )}
           onHangupCallHandler={goToHomeScreen}
