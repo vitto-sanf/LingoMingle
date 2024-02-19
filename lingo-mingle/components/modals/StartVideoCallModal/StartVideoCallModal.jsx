@@ -10,7 +10,7 @@ const StartVideoCallModal = ({ isModalVisible, setIsModalVisible }) => {
   const router = useRouter();
 
   const onConfirmStartMeeting = () => {
-    const roomId = 100000;
+    const roomId = 100001;
     router.push(`/rooms/${roomId}`);
     setIsModalVisible(false);
   };

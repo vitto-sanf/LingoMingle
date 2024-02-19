@@ -54,13 +54,13 @@ const Room = () => {
 
   const [isChatOpen, setIsChatOpen] = useState(false);
 
-  useEffect(() => {
+ /* useEffect(() => {
     console.log(BottomSheetModalRef.current);
     setTimeout(() => {
       toggleModal();
     }, 30000);
     
-  }, []);
+  }, []);*/
 
 
 
