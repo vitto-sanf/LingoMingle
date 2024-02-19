@@ -57,13 +57,14 @@ const Room = () => {
   const [isFriend, setIsFriend] = useState(undefined);
   const [participantId, setParticipantId] = useState(undefined);
 
+  /*
   useEffect(() => {
-    console.log(BottomSheetModalRef.current);
+    //console.log(BottomSheetModalRef.current);
     setTimeout(() => {
       toggleModal();
     }, 30000);
     
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     const run = async () => {
@@ -80,6 +81,7 @@ const Room = () => {
   useEffect(() => {
     const listener = onSnapshot(collection(database, "games"), (snapshot) => {
       snapshot.forEach((doc) => {
+        //console.log("aaaa",doc.data());
         setGamesData(doc.data());
         setModalVisible(doc.data().ModalGameVisible);
         setAdivinaLaPalabraVisible(doc.data().ModalAdivinaVisible);
@@ -157,7 +159,7 @@ const Room = () => {
 
   useEffect(() => {
     if (!client || call) return;
-    console.log("CALL", call);
+    //console.log("CALL", call);
     const joinCall = async () => {
       const call = client.call("default", id);
       await client.connectUser({ id: user.uuid }, token);

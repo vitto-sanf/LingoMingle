@@ -16,7 +16,7 @@ const CustomCallControls = ({ modalVisible, ...props }) => {
   const handlePress = () => {
     setIsPressed(!isPressed);
   };
-  console.log(modalVisible);
+ 
   return (
     <View style={styles.customCallControlsContainer}>
       <ChatButton onPressHandler={props.onChatOpenHandler} />
