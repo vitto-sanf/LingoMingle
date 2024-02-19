@@ -81,7 +81,7 @@ const LastUserCard = ({ item, myUUID }) => {
           }) ? (
             <FA5Icon name="user-plus" size={20} />
           ) : (
-            <FA5Icon name="user-times" size={20} color={COLOR.red} />
+            <FA5Icon name="user-minus" size={20} color={COLOR.red} />
           )}
         </Pressable>
         <Pressable onPress={() => handleStartVideoCall()}>
