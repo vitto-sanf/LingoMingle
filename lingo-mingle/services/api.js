@@ -360,7 +360,41 @@ const api = {
       };
     }
   },
+  editUserContacted: async(user,userId) =>{
+    let isContacted = false;
+    user.last_user_contacted.map((user)=>{
+      if (user.id== userId){ return  isContacted = true} 
+    })
 
+    const docRef =  doc(database, "user", user.uuid);
+    const docSnap = await getDoc(docRef);
+    const data = {
+      id : userId,
+      contactedAt : new Date(),
+    }
+    if (isContacted){
+     
+      const LastUserContacted = docSnap.data().last_user_contacted;
+      const modified = LastUserContacted.map(user =>{ 
+        if(user.id === userId){
+          return data
+        }else{
+          return user
+        }
+        });
+      /* const fieldPath = `last_friends_contacted.${Index}`;  */
+     /*  docSnap.data().last_friends_contacted[Index]= data */
+     console.log("HERE",modified)
+      await updateDoc(docRef,{
+        last_user_contacted: modified
+      })
+    }else{
+      await updateDoc(docRef,{
+        last_user_contacted :arrayUnion(data)
+      })
+    }
+
+  },
   editFriendContacted: async(user,friendId) =>{
     let isfriend = false;
     user.last_friends_contacted.map((friend)=>{
@@ -419,6 +453,21 @@ const api = {
         message: msg,
         createdAt: serverTimestamp(),
       };
+
+      await addDoc(messageRef, data);
+    } catch (error) {
+      return {
+        message: "Error sending the message",
+      };
+    }
+  },
+
+  sendSystemMessage : async (chatId,data)=>{
+    try {
+      const messageRef = collection(
+        database,
+        `/chats/${chatId.replace(",", "")}/messages`
+      );
 
       await addDoc(messageRef, data);
     } catch (error) {

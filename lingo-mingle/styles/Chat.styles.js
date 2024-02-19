@@ -37,6 +37,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     maxWidth: "80%",
   },
+  messageSystemContainer: {
+    padding: 10,
+    marginTop: 10,
+    marginHorizontal: 10,
+    borderRadius: 10,
+  },
+  systemMessageContainer: {
+    backgroundColor: COLOR.green,
+    alignSelf: "flex-start",
+    maxWidth: "85%",
+  },
   userMessageContainer: {
     backgroundColor: "#3498DB",
     alignSelf: "flex-end",
@@ -88,6 +99,15 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 5,
+  },
+  invitationMessageText: {
+    fontFamily: FONT.medium,
+    fontSize: 16,
+  },
+  invitationMessageSubText: {
+    marginTop: 5,
+    fontFamily: FONT.regular,
+    fontSize: 15,
   },
 });
 export default styles;

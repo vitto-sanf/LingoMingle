@@ -36,7 +36,7 @@ const Profile = () => {
     },{
       id:"EIIr5pUGKdiC76UvnGZA",
       username : "Matteo",
-      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiRUlJcjVwVUdLZGlDNzZVdm5HWkEifQ.HNs4lwiQ25OQvS6ipYTbQqcS0Vxh_mzFQs4po3q1dus"
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiRUlJcjVwVUdLZGlDNzZVdm5HWkEifQ.s7R-ntQIXQwZrdxYkWHRisGFxQOySd9GxLD6LY0j1Vg"
     }
     // ... add more users as needed
   ]);

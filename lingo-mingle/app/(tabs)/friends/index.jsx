@@ -196,7 +196,7 @@ const Friends = () => {
               <Pressable
                 style={[
                   styles.button,
-                  { backgroundColor: COLOR.green, marginLeft: 10 },
+                  { backgroundColor: COLOR.red, marginLeft: 10 },
                 ]}
                 onPress={() => handleCancelFriend()}
               >

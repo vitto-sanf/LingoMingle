@@ -41,8 +41,9 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 100,
-    width: "40%",
+    width: "46%",
     overflow: "hidden",
+    margin:10
   },
   buttonText: {
     textAlign: "center",
