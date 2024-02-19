@@ -4,7 +4,7 @@ import { Modal, Pressable, Text, View } from "react-native";
 
 // Styles
 import styles from "./StartVideoCallModal.style";
-import { COLOR } from "../../../constants";
+import { COLOR, FONT } from "../../../constants";
 
 const StartVideoCallModal = ({ isModalVisible, setIsModalVisible }) => {
   const router = useRouter();
@@ -35,13 +35,21 @@ const StartVideoCallModal = ({ isModalVisible, setIsModalVisible }) => {
           </Text>
           <View style={styles.buttonContainer}>
             <Pressable onPress={onCancelStartMeeting} style={styles.button}>
-              <Text style={[styles.buttonText, { backgroundColor: COLOR.gray2 }]}>
+              <Text
+                style={[
+                  styles.buttonText,
+                  { backgroundColor: COLOR.gray2, fontFamily: FONT.bold },
+                ]}
+              >
                 Back
               </Text>
             </Pressable>
             <Pressable onPress={onConfirmStartMeeting} style={styles.button}>
               <Text
-                style={[styles.buttonText, { backgroundColor: COLOR.green }]}
+                style={[
+                  styles.buttonText,
+                  { backgroundColor: COLOR.green, fontFamily: FONT.bold },
+                ]}
               >
                 Connect Me
               </Text>

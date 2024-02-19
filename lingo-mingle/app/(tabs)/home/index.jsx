@@ -1,8 +1,14 @@
 // Imports
 import { ScrollView, Text, FlatList, Pressable } from "react-native";
-import React, { useEffect, useState, useContext,useLayoutEffect } from "react";
+import React, { useEffect, useState, useContext, useLayoutEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { collection, doc, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { database } from "../../../config/firebase";
 // Styles
 import { HomePageStyle as styles } from "../../../styles";
@@ -15,7 +21,6 @@ import {
 } from "../../../components/cards";
 import { Loader } from "../../../components/common";
 import { StartVideoCallModal } from "../../../components/modals";
-
 
 // Services
 import api from "../../../services/api";
@@ -31,33 +36,42 @@ const HomePage = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-
   const { user } = useContext(AuthContext);
   const MY_UUID = user.uuid;
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(database,'user', user.uuid), async (doc) => {
-      try {
-        const lastUserContacted = await api.getLastUserContacted(doc.data().last_user_contacted);
-        const lastFriendsContacted = await api.getLastFriendsContacted(doc.data().last_friends_contacted);
-        const friendsRequest = await api.getFriendsRequest(doc.data().friends_request, MY_UUID);
-  
-        setLastUserContacted(lastUserContacted);
-        setLastFriendsContacted(lastFriendsContacted);
-        setFriendsRequest(friendsRequest);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error during API call:", error);
+    const unsubscribe = onSnapshot(
+      doc(database, "user", user.uuid),
+      async (doc) => {
+        try {
+          const lastUserContacted = await api.getLastUserContacted(
+            doc.data().last_user_contacted
+          );
+          const lastFriendsContacted = await api.getLastFriendsContacted(
+            doc.data().last_friends_contacted
+          );
+          const friendsRequest = await api.getFriendsRequest(
+            doc.data().friends_request,
+            MY_UUID
+          );
+
+          setLastUserContacted(lastUserContacted);
+          setLastFriendsContacted(lastFriendsContacted);
+          setFriendsRequest(friendsRequest);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error during API call:", error);
+        }
       }
-    });
-  
+    );
+
     return () => {
       unsubscribe();
     };
   }, [user.uuid]);
 
   if (loading) return <Loader />;
- 
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>LingoMingle</Text>
@@ -79,11 +93,7 @@ const HomePage = () => {
               <FlatList
                 data={lastUsersContacted}
                 renderItem={({ item }) => (
-                  <LastUserCard
-                    item={item}
-                    myUUID={MY_UUID}
-                   
-                  />
+                  <LastUserCard item={item} myUUID={MY_UUID} />
                 )}
                 keyExtractor={(item) => item.uuid}
                 horizontal={true}

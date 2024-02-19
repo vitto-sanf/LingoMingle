@@ -49,7 +49,7 @@ const ChatView = ({ channelId }) => {
         <Chat client={chatClient}>
           <Channel channel={channel} DateHeader={HiddenComponentsHandler}>
             <MessageList />
-            <View style={{ marginBottom: 70 }}>
+            <View style={{ marginBottom: 60 }}>
               <MessageInput Input={CustomInput} />
             </View>
           </Channel>

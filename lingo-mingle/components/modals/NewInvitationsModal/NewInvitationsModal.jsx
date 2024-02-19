@@ -1,14 +1,6 @@
+// Imports
 import React, { useEffect, useState, useRef } from "react";
-import {
-  Alert,
-  Modal,
-  Text,
-  Pressable,
-  View,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import { Modal, Text, Pressable, View, TextInput } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as yup from "yup";
@@ -73,7 +65,6 @@ const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
       });
 
   useEffect(() => {
-    
     if (dirty) {
       api
         .getUser(MY_UUID)
@@ -259,20 +250,12 @@ const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
                           setPickerOpen(true);
                         }}
                       >
-                        {!pickerOpen ? (
+                        {!pickerOpen && (
                           <Picker.Item
                             style={{ color: "#C7C7CD" }}
                             label="Select Friend"
                             value={0}
                             key={0}
-                          />
-                        ) : (
-                          <Picker.Item
-                            style={{ color: "#C7C7CD" }}
-                            label="Friends List"
-                            value={0}
-                            key={0}
-                            enabled={false}
                           />
                         )}
 

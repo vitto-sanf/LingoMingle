@@ -10,8 +10,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 8,
     paddingHorizontal: 10,
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
   title: {
     fontFamily: FONT.bold,
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   button: {
-    marginBottom: 0,
+    marginBottom: 4,
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 12,
@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.primary,
     height: 60,
     width: 280,
+    alignSelf: "center",
   },
   buttonTitle: {
     fontFamily: FONT.bold,

@@ -14,7 +14,7 @@ import { COLOR, FONT } from "../../constants";
 
 // Custom Bottom Sheet to display the chat
 const CustomBottomSheet = forwardRef((props, ref) => {
-  const snapPoints = useMemo(() => ["99%"], []);
+  const snapPoints = useMemo(() => ["90%"], []);
 
   const renderBackDrop = useCallback(
     (props) => (

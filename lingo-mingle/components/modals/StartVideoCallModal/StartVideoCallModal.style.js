@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     width: "46%",
     overflow: "hidden",
-    margin:10
+    margin: 10,
   },
   buttonText: {
     textAlign: "center",

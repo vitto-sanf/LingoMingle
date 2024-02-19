@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: 350,
     marginBottom: 10,
-    paddingHorizontal: 10,
   },
   lastItemContainer: {
     flexDirection: "row",
@@ -41,7 +40,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   trashIconContainer: {
-    justifyContent: "center",
+    justifyContent: "flex-end",
+    marginBottom: 10,
   },
 });
 
