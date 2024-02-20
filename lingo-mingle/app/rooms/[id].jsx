@@ -226,7 +226,8 @@ const Room = () => {
                   {...customCallControlsProps}
                   modalVisible={modalVisible}
                 />
-                <CustomCallControlsAudioVideo isChatOpen={isChatOpen} activateModalTimer={activateModalTimer}/>
+                {!advinaLaPalabraVisible && !cantenJuntosVisible && !nuevoTemaVisible && !modalVisible && 
+                <CustomCallControlsAudioVideo isChatOpen={isChatOpen} activateModalTimer={activateModalTimer}/> }
               </>
             );
           }}
