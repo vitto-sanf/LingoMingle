@@ -131,7 +131,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
       .then(() => {})
       .catch((err) => notify.error(err.message))
       .finally(() => {
-        notify.success("Invitation sent correctly!");
+        notify.success("Invitation sent correctly! You can manage it in the pending section");
         onCancel();
       });
   };
