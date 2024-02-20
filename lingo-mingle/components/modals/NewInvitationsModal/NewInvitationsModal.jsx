@@ -253,12 +253,20 @@ const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
                           setPickerOpen(true);
                         }}
                       >
-                        {!pickerOpen && (
+                        {!pickerOpen ? (
                           <Picker.Item
                             style={{ color: "#C7C7CD" }}
                             label="Select Friend"
                             value={0}
                             key={0}
+                          />
+                        ) : (
+                          <Picker.Item
+                            style={{ color: "#C7C7CD" }}
+                            label="Friends List"
+                            value={0}
+                            key={0}
+                            enabled={false}
                           />
                         )}
 
