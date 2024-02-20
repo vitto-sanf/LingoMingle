@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef,useContext } from "react";
 import {
   Alert,
   Modal,
@@ -28,10 +28,13 @@ import useNotification from "../../../hooks/useNotification";
 // Utils
 import formatDate from "../../../utils/formatDate";
 import { COLOR } from "../../../constants";
+//context
+import { AuthContext } from "../../../contexts/AuthContext";
 
 //TODO: fix the styling, fix bugs on DatePicker
 const ChatInvitationModal = ({ modalVisible, setModalVisible, friendData,handleSendInvitation }) => {
-  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
+  const {user}= useContext(AuthContext)
+  const MY_UUID = user.uuid;
   const notify = useNotification();
   const [selectedFriend, setSelectedFriend] = useState(
     !friendData ? 0 : friendData.uuid

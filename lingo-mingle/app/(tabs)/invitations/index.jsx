@@ -147,50 +147,7 @@ const InvitationsPage = () => {
     };
   }, [user]);
 
-  /* useEffect(() => {
-    if (dirty) {
-      api
-        .getInvitation(MY_UUID, "pending")
-        .then((data) => {
-          if (data) {
-            setInvitations(data);
-            setDirty(false);
-            setLoading(false);
-          }
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [invitations, dirty,user]);
-
-  useEffect(() => {
-    if (dirty2) {
-      api
-        .getInvitation(MY_UUID, "accepted")
-        .then((data) => {
-          if (data) {
-            setAccInvitations(data);
-            setDirty2(false);
-            setLoading(false);
-          }
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [accInvitations, dirty2,user]);
-
-  useEffect(() => {
-    if (dirty3) {
-      api
-        .getInvitation(MY_UUID, "sent")
-        .then((data) => {
-          if (data) {
-            setPendingInvitations(data);
-            setDirty3(false);
-            setLoading(false);
-          }
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [pendingInvitations, dirty3,user]); */
+ 
 
   const handleNavigation = (index) => {
     const statusOptions = ["new", "scheduled", "pending"];

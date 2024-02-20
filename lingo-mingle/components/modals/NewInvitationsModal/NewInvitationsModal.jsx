@@ -1,5 +1,5 @@
 // Imports
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef ,useContext} from "react";
 import { Modal, Text, Pressable, View, TextInput } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -20,10 +20,13 @@ import useNotification from "../../../hooks/useNotification";
 // Utils
 import formatDate from "../../../utils/formatDate";
 import { COLOR } from "../../../constants";
+//Context
+import { AuthContext } from "../../../contexts/AuthContext";
 
 //TODO: fix the styling, fix bugs on DatePicker
 const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
-  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
+  const {user}= useContext(AuthContext)
+  const MY_UUID = user.uuid;
   const notify = useNotification();
   const [selectedFriend, setSelectedFriend] = useState(
     !friendData ? 0 : friendData.uuid
