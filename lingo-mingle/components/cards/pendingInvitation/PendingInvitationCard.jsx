@@ -14,11 +14,11 @@ const PendingInvitationCard = ({
   setInvitationUUID,
 }) => {
   const invitationUUID = item.uuid;
-
+  //console.log(item.receiver["_j"]);
   return (
     <View style={lastItem ? styles.lastItemContainer : styles.container}>
       <View style={styles.leftContainer}>
-        <Text style={styles.userName}>{item.username}</Text>
+        <Text style={styles.userName}>{item.receiver["_j"]}</Text>
         <View style={styles.meetingContainer}>
           <FA5Icon name="calendar-alt" solid size={24} style={styles.icon} />
           <Text>{item.timestamp}</Text>

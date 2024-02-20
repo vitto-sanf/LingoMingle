@@ -631,6 +631,15 @@ const api = {
     });
 
     querySnapshot.forEach((doc) => {
+      //console.log("server data:",doc.data().receiver)
+      const receiver = api.getUser(doc.data().receiver).then((data) => {
+        //console.log(data.username);
+       /* data.uuid = doc.sender;
+        data.status = doc.status;*/
+        return data.username;
+      })
+      //console.log(receiver);
+      //console.log("server data:",receiver)
       const senderUserId = doc.data().sender;
       let inv = {
         uuid: doc.id,
@@ -640,6 +649,7 @@ const api = {
         nonFormattedTimestamp: doc.data().timestamp.toDate(),
         place: doc.data().place,
         sender: senderUserId,
+        receiver: receiver,
         username: userMap[senderUserId],
       };
       Invitations = [...Invitations, inv];
