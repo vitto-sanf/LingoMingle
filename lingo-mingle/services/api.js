@@ -632,13 +632,13 @@ const api = {
 
     querySnapshot.forEach((doc) => {
       //console.log("server data:",doc.data().receiver)
-      const receiver = api.getUser(doc.data().receiver).then((data) => {
+     // const receiver = api.getUser(doc.data().receiver).then((data) => {
         //console.log(data.username);
        /* data.uuid = doc.sender;
         data.status = doc.status;*/
-        return data.username;
-      })
-      //console.log(receiver);
+        //return data.username;
+      //})
+      //console.log("server",receiver);
       //console.log("server data:",receiver)
       const senderUserId = doc.data().sender;
       let inv = {
@@ -649,9 +649,10 @@ const api = {
         nonFormattedTimestamp: doc.data().timestamp.toDate(),
         place: doc.data().place,
         sender: senderUserId,
-        receiver: receiver,
+        receiverUUid: doc.data().receiver,
         username: userMap[senderUserId],
       };
+      //console.log("server Inv",inv);
       Invitations = [...Invitations, inv];
     });
 
