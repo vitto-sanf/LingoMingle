@@ -91,6 +91,22 @@ const Room = () => {
     });
   }, []);
 
+  const activateModalTimer= ()=>{
+    setTimeout(async() => {
+      setModalVisible(!gamesData.ModalGameVisible);
+
+    const newData = {
+      ...gamesData,
+      ModalGameVisible: !gamesData.ModalGameVisible,
+    };
+
+    setGamesData(newData);
+
+    await api.setGamesData(newData);
+    notify.success("It's been 30 seconds since you last spoke, try a game!")
+    }, 30000);
+  }
+
   const toggleModal = async () => {
     setModalVisible(!gamesData.ModalGameVisible);
 
@@ -187,6 +203,7 @@ const Room = () => {
     toggleModal: toggleModal,
     onChatOpenHandler: handleChat,
     onHangupCallHandler: goToHomeScreen,
+    
   };
 
   const customCallTopViewProps = {
@@ -209,7 +226,7 @@ const Room = () => {
                   {...customCallControlsProps}
                   modalVisible={modalVisible}
                 />
-                <CustomCallControlsAudioVideo isChatOpen={isChatOpen} />
+                <CustomCallControlsAudioVideo isChatOpen={isChatOpen} activateModalTimer={activateModalTimer}/>
               </>
             );
           }}

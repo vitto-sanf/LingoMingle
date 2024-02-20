@@ -1,6 +1,6 @@
 // Imports
 import { View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   useCall,
   ToggleAudioPublishingButton,
@@ -11,15 +11,22 @@ import {
 // Styles
 import styles from "../../styles/CustomCallControlsAudioVideo.styles";
 
-const CustomCallControlsAudioVideo = ({ isChatOpen }) => {
+const CustomCallControlsAudioVideo = ({ isChatOpen,activateModalTimer, }) => {
   const call = useCall();
+
 
   return (
     !isChatOpen &&
     call && (
       <View style={styles.customCallControlsContainer}>
         <ToggleAudioPublishingButton
-          onPressHandler={() => call?.microphone.toggle()}
+          onPressHandler={() => {
+            if(call?.microphone?.state?.status==="enabled")
+            {
+          activateModalTimer();}
+          call?.microphone.toggle();
+          }
+          }
         />
         <ToggleVideoPublishingButton
           onPressHandler={() => call?.camera.toggle()}
