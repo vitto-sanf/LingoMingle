@@ -122,7 +122,7 @@ const RenderMessage = ({
               ).toLocaleTimeString()}
             </Text>
           </View>
-        ) : !myMessage && !item.sender === "SYSTEM" ? (
+        ) : !myMessage? (
           <View style={styles.messageRow}>
             <Image
               source={friendData.gender === "M" ? maleAvatar : femaleAvatar}

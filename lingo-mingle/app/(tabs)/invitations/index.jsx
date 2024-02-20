@@ -1,9 +1,10 @@
 // Imports
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Text, FlatList, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
-
+import { collection, onSnapshot, orderBy, query,where } from "firebase/firestore";
+import { database } from "../../../config/firebase";
 // Components
 import { Loader } from "../../../components/common";
 import {
@@ -26,9 +27,12 @@ import AntIcon from "react-native-vector-icons/AntDesign";
 
 // Services
 import api from "../../../services/api";
+//Context
+import { AuthContext } from "../../../contexts/AuthContext";
 
 const InvitationsPage = () => {
-  const MY_UUID = "YVBwXkN7cIk7WmZ8oUXG";
+  const { user } = useContext(AuthContext);
+  const MY_UUID = user.uuid;
   const notify = useNotification();
 
   const [swiperIndex, setSwiperIndex] = useState(0);
@@ -78,7 +82,9 @@ const InvitationsPage = () => {
         notify.success(res.message);
         setConfirmationModalVisible(!confirmationModalVisible);
       })
-      .finally(()=>{toggleModalConfirmation();})
+      .finally(() => {
+        toggleModalConfirmation();
+      })
       .catch((err) => notify.error(err.message));
   };
 
@@ -92,7 +98,7 @@ const InvitationsPage = () => {
         notify.success("Invitation deleted");
         setConfirmationModalVisible(!confirmationModalVisible);
       })
-      
+
       .catch((err) => notify.error("Error while deleting the invitation"));
   };
 
@@ -108,8 +114,78 @@ const InvitationsPage = () => {
       })
       .catch((err) => notify.error("Error while rejecting the invitation"));
   };
-
   useEffect(() => {
+    const q1 = query(
+      collection(database, "invitation"),
+      where("receiver", "==", user.uuid),
+      where("status", "==", "pending")
+    );
+  
+    const unsubscribePending = onSnapshot(
+      q1,
+      (snapshot) => {
+        const pendingData = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return { ...data, uuid: doc.id };
+        });
+        setInvitations(pendingData);
+      },
+      (error) => {
+        console.error("Error fetching pending invitations: ", error);
+      }
+    );
+  
+    const q2 = query(
+      collection(database, "invitation"),
+      where("receiver", "==", user.uuid),
+      where("status", "==", "accepted")
+    );
+  
+    const unsubscribeAccepted = onSnapshot(
+      q2,
+      (snapshot) => {
+        const acceptedData = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return { ...data, uuid: doc.id };
+        });
+        setAccInvitations(acceptedData);
+      },
+      (error) => {
+        console.error("Error fetching accepted invitations: ", error);
+      }
+    );
+  
+    const q3 = query(
+      collection(database, "invitation"),
+      where("receiver", "==", user.uuid),
+      where("status", "==", "sent")
+    );
+  
+    const unsubscribeSent = onSnapshot(
+      q3,
+      (snapshot) => {
+        const sentData = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return { ...data, uuid: doc.id };
+        });
+        setPendingInvitations(sentData);
+        setLoading(false)
+      },
+      (error) => {
+        console.error("Error fetching sent invitations: ", error);
+      }
+    );
+  
+    return () => {
+      
+      unsubscribePending();
+      unsubscribeAccepted();
+      unsubscribeSent();
+    };
+  }, [user.uuid]);
+  
+
+  /* useEffect(() => {
     if (dirty) {
       api
         .getInvitation(MY_UUID, "pending")
@@ -122,7 +198,7 @@ const InvitationsPage = () => {
         })
         .catch((err) => console.log(err));
     }
-  }, [invitations, dirty]);
+  }, [invitations, dirty,user]);
 
   useEffect(() => {
     if (dirty2) {
@@ -137,7 +213,7 @@ const InvitationsPage = () => {
         })
         .catch((err) => console.log(err));
     }
-  }, [accInvitations, dirty2]);
+  }, [accInvitations, dirty2,user]);
 
   useEffect(() => {
     if (dirty3) {
@@ -152,7 +228,7 @@ const InvitationsPage = () => {
         })
         .catch((err) => console.log(err));
     }
-  }, [pendingInvitations, dirty3]);
+  }, [pendingInvitations, dirty3,user]); */
 
   const handleNavigation = (index) => {
     const statusOptions = ["new", "scheduled", "pending"];
