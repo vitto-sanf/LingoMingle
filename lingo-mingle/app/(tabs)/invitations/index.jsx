@@ -3,7 +3,13 @@ import React, { useEffect, useState, useContext } from "react";
 import { Text, FlatList, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
-import { collection, onSnapshot, orderBy, query,where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { database } from "../../../config/firebase";
 // Components
 import { Loader } from "../../../components/common";
@@ -115,75 +121,31 @@ const InvitationsPage = () => {
       .catch((err) => notify.error("Error while rejecting the invitation"));
   };
   useEffect(() => {
-    const q1 = query(
-      collection(database, "invitation"),
-      where("receiver", "==", user.uuid),
-      where("status", "==", "pending")
-    );
   
-    const unsubscribePending = onSnapshot(
-      q1,
+    const unsubscribe = onSnapshot(
+      collection(database, "invitation"),
       (snapshot) => {
-        const pendingData = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return { ...data, uuid: doc.id };
-        });
-        setInvitations(pendingData);
+        Promise.all([
+          api.getInvitation(MY_UUID, "pending"),
+          api.getInvitation(MY_UUID, "accepted"),
+          api.getInvitation(MY_UUID, "sent")
+        ]).then(([pendingData, acceptedData, sentData]) => {
+          setInvitations(pendingData || []);
+          setAccInvitations(acceptedData || []);
+          setPendingInvitations(sentData || []);
+          setLoading(false);
+        }).catch((err) => console.log(err));
+    
       },
       (error) => {
         console.error("Error fetching pending invitations: ", error);
       }
     );
-  
-    const q2 = query(
-      collection(database, "invitation"),
-      where("receiver", "==", user.uuid),
-      where("status", "==", "accepted")
-    );
-  
-    const unsubscribeAccepted = onSnapshot(
-      q2,
-      (snapshot) => {
-        const acceptedData = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return { ...data, uuid: doc.id };
-        });
-        setAccInvitations(acceptedData);
-      },
-      (error) => {
-        console.error("Error fetching accepted invitations: ", error);
-      }
-    );
-  
-    const q3 = query(
-      collection(database, "invitation"),
-      where("receiver", "==", user.uuid),
-      where("status", "==", "sent")
-    );
-  
-    const unsubscribeSent = onSnapshot(
-      q3,
-      (snapshot) => {
-        const sentData = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return { ...data, uuid: doc.id };
-        });
-        setPendingInvitations(sentData);
-        setLoading(false)
-      },
-      (error) => {
-        console.error("Error fetching sent invitations: ", error);
-      }
-    );
-  
+
     return () => {
-      
-      unsubscribePending();
-      unsubscribeAccepted();
-      unsubscribeSent();
+      unsubscribe()
     };
-  }, [user.uuid]);
-  
+  }, [user]);
 
   /* useEffect(() => {
     if (dirty) {

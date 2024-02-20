@@ -16,6 +16,7 @@ const NewInvitationCard = ({
   setConfirmationModalStatus,
 }) => {
   const invitationUUID = item.uuid;
+  
 
   return (
     <View style={lastItem ? styles.lastItemContainer : styles.container}>
