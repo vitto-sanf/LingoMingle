@@ -164,7 +164,7 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
                 ? handleSendFriendRequest
                 : handleCancelFriendRequest
             }
-            style={styles.friendReqPressable}
+            style={[styles.friendReqPressable,styles.rightElement]}
           >
             {!friendRequestSent &&
             !allUsersData.friends_request.some((request) => {
@@ -177,9 +177,9 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
           </Pressable>
         )}
 
-      <View style={[styles.rightElement]}>
+      {/*<View style={[styles.rightElement]}>
         {ParticipantsInfoBadge && <ParticipantsInfoBadge />}
-      </View>
+      </View>*/}
     </View>
   );
 };
@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
   },
   rightElement: {
     flex: 1,
+    paddingRight:10,
     alignItems: "flex-end",
   },
   friendReqPressable: {
