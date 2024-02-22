@@ -28,6 +28,13 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "expo": {
+      "extra": {
+        "eas": {
+          "projectId": "aae74774-e888-40fc-b33b-f79515c6ff2a"
+        }
+      }
+    },
     "plugins": [
       "expo-router",
       "@stream-io/video-react-native-sdk",

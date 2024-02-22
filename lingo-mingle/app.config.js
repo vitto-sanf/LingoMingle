@@ -38,6 +38,13 @@ export default{
       messagingSenderId: process.env.MESSAGE_SENDER_ID,
       appId: process.env.APP_ID
     },
+    "expo": {
+      "extra": {
+        "eas": {
+          "projectId": "aae74774-e888-40fc-b33b-f79515c6ff2a"
+        }
+      }
+    },
 
     "plugins": [
       "expo-router",
