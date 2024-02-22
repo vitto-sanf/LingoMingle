@@ -1,5 +1,13 @@
 // Imports
-import { ScrollView, Text, FlatList, Pressable, View, Modal } from "react-native";
+import {
+  ScrollView,
+  Text,
+  FlatList,
+  Pressable,
+  View,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState, useContext, useLayoutEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -13,7 +21,7 @@ import { database } from "../../../config/firebase";
 
 // Styles
 import { HomePageStyle as styles } from "../../../styles";
-import IoIcons from 'react-native-vector-icons/Ionicons'
+import IoIcons from "react-native-vector-icons/Ionicons";
 import { COLOR } from "../../../constants";
 
 // Components
@@ -39,19 +47,19 @@ const HomePage = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const [notifyCounter, setNotifyCounter] = useState(0)
-  const [openNotificationCenter, setOpenNotficationCenter] = useState(false)
+  const [notifyCounter, setNotifyCounter] = useState(0);
+  const [openNotificationCenter, setOpenNotficationCenter] = useState(false);
 
   const { user } = useContext(AuthContext);
-  const [friends, setFriends]= useState(user?.friends)
+  const [friends, setFriends] = useState(user?.friends);
   const MY_UUID = user.uuid;
 
   const handleNotification = () => {
-    setOpenNotficationCenter(!openNotificationCenter)
-  }
+    setOpenNotficationCenter(!openNotificationCenter);
+  };
 
   const [notificationData, setNotificationData] = useState([
-    {
+    /*  {
       id: 1,
       sender: "Alice",
       timestamp: new Date().getTime(),
@@ -65,13 +73,13 @@ const HomePage = () => {
       id: 3,
       sender: "Carl",
       timestamp: new Date().getTime(),
-    },
+    }, */
   ]);
 
   // const [notificationData, setNotificationData] = useState([]); TODO: ENABLE THIS
-  
+
   useEffect(() => {
-    console.log("LAST SEEN", user.lastSeen)
+    console.log("LAST SEEN", user.lastSeen);
     const unsubscribe = onSnapshot(
       doc(database, "user", user.uuid),
       async (doc) => {
@@ -101,24 +109,25 @@ const HomePage = () => {
       unsubscribe();
     };
   }, [user.uuid]);
-  
+
   useEffect(() => {
-  
     const unsubscribe = onSnapshot(
       collection(database, "invitation"),
       (snapshot) => {
-        
-          api.getInvitation(MY_UUID, "pending").then((data)=>{
-            data.forEach((invite)=>{
-              console.log("HERE", new Date (data[0].createdAt.toDate()), user.lastSeen )
-
-              if (new Date (invite.createdAt.toDate()) >  user.lastSeen){
-                console.log("Invitation data", new Date (data[0].createdAt.toDate()))
-              }
-            })
-            
-          })
-         
+        const newNotifications = []; // Variabile temporanea per accumulare le nuove notifiche
+        api.getInvitation(MY_UUID, "pending").then((data) => {
+          data.forEach((invite) => {
+            if (new Date(invite.createdAt.toDate()) > user.lastSeen) {
+              console.log(invite.username);
+              setNotifyCounter((prevCounter) => prevCounter + 1);
+              const length = notificationData.length;
+              const newId =
+                length > 0 ? notificationData[length - 1].id + 1 : 0;
+              newNotifications.push({ id: newId, sender: invite.username }); // Accumula la nuova notifica
+            }
+          });
+          setNotificationData((prevData) => [...prevData, ...newNotifications]); // Aggiorna lo stato con tutte le nuove notifiche accumulate
+        });
       },
       (error) => {
         console.error("Error fetching pending invitations: ", error);
@@ -126,7 +135,7 @@ const HomePage = () => {
     );
 
     return () => {
-      unsubscribe()
+      unsubscribe();
     };
   }, [user]);
 
@@ -140,9 +149,15 @@ const HomePage = () => {
         </View>
         <View style={styles.notificationContainer}>
           <Pressable onPress={handleNotification}>
-            <IoIcons name="notifications" size={30} color={notifyCounter > 0 ? COLOR.primary : COLOR.black}/>
+            <IoIcons
+              name="notifications"
+              size={30}
+              color={notifyCounter > 0 ? COLOR.primary : COLOR.black}
+            />
           </Pressable>
-          {notifyCounter > 0 && <Text style={styles.notificationCounter}>{notifyCounter}</Text>}
+          {notifyCounter > 0 && (
+            <Text style={styles.notificationCounter}>{notifyCounter}</Text>
+          )}
         </View>
       </View>
       {lastUsersContacted.length === 0 &&
@@ -220,27 +235,39 @@ const HomePage = () => {
       )}
 
       <Modal
-      animationType="slide"
-      transparent={true}
-      visible={openNotificationCenter}
-    >
-      <View style={styles.notificationMenu}>
-        {notificationData.length === 0 ? (
-          <Text style={styles.modalText}>No new invitations!</Text>
-        ) : (
-          <FlatList
-            data={notificationData}
-            renderItem={({ item }) => (
-              <InvitationNotification
-                sender={item.sender}
-                timestamp={item.timestamp}
+        animationType="slide"
+        transparent={true}
+        visible={openNotificationCenter}
+        onRequestClose={() => {
+          setOpenNotficationCenter(false);
+        }}
+      >
+        <Pressable
+          style={styles.modalBackground}
+          onPress={() => {
+            setOpenNotficationCenter(false);
+            setNotifyCounter(0);
+            setNotificationData([]);
+          }}
+        >
+          <View style={styles.notificationMenu}>
+            {notificationData.length === 0 ? (
+              <Text>No new invitations!</Text>
+            ) : (
+              <FlatList
+                data={notificationData}
+                renderItem={({ item }) => (
+                  <InvitationNotification
+                    sender={item.sender}
+                    timestamp={item.timestamp}
+                  />
+                )}
+                keyExtractor={(item) => item.id}
               />
             )}
-            keyExtractor={(item) => item.id}
-          />
-        )}
-      </View>
-    </Modal>
+          </View>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 };
