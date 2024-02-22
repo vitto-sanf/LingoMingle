@@ -78,7 +78,8 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
   };
 
   useEffect(() => {
-    console.log("Use effect timer");
+    console.log("PARTECIPANTIII");
+    //console.log("Use effect timer");
     const timeout = setTimeout(() => {
       setIsVisible(true);
     }, 3500);
@@ -87,7 +88,7 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
   }, [participant]);
 
   useEffect(() => {
-    console.log("use effetct che setta i participant");
+    //console.log("use effetct che setta i participant");
     const participantsUuids = participant.map(
       (participant) => participant.userId
     );
@@ -98,7 +99,7 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
   }, [participant]);
 
   useEffect(() => {
-    console.log("use effetct che setta gli amici");
+    //console.log("use effetct che setta gli amici");
     api
       .getUser(MY_UUID)
       .then((data) => {
@@ -114,12 +115,12 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
   }, [user]);
 
   useEffect(() => {
-    console.log("use effect che settare l'id dell'altro partecipante")
+    //console.log("use effect che settare l'id dell'altro partecipante")
     if (filteredParticipant.length > 1 && friends.length >= 1) {
       const otherUuid = filteredParticipant.filter(
         (element) => element !== MY_UUID
       );
-      console.log("other:",otherUuid);
+      //console.log("other:",otherUuid);
       setOtherParticipantUuid(otherUuid);
       //setPartcipantId(otherUuid);
       
@@ -128,7 +129,7 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
   }, [filteredParticipant/*, friends*/]);
 
   useEffect(() => {
-    console.log("use effetct che va a settare se sono amico o no");
+    //console.log("use effetct che va a settare se sono amico o no");
     if (OtherParticipantUuid.length >= 1) {
       const isContained = friends.includes(OtherParticipantUuid[0]);
 
