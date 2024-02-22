@@ -55,28 +55,15 @@ const HomePage = () => {
   const MY_UUID = user.uuid;
 
   const handleNotification = () => {
-    setOpenNotficationCenter(!openNotificationCenter);
+    if (!openNotificationCenter) setOpenNotficationCenter(true);
+    else {
+      setOpenNotficationCenter(false);
+      setNotifyCounter(0);
+      setNotificationData([]);
+    }
   };
 
-  const [notificationData, setNotificationData] = useState([
-    /*  {
-      id: 1,
-      sender: "Alice",
-      timestamp: new Date().getTime(),
-    },
-    {
-      id: 2,
-      sender: "Bob",
-      timestamp: new Date().getTime(),
-    },
-    {
-      id: 3,
-      sender: "Carl",
-      timestamp: new Date().getTime(),
-    }, */
-  ]);
-
-  // const [notificationData, setNotificationData] = useState([]); TODO: ENABLE THIS
+  const [notificationData, setNotificationData] = useState([]);
 
   useEffect(() => {
     console.log("LAST SEEN", user.lastSeen);
@@ -233,41 +220,25 @@ const HomePage = () => {
           setIsModalVisible={setIsModalVisible}
         />
       )}
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={openNotificationCenter}
-        onRequestClose={() => {
-          setOpenNotficationCenter(false);
-        }}
-      >
-        <Pressable
-          style={styles.modalBackground}
-          onPress={() => {
-            setOpenNotficationCenter(false);
-            setNotifyCounter(0);
-            setNotificationData([]);
-          }}
-        >
-          <View style={styles.notificationMenu}>
-            {notificationData.length === 0 ? (
-              <Text>No new invitations!</Text>
-            ) : (
-              <FlatList
-                data={notificationData}
-                renderItem={({ item }) => (
-                  <InvitationNotification
-                    sender={item.sender}
-                    timestamp={item.timestamp}
-                  />
-                )}
-                keyExtractor={(item) => item.id}
-              />
-            )}
-          </View>
-        </Pressable>
-      </Modal>
+      {openNotificationCenter && (
+        <View style={styles.notificationMenu}>
+          {notificationData.length === 0 ? (
+            <Text style={styles.noNewInvitation}>No new invitations!</Text>
+          ) : (
+            <FlatList
+              data={notificationData}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item, index }) => (
+                <InvitationNotification
+                  sender={item.sender}
+                  isLastItem={index === notificationData.length - 1}
+                />
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          )}
+        </View>
+      )}
     </SafeAreaView>
   );
 };

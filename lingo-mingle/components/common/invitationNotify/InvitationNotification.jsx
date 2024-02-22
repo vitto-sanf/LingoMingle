@@ -1,20 +1,16 @@
 // Imports
-import React from 'react';
-import { View, Text } from 'react-native';
+import React from "react";
+import { View, Text } from "react-native";
 
 // Styles
-import styles from './InvitationNotification.style';
+import styles from "./InvitationNotification.style";
 
-// Utils
-import { formatTimestamp } from '../../../utils/formatDate';
-
-const InvitationNotification = ({ sender, timestamp }) => {
+const InvitationNotification = ({ sender, isLastItem }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, !isLastItem && { marginBottom: 10 }]}>
       <Text style={styles.message}>
         You have received a new invitation from {sender}.
       </Text>
-      {/* <Text style={styles.timestamp}>{formatTimestamp(timestamp)}</Text> */}
     </View>
   );
 };

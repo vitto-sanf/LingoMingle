@@ -14,11 +14,11 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
   },
   header: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   titleContainer: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: "center",
   },
   title: {
     fontFamily: FONT.bold,
@@ -26,21 +26,30 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   notificationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center",
   },
   notificationCounter: {
     fontFamily: FONT.bold,
-    fontSize: 18
+    fontSize: 18,
   },
   notificationMenu: {
-    position: 'absolute',
-    top: '50%', 
+    position: "absolute",
+    top: 90,
     right: 0,
-    left: 0,
-    // backgroundColor: 'white',
-    padding: 20,
-    zIndex: 1
+    left: 100,
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    zIndex: 1,
+    elevation: 3,
+    marginRight: 10,
+    maxHeight: "60%",
+    borderRadius: 10,
+  },
+  noNewInvitation: {
+    fontFamily: FONT.medium,
+    fontSize: 18,
   },
   noInfoText: {
     flex: 1,
@@ -78,8 +87,8 @@ const styles = StyleSheet.create({
   },
   modalText: {
     fontFamily: FONT.medium,
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });
 
 export default styles;
