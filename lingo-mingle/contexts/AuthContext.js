@@ -13,6 +13,8 @@ import useNotification from "../hooks/useNotification";
 const AuthContext = createContext({
   user: null,
   token: null,
+  lastSeen:null,  
+  setLastSeen: ()=>{},
   setUser: () => {},
   switchUser: () => {},
   switchToken: () => {},
@@ -24,7 +26,7 @@ const AuthProvider = ({ children }) => {
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiWVZCd1hrTjdjSWs3V21aOG9VWEcifQ.yufN7vKkauON38gmMyvUwmITiqDjr05SstG1fKqp-6A"
   );
   const [myUuid, setMyUuid] = useState("YVBwXkN7cIk7WmZ8oUXG");
-
+  const [lastSeen, setLastSeen]= useState(new Date())
   const notify = useNotification();
 
   useEffect(() => {
@@ -52,7 +54,7 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, setUser, switchUser, switchToken }}
+      value={{ user, token,lastSeen,setLastSeen, setUser, switchUser, switchToken }}
     >
       {children}
     </AuthContext.Provider>

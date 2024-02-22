@@ -123,6 +123,7 @@ const NewInvitationModal = ({ modalVisible, setModalVisible, friendData }) => {
       ),
       place: place,
       status: "pending",
+      createdAt : new Date(),
     };
     console.log(ModformData);
 

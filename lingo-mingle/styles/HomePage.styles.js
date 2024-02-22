@@ -13,10 +13,44 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "center",
   },
+  header: {
+    flexDirection: "row",
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
   title: {
     fontFamily: FONT.bold,
     fontSize: 32,
     textAlign: "center",
+  },
+  notificationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  notificationCounter: {
+    fontFamily: FONT.bold,
+    fontSize: 18,
+  },
+  notificationMenu: {
+    position: "absolute",
+    top: 90,
+    right: 0,
+    left: 100,
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    zIndex: 1,
+    elevation: 3,
+    marginRight: 10,
+    height:150,
+    borderRadius: 10,
+  },
+  noNewInvitation: {
+    fontFamily: FONT.medium,
+    fontSize: 18,
+    marginBottom:30,
   },
   noInfoText: {
     flex: 1,
@@ -51,6 +85,10 @@ const styles = StyleSheet.create({
     fontFamily: FONT.bold,
     fontSize: 20,
     color: COLOR.white,
+  },
+  modalText: {
+    fontFamily: FONT.medium,
+    fontSize: 16,
   },
 });
 
