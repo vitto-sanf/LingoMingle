@@ -44,12 +44,13 @@ const styles = StyleSheet.create({
     zIndex: 1,
     elevation: 3,
     marginRight: 10,
-    maxHeight: "60%",
+    height:150,
     borderRadius: 10,
   },
   noNewInvitation: {
     fontFamily: FONT.medium,
     fontSize: 18,
+    marginBottom:30,
   },
   noInfoText: {
     flex: 1,

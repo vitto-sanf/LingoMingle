@@ -50,16 +50,18 @@ const HomePage = () => {
   const [notifyCounter, setNotifyCounter] = useState(0);
   const [openNotificationCenter, setOpenNotficationCenter] = useState(false);
 
-  const { user } = useContext(AuthContext);
-  const [friends, setFriends] = useState(user?.friends);
+  const { user,lastSeen ,setLastSeen} = useContext(AuthContext);
+
   const MY_UUID = user.uuid;
 
   const handleNotification = () => {
     if (!openNotificationCenter) setOpenNotficationCenter(true);
     else {
+      setLastSeen(new Date())
       setOpenNotficationCenter(false);
       setNotifyCounter(0);
       setNotificationData([]);
+      
     }
   };
 
@@ -104,13 +106,14 @@ const HomePage = () => {
         const newNotifications = []; // Variabile temporanea per accumulare le nuove notifiche
         api.getInvitation(MY_UUID, "pending").then((data) => {
           data.forEach((invite) => {
-            if (new Date(invite.createdAt.toDate()) > user.lastSeen) {
-              console.log(invite.username);
+           console.log( "IIF",new Date(invite.createdAt.toDate()) >  lastSeen, lastSeen)
+            if (new Date(invite.createdAt.toDate()) > lastSeen) {
+              console.log(invite.uuid);
               setNotifyCounter((prevCounter) => prevCounter + 1);
               const length = notificationData.length;
-              const newId =
-                length > 0 ? notificationData[length - 1].id + 1 : 0;
-              newNotifications.push({ id: newId, sender: invite.username }); // Accumula la nuova notifica
+              /* const newId =
+                length > 0 ? notificationData[length - 1].id + 1 : 0; */
+              newNotifications.push({ id: invite.uuid, sender: invite.username }); // Accumula la nuova notifica
             }
           });
           setNotificationData((prevData) => [...prevData, ...newNotifications]); // Aggiorna lo stato con tutte le nuove notifiche accumulate
@@ -124,7 +127,7 @@ const HomePage = () => {
     return () => {
       unsubscribe();
     };
-  }, [user]);
+  }, [user,lastSeen]);
 
   if (loading) return <Loader />;
 
@@ -223,7 +226,15 @@ const HomePage = () => {
       {openNotificationCenter && (
         <View style={styles.notificationMenu}>
           {notificationData.length === 0 ? (
-            <Text style={styles.noNewInvitation}>No new invitations!</Text>
+           <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={styles.noNewInvitation}>No new invitation!</Text>
+            </View>
           ) : (
             <FlatList
               data={notificationData}
