@@ -2,17 +2,16 @@
 
 Project developed for the course "Human Computer Interaction" during the academic year 2023/24 at Politecnico di Torino.
 
-- [LINGOMIGLE](#lingomigle)
-  - [Getting Started](#getting-started)
-  - [Database structure](#database-structure)
-    - [`user`](#user)
-    - [`invitation`](#invitation)
-    - [`games`](#games)
-    - [`directCall`](#directcall)
-    - [`chats`](#chats)
-    - [`messages`](#messages)
-  - [Technologies](#technologies)
-  - [Team members](#team-members)
+1. [Getting Started](#getting-started)
+2. [Database structure](#database-structure)
+   - [`user`](#user)
+   - [`invitation`](#invitation)
+   - [`games`](#games)
+   - [`directCall`](#directcall)
+   - [`chats`](#chats)
+   - [`messages`](#messages)
+3. [Technologies](#technologies)
+4. [Team members](#team-members)
 
 ## Getting Started
 
