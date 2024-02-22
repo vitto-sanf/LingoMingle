@@ -243,7 +243,7 @@ const Chat = () => {
   useLayoutEffect(() => {
     const msgCollectionRef = collection(
       database,
-      `/chats/${id.replace(",", "")}/messages`
+      `/chats/${id.replace(",", "").replace(",", "")}/messages`
     );
     const q = query(msgCollectionRef, orderBy("createdAt", "asc"));
     let displayedDate = null;
@@ -274,7 +274,7 @@ const Chat = () => {
     if (msg.length === 0 && (!targetMessage || !targetMessage.message)) return;
     if (isEditing && targetMessage && targetMessage.message) {
       api
-        .editMessage(targetMessage, id)
+        .editMessage(targetMessage, id.replace(",", "").replace(",", ""))
         .then(() => {
           setIsEditing(false);
           setTargetMessage({});
@@ -283,7 +283,7 @@ const Chat = () => {
         .catch((err) => notify.error(err));
     } else {
       api
-        .sendMessage(id, msg, MY_UUID)
+        .sendMessage(id.replace(",", "").replace(",", ""), msg, MY_UUID)
         .then(() => {
           setMessage("");
           api.editFriendContacted(user, friendData.uuid);
