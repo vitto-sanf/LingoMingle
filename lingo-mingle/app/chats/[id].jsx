@@ -229,7 +229,7 @@ const Chat = () => {
   useEffect(() => {
     console.log("ID", id);
     api
-      .getChatParticipant(id.replace(",", ""), MY_UUID)
+      .getChatParticipant(id.replace(",", "").replace(",", ""), MY_UUID)
       .then((data) => {
         setHeaderTitle(data.username);
         setFriendData(data);
