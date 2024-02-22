@@ -1,5 +1,5 @@
 // Imports
-import { ScrollView, Text, FlatList, Pressable } from "react-native";
+import { ScrollView, Text, FlatList, Pressable, View, Modal } from "react-native";
 import React, { useEffect, useState, useContext, useLayoutEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -10,8 +10,11 @@ import {
   query,
 } from "firebase/firestore";
 import { database } from "../../../config/firebase";
+
 // Styles
 import { HomePageStyle as styles } from "../../../styles";
+import IoIcons from 'react-native-vector-icons/Ionicons'
+import { COLOR } from "../../../constants";
 
 // Components
 import {
@@ -19,7 +22,7 @@ import {
   LastUserCard,
   FriendsContactedCard,
 } from "../../../components/cards";
-import { Loader } from "../../../components/common";
+import { Loader, InvitationNotification } from "../../../components/common";
 import { StartVideoCallModal } from "../../../components/modals";
 
 // Services
@@ -36,10 +39,39 @@ const HomePage = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const [notifyCounter, setNotifyCounter] = useState(0)
+  const [openNotificationCenter, setOpenNotficationCenter] = useState(false)
+
   const { user } = useContext(AuthContext);
+  const [friends, setFriends]= useState(user?.friends)
   const MY_UUID = user.uuid;
 
+  const handleNotification = () => {
+    setOpenNotficationCenter(!openNotificationCenter)
+  }
+
+  const [notificationData, setNotificationData] = useState([
+    {
+      id: 1,
+      sender: "Alice",
+      timestamp: new Date().getTime(),
+    },
+    {
+      id: 2,
+      sender: "Bob",
+      timestamp: new Date().getTime(),
+    },
+    {
+      id: 3,
+      sender: "Carl",
+      timestamp: new Date().getTime(),
+    },
+  ]);
+
+  // const [notificationData, setNotificationData] = useState([]); TODO: ENABLE THIS
+  
   useEffect(() => {
+    console.log("LAST SEEN", user.lastSeen)
     const unsubscribe = onSnapshot(
       doc(database, "user", user.uuid),
       async (doc) => {
@@ -69,12 +101,50 @@ const HomePage = () => {
       unsubscribe();
     };
   }, [user.uuid]);
+  
+  useEffect(() => {
+  
+    const unsubscribe = onSnapshot(
+      collection(database, "invitation"),
+      (snapshot) => {
+        
+          api.getInvitation(MY_UUID, "pending").then((data)=>{
+            data.forEach((invite)=>{
+              console.log("HERE", new Date (data[0].createdAt.toDate()), user.lastSeen )
+
+              if (new Date (invite.createdAt.toDate()) >  user.lastSeen){
+                console.log("Invitation data", new Date (data[0].createdAt.toDate()))
+              }
+            })
+            
+          })
+         
+      },
+      (error) => {
+        console.error("Error fetching pending invitations: ", error);
+      }
+    );
+
+    return () => {
+      unsubscribe()
+    };
+  }, [user]);
 
   if (loading) return <Loader />;
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>LingoMingle</Text>
+      <View style={styles.header}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>LingoMingle</Text>
+        </View>
+        <View style={styles.notificationContainer}>
+          <Pressable onPress={handleNotification}>
+            <IoIcons name="notifications" size={30} color={notifyCounter > 0 ? COLOR.primary : COLOR.black}/>
+          </Pressable>
+          {notifyCounter > 0 && <Text style={styles.notificationCounter}>{notifyCounter}</Text>}
+        </View>
+      </View>
       {lastUsersContacted.length === 0 &&
       lastFriendsContacted.length === 0 &&
       friendsRequests.length === 0 ? (
@@ -148,6 +218,29 @@ const HomePage = () => {
           setIsModalVisible={setIsModalVisible}
         />
       )}
+
+      <Modal
+      animationType="slide"
+      transparent={true}
+      visible={openNotificationCenter}
+    >
+      <View style={styles.notificationMenu}>
+        {notificationData.length === 0 ? (
+          <Text style={styles.modalText}>No new invitations!</Text>
+        ) : (
+          <FlatList
+            data={notificationData}
+            renderItem={({ item }) => (
+              <InvitationNotification
+                sender={item.sender}
+                timestamp={item.timestamp}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        )}
+      </View>
+    </Modal>
     </SafeAreaView>
   );
 };

@@ -9,4 +9,10 @@ const formatDate = (rawDate) => {
   return `${day}/${month}/${year}`;
 };
 
+export const formatTimestamp = (timestamp) => {
+  const formattedTime = new Date(timestamp).toLocaleString();
+  return formattedTime;
+};
+
+
 export default formatDate;

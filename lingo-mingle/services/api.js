@@ -640,6 +640,7 @@ const api = {
       //})
       //console.log("server",receiver);
       //console.log("server data:",receiver)
+    console.log("CREATED", doc.data().createdAt)
       const senderUserId = doc.data().sender;
       let inv = {
         uuid: doc.id,
@@ -651,6 +652,7 @@ const api = {
         sender: senderUserId,
         receiverUUid: doc.data().receiver,
         username: userMap[senderUserId],
+        createdAt : doc.data().createdAt
       };
       //console.log("server Inv",inv);
       Invitations = [...Invitations, inv];

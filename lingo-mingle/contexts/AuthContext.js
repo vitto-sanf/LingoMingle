@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
     api
       .getUser(myUuid)
       .then((userData) => {
-        setUser({ ...userData, uuid: myUuid });
+        setUser({ ...userData, uuid: myUuid, lastSeen: new Date () });
         notify.success(`Welcome back ${userData.username}`);
       })
       .catch((err) => {

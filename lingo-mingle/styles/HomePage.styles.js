@@ -13,10 +13,34 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "center",
   },
+  header: {
+    flexDirection: 'row',
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: 'center'
+  },
   title: {
     fontFamily: FONT.bold,
     fontSize: 32,
     textAlign: "center",
+  },
+  notificationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  notificationCounter: {
+    fontFamily: FONT.bold,
+    fontSize: 18
+  },
+  notificationMenu: {
+    position: 'absolute',
+    top: '50%', 
+    right: 0,
+    left: 0,
+    // backgroundColor: 'white',
+    padding: 20,
+    zIndex: 1
   },
   noInfoText: {
     flex: 1,
@@ -52,6 +76,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: COLOR.white,
   },
+  modalText: {
+    fontFamily: FONT.medium,
+    fontSize: 16
+  }
 });
 
 export default styles;

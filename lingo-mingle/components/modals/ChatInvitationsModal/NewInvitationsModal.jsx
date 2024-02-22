@@ -132,6 +132,7 @@ const ChatInvitationModal = ({ modalVisible, setModalVisible, friendData,handleS
       ),
       place: place,
       status: "pending",
+      createdAt : new Date()
     };
     console.log(ModformData);
     handleSendInvitation(ModformData)

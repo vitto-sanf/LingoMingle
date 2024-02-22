@@ -58,7 +58,7 @@ To run the application locally, follow these steps:
 | receiver  | String    | Identifier of the receiving user                     |
 | sender    | String    | Identifier of the sending user                       |
 | status    | String    | Current status of the invitation (accepted, pending) |
-| timestamp | Timestamp | Date and time when the invitation was created        |
+| timestamp | Timestamp | Date and time of the meeting                         |
 
 #### `games`
 
