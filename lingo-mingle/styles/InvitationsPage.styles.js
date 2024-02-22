@@ -31,11 +31,12 @@ const styles = StyleSheet.create({
   button: {
     position: "absolute",
     bottom: 0,
-    right: 0,
+    right: 10,
     margin: 0,
     backgroundColor: COLOR.lightWhite,
     borderRadius: 100,
   },
+  
   topNav: {
     paddingTop: 10,
     paddingBottom: 5,

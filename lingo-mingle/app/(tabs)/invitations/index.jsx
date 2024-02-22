@@ -259,15 +259,18 @@ const InvitationsPage = () => {
                   keyExtractor={(item) => item.uuid}
                   showsVerticalScrollIndicator={false}
                 />
-                <Pressable
+                
+              </View>
+            )
+          )
+          
+          }
+          <Pressable
                   onPress={() => setModalVisible(true)}
                   style={styles.button}
                 >
                   <AntIcon name="pluscircleo" size={44} />
                 </Pressable>
-              </View>
-            )
-          )}
         </View>
         {/* Scheduled Invitation Section */}
         <View style={styles.container}>
