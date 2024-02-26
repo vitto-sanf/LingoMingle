@@ -26,9 +26,9 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
   const [requestReceived, setRequestReceived] = useState(false);
   const [allUsersData, setAllUserData] = useState();
   const MY_UUID = user.uuid;
-  const [isVisible, setIsVisible] = useState(false);
+  //const [isVisible, setIsVisible] = useState(false);
   const notify = useNotification();
-  const [count, setCount] = useState(0);
+  //const [count, setCount] = useState(0);
   useEffect(() => {
     const listener = onSnapshot(doc(database, "user", MY_UUID), (snapshot) => {
       setAllUserData(snapshot.data());
@@ -77,22 +77,21 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
       .catch((err) => notify.error(err.message));
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     //console.log("PARTECIPANTIII");
     //console.log("Use effect timer");
-    if(count<=8)
-    {
+    
     const timeout = setTimeout(() => {
       setIsVisible(true);
     }, 3500);
-    setCount(count+1);
+    
     return () => clearTimeout(timeout);
     
-  }
-  }, [participant]);
+  
+  }, [participant]);*/
 
   useEffect(() => {
-    console.log("PARTECIPANTIII",count);
+    
     //if(count<2)
     //{
       //console.log("use effetct che setta i participant");
@@ -100,11 +99,11 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
       (participant) => participant.userId
     );
     setFilteredParticipant(participantsUuids);
-    if (participant.length > 1) {
+    /*if (participant.length > 1) {
       setIsVisible(false);
    // }
     //setCount(count+1);
-    }
+    }*/
     
   }, [participant]);
 
@@ -170,7 +169,7 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
        // isVisible &&
         !requestReceived && (
           <Pressable
-            onPress={//TODO
+            onPress={
               !friendRequestSent &&
               !allUsersData.friends_request.some((request) => {
                 return request.sender === MY_UUID;

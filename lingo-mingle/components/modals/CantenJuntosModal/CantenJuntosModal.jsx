@@ -327,7 +327,7 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
   };
 
   const onChangeText = (value) => {
-    setAnswer(value);
+    setAnswer(value.trim().toLowerCase());
   };
 
   return (
