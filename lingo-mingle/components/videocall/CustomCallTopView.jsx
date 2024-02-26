@@ -28,7 +28,7 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
   const MY_UUID = user.uuid;
   const [isVisible, setIsVisible] = useState(false);
   const notify = useNotification();
-
+  const [count, setCount] = useState(0);
   useEffect(() => {
     const listener = onSnapshot(doc(database, "user", MY_UUID), (snapshot) => {
       setAllUserData(snapshot.data());
@@ -78,24 +78,34 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
   };
 
   useEffect(() => {
-    console.log("PARTECIPANTIII");
+    //console.log("PARTECIPANTIII");
     //console.log("Use effect timer");
+    if(count<=8)
+    {
     const timeout = setTimeout(() => {
       setIsVisible(true);
     }, 3500);
-
+    setCount(count+1);
     return () => clearTimeout(timeout);
+    
+  }
   }, [participant]);
 
   useEffect(() => {
-    //console.log("use effetct che setta i participant");
+    console.log("PARTECIPANTIII",count);
+    //if(count<2)
+    //{
+      //console.log("use effetct che setta i participant");
     const participantsUuids = participant.map(
       (participant) => participant.userId
     );
     setFilteredParticipant(participantsUuids);
     if (participant.length > 1) {
       setIsVisible(false);
+   // }
+    //setCount(count+1);
     }
+    
   }, [participant]);
 
   useEffect(() => {
@@ -130,13 +140,16 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
 
   useEffect(() => {
     //console.log("use effetct che va a settare se sono amico o no");
-    if (OtherParticipantUuid.length >= 1) {
-      const isContained = friends.includes(OtherParticipantUuid[0]);
-
+    if (OtherParticipantUuid.length >= 1 && friends.length>0) {
+      const isContained = friends.indexOf(OtherParticipantUuid[0]) !== -1//friends.includes(OtherParticipantUuid[0]);
+      console.log("lista amici",friends);
+      console.log("other uuid",OtherParticipantUuid);
       setIsUserFriend(isContained);
       //setPartcipantId(OtherParticipantUuid)
       setIsFriend(isContained);
     }
+    else{setFriends(false);}
+    
   }, [OtherParticipantUuid]);
 
   useEffect(()=>{
@@ -149,15 +162,15 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
 
   
 
-  return (
+  return (//TODO: gestire la possibilità che friends_request abbia lunghezza pari a zero per corrertta visualizzazione dell'icona e della funzione per aggiungere rimuoere richiesta d'amicizia
     <View style={styles.topView}>
       {!isFriend &&
-        participant.length > 1 &&
-        filteredParticipant.length > 1 &&
-        isVisible &&
+        /*participant.length > 1*/ //&&
+       /* filteredParticipant.length > 1*/ //&&
+       // isVisible &&
         !requestReceived && (
           <Pressable
-            onPress={
+            onPress={//TODO
               !friendRequestSent &&
               !allUsersData.friends_request.some((request) => {
                 return request.sender === MY_UUID;
@@ -167,14 +180,32 @@ const CustomCallTopView = ({setIsUserFriend,setTheParticipantId}) => {
             }
             style={[styles.friendReqPressable,styles.rightElement]}
           >
-            {!friendRequestSent &&
+          {
+            allUsersData?.friends_request?.length===0?
+            (
+              <FA5Icon name="user-plus" size={20} color={COLOR.white} />
+            ):
+            !friendRequestSent &&
+            !allUsersData.friends_request.some((request) => {
+              return request.sender === MY_UUID;
+            })?
+
+            (
+              <FA5Icon name="user-plus" size={20} color={COLOR.white} />
+            )
+            :
+            (
+              <FA5Icon name="user-times" size={20} color={COLOR.red} />
+            )
+          }
+            {/*!friendRequestSent &&
             !allUsersData.friends_request.some((request) => {
               return request.sender === MY_UUID;
             }) ? (
               <FA5Icon name="user-plus" size={20} color={COLOR.white} />
             ) : (
               <FA5Icon name="user-times" size={20} color={COLOR.red} />
-            )}
+            )*/}
           </Pressable>
         )}
 
