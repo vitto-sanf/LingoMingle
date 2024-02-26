@@ -106,7 +106,6 @@ const HomePage = () => {
         const newNotifications = []; // Variabile temporanea per accumulare le nuove notifiche
         api.getInvitation(MY_UUID, "pending").then((data) => {
           data.forEach((invite) => {
-           console.log( "IIF",new Date(invite.createdAt.toDate()) >  lastSeen, lastSeen)
             if (new Date(invite.createdAt.toDate()) > lastSeen) {
               console.log(invite.uuid);
               setNotifyCounter((prevCounter) => prevCounter + 1);

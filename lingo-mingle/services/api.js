@@ -640,7 +640,7 @@ const api = {
       //})
       //console.log("server",receiver);
       //console.log("server data:",receiver)
-    console.log("CREATED", doc.data().createdAt)
+    
       const senderUserId = doc.data().sender;
       let inv = {
         uuid: doc.id,

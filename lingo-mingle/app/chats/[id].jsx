@@ -137,10 +137,16 @@ const RenderMessage = ({
                   : styles.otherMessageContainer,
               ]}
             >
+              
               <Text style={styles.messageText}>{item.message}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={styles.time}>
                 {formatTime(item.createdAt?.toDate())}
               </Text>
+              <Text style={{ marginLeft: 5 }}>
+                    {item.edited ? "edited" : null}
+                  </Text>
+                  </View>
             </View>
           </View>
         ) : (
