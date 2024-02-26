@@ -1,6 +1,14 @@
 // Imports
 import React, { useState, useEffect } from "react";
-import { Alert, Modal, Text, Pressable, View, TextInput } from "react-native";
+import {
+  Alert,
+  Modal,
+  Text,
+  Pressable,
+  View,
+  TextInput,
+  Keyboard,
+} from "react-native";
 import { onSnapshot, collection } from "firebase/firestore";
 import { database } from "../../../config/firebase";
 import { Audio } from "expo-av";
@@ -35,6 +43,28 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
     "Sigo viendo aquel momento Se desvaneció, _ _ _ _ _ _ _ _ _ _ _",
     "Sigo viendo aquel momento Se desvaneció, desapareció",
   ];
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboardOpen(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboardOpen(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -310,7 +340,12 @@ const CantenJuntosModal = ({ modalVisible, setModalVisible }) => {
       }}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
+        <View
+          style={[
+            styles.modalView,
+            isKeyboardOpen ? { height: "50%" } : { height: "35%" },
+          ]}
+        >
           <View style={styles.modalHeader}>
             <Pressable onPress={handleBackButton} style={styles.backButton}>
               <FontistoIcon name="arrow-left" size={20} />

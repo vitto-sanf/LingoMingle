@@ -45,13 +45,13 @@ const CustomBottomSheet = forwardRef((props, ref) => {
     >
       <BottomSheetView style={styles.contentContainer}>
         <Text style={styles.containerHeadline}>Chat</Text>
-        <KeyboardAvoidingView
+        {/* <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={120}
           style={{ flex: 1 }}
-        >
-          <ChatView channelId={props.channelId} />
-        </KeyboardAvoidingView>
+        > */}
+        <ChatView channelId={props.channelId} />
+        {/* </KeyboardAvoidingView> */}
       </BottomSheetView>
     </BottomSheet>
   );

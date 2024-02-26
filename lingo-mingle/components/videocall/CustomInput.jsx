@@ -1,5 +1,5 @@
 // Imports
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable, Keyboard } from "react-native";
 import { AutoCompleteInput, useMessageInputContext } from "stream-chat-expo";
 
 // Styles
@@ -10,7 +10,7 @@ const CustomInput = () => {
   const { sendMessage, text } = useMessageInputContext();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <View style={styles.inputContainer}>
         <AutoCompleteInput />
       </View>
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 120,
   },
   inputContainer: {
     flexDirection: "row",

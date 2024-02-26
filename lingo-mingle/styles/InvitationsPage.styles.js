@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.lightWhite,
     borderRadius: 100,
   },
-  
+
   topNav: {
     paddingTop: 10,
     paddingBottom: 5,
