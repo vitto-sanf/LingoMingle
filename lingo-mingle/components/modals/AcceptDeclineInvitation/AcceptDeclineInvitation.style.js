@@ -2,7 +2,7 @@
 import { StyleSheet } from "react-native";
 
 // Styles
-import { FONT } from "../../../constants";
+import { FONT,COLOR } from "../../../constants";
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -37,6 +37,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: FONT.bold,
     fontSize: 20,
+  },
+  button: {
+    borderRadius: 15,
+    paddingVertical: 10,
+    elevation: 2,
+    flex: 1,
+  },
+  buttonText: {
+    fontFamily: FONT.regular,
+    fontSize: 16,
+    color: COLOR.white,
+    textAlign: "center",
   },
 });
 

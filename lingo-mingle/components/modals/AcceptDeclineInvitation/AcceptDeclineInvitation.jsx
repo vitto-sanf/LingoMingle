@@ -34,26 +34,22 @@ const AcceptDeclineInvitationsModal = ({
 
               <View style={styles.buttons}>
                 <Pressable
-                  style={styles.pressable}
-                  onPress={() => handleAcceptInvitation(invitationUUID)}
-                >
-                  <FA5Icon
-                    name="check-circle"
-                    color={COLOR.green}
-                    solid
-                    size={44}
-                  />
-                </Pressable>
-                <Pressable
-                  style={styles.pressable}
+                  style={[
+                    styles.button,
+                    { backgroundColor: COLOR.gray2, marginRight: 10 },
+                  ]}
                   onPress={() => setModalVisible(!modalVisible)}
                 >
-                  <FA5Icon
-                    name="times-circle"
-                    color={COLOR.red}
-                    solid
-                    size={44}
-                  />
+                  <Text style={styles.buttonText}>Back</Text>
+                </Pressable>
+                <Pressable
+                  style={[
+                    styles.button,
+                    { backgroundColor: COLOR.green, marginLeft: 10 },
+                  ]}
+                  onPress={() => handleAcceptInvitation(invitationUUID)}
+                >
+                  <Text style={styles.buttonText}>Accept</Text>
                 </Pressable>
               </View>
             </View>
@@ -65,26 +61,23 @@ const AcceptDeclineInvitationsModal = ({
 
               <View style={styles.buttons}>
                 <Pressable
-                  style={styles.pressable}
-                  onPress={() => handleRejectInvitation(invitationUUID)}
-                >
-                  <FA5Icon
-                    name="check-circle"
-                    color={COLOR.green}
-                    solid
-                    size={44}
-                  />
-                </Pressable>
-                <Pressable
-                  style={styles.pressable}
+                  style={[
+                    styles.button,
+                    { backgroundColor: COLOR.gray2, marginRight: 10 },
+                  ]}
                   onPress={() => setModalVisible(!modalVisible)}
                 >
-                  <FA5Icon
-                    name="times-circle"
-                    color={COLOR.red}
-                    solid
-                    size={44}
-                  />
+                  <Text style={styles.buttonText}>Back</Text>
+                </Pressable>
+
+                <Pressable
+                  style={[
+                    styles.button,
+                    { backgroundColor: COLOR.red, marginLeft: 10 },
+                  ]}
+                  onPress={() => handleRejectInvitation(invitationUUID)}
+                >
+                  <Text style={styles.buttonText}>Decline</Text>
                 </Pressable>
               </View>
             </View>
@@ -96,26 +89,22 @@ const AcceptDeclineInvitationsModal = ({
 
               <View style={styles.buttons}>
                 <Pressable
-                  style={styles.pressable}
-                  onPress={() => handleCancelInvitation(invitationUUID)}
-                >
-                  <FA5Icon
-                    name="check-circle"
-                    color={COLOR.green}
-                    solid
-                    size={44}
-                  />
-                </Pressable>
-                <Pressable
-                  style={styles.pressable}
+                  style={[
+                    styles.button,
+                    { backgroundColor: COLOR.gray2, marginRight: 10 },
+                  ]}
                   onPress={() => setModalVisible(!modalVisible)}
                 >
-                  <FA5Icon
-                    name="times-circle"
-                    color={COLOR.red}
-                    solid
-                    size={44}
-                  />
+                  <Text style={styles.buttonText}>Back</Text>
+                </Pressable>
+                <Pressable
+                  style={[
+                    styles.button,
+                    { backgroundColor: COLOR.red, marginLeft: 10 },
+                  ]}
+                  onPress={() => handleCancelInvitation(invitationUUID)}
+                >
+                  <Text style={styles.buttonText}>Cancel</Text>
                 </Pressable>
               </View>
             </View>

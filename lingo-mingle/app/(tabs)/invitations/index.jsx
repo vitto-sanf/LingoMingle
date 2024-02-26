@@ -101,7 +101,7 @@ const InvitationsPage = () => {
         setDirty(true);
         setDirty2(true);
         setDirty3(true);
-        notify.success("Invitation deleted");
+        notify.success("Invitation cancelled");
         setConfirmationModalVisible(!confirmationModalVisible);
       })
 
