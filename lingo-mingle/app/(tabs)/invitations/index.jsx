@@ -302,7 +302,7 @@ const InvitationsPage = () => {
             pageStatus === "scheduled" && (
               <View>
                 <Text style={styles.noInfoText}>
-                  There are no new scheduled invitations
+                  There are no new {"\n"}scheduled invitations
                 </Text>
               </View>
             )

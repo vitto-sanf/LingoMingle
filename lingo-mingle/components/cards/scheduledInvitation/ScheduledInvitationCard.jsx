@@ -27,6 +27,7 @@ const ScheduledInvitationCard = ({
         </View>
         <Pressable
           onPress={() => {
+            //console.log("SIC",item);
             setModalVisible(true, item);
           }}
         >

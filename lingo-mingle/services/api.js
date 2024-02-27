@@ -695,6 +695,7 @@ const api = {
     }
   },
   editInvitation: async (formData) => {
+    console.log(formData);
     try {
       const docRef = await setDoc(doc(database, "invitation", formData.uuid), {
         receiver: formData.receiver,
@@ -702,6 +703,7 @@ const api = {
         place: formData.place,
         timestamp: formData.timestamp,
         status: formData.status,
+        createdAt: formData.createdAt
       });
       return docRef;
     } catch (err) {

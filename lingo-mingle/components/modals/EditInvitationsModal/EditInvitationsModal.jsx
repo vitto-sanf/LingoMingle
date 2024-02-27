@@ -64,14 +64,15 @@ const EditInvitationModal = ({
   const onSubmit = (formData) => {
     const ModformData = {
       uuid: toEdit.uuid,
-      receiver: MY_UUID,
-      sender: toEdit.sender,
+      receiver: toEdit.sender,
+      sender: toEdit.receiverUUid,
       timestamp: new Date(
         `${date.toISOString().split("T")[0]}` +
           `${time.toISOString().substr(10, 24)}`
       ),
       place: place,
-      status: "accepted",
+      status: "pending",
+      createdAt : new Date(),
     };
 
     api
@@ -120,7 +121,7 @@ const EditInvitationModal = ({
               <DateTimePicker
                 style={{ zIndex: "auto" }}
                 mode="date"
-                display="spinner"
+                //display="spinner"
                 value={date ? date : value || new Date()}
                 onChange={({ type }, selectedDate) => {
                   onChange(selectedDate);
@@ -148,7 +149,7 @@ const EditInvitationModal = ({
               <DateTimePicker
                 style={{ zIndex: "auto" }}
                 mode="time"
-                display="spinner"
+                //display="spinner"
                 value={time ? new Date(time) : value || new Date()}
                 onChange={({ type }, selectedTime) => {
                   onChange(selectedTime);
