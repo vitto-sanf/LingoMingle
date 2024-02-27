@@ -24,19 +24,19 @@ const Profile = () => {
     },
     {
       id: "QNDv4UEwiaqCmJIjoblX",
-      username: "Francesco",
+      username: "Francis",
       token:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiUU5EdjRVRXdpYXFDbUpJam9ibFgifQ.Q7QH8cbqKs5zQ1nboQclLdFpH35YvmUsWp3sl3ObWtc",
     },
     {
       id: "NW01c8S4tsrjZ66bR0Ll",
-      username: "Giulia",
+      username: "Julia",
       token:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTlcwMWM4UzR0c3JqWjY2YlIwTGwifQ.bt-chAvUN5uIsxzx-pDU3ewHzO-W98OfFhmRN0W0x80",
     },
     {
       id: "EIIr5pUGKdiC76UvnGZA",
-      username: "Matteo",
+      username: "Mattew",
       token:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiRUlJcjVwVUdLZGlDNzZVdm5HWkEifQ.s7R-ntQIXQwZrdxYkWHRisGFxQOySd9GxLD6LY0j1Vg",
     },
