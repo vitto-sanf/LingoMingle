@@ -1,6 +1,6 @@
 # LINGOMIGLE
 
-Project developed for the course "Human Computer Interaction" during the academic year 2023/24 at Politecnico di Torino.
+Project developed for the course "Human Computer Interaction" during the academic year 2023/24 at Politecnico di Torino. It is a high-fidelity prototype so not a fully functioning application but some parts have been mocked up. It is the result of an analysis started from the deep user needs of the users in a specific context, in our case "learning a new language" that led us through various steps to the completion of this prototype. For more information see the **final report** pdf.  
 
 1. [Getting Started](#getting-started)
 2. [Database structure](#database-structure)
